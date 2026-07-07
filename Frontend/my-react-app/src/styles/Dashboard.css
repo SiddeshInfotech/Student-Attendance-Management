@@ -1,0 +1,254 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f4f7fc;
+}
+
+.dashboard{
+    display:flex;
+    min-height:100vh;
+}
+
+/* Sidebar */
+
+.sidebar{
+    width:250px;
+    background:#0d47a1;
+    color:white;
+    padding:25px;
+    position:fixed;
+    height:100vh;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:bold;
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.logo span{
+    color:#FFD54F;
+}
+
+.sidebar ul{
+    list-style:none;
+}
+
+.sidebar ul li{
+    padding:15px;
+    margin-bottom:15px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.3s;
+    font-size:17px;
+}
+
+.sidebar ul li:hover{
+    background:#1976d2;
+    transform:translateX(5px);
+}
+
+.active{
+    background:#1976d2;
+}
+
+.logout{
+    margin-top:40px;
+    background:#d32f2f;
+}
+
+.logout:hover{
+    background:#b71c1c !important;
+}
+
+/* Main */
+
+.main{
+    margin-left:250px;
+    flex:1;
+    padding:30px;
+}
+
+/* Navbar */
+
+.navbar{
+    background:white;
+    border-radius:15px;
+    padding:20px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.navbar h2{
+    color:#0d47a1;
+}
+
+.navbar p{
+    color:#666;
+    margin-top:5px;
+}
+
+.nav-right{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.nav-right input{
+    width:220px;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    outline:none;
+}
+
+.icon{
+    font-size:24px;
+    cursor:pointer;
+}
+
+.profile{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.avatar{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    background:#1976d2;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:22px;
+}
+
+/* Cards */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+    margin-top:30px;
+}
+
+.card{
+    color:white;
+    border-radius:15px;
+    padding:25px;
+    box-shadow:0 8px 20px rgba(0,0,0,.15);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+.card-icon{
+    font-size:35px;
+    margin-bottom:15px;
+}
+
+.card h3{
+    margin-bottom:10px;
+}
+
+.card h1{
+    font-size:40px;
+    margin-bottom:10px;
+}
+
+.card p{
+    opacity:.9;
+}
+
+.students{
+    background:#1976d2;
+}
+
+.present{
+    background:#2e7d32;
+}
+
+.absent{
+    background:#d32f2f;
+}
+
+.teachers{
+    background:#fb8c00;
+}
+
+/* Table */
+
+.table-box{
+    background:white;
+    margin-top:35px;
+    border-radius:15px;
+    padding:25px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.table-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.table-header button{
+    background:#1976d2;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.table-header button:hover{
+    background:#0d47a1;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th{
+    background:#1976d2;
+    color:white;
+    padding:15px;
+}
+
+table td{
+    padding:15px;
+    text-align:center;
+    border-bottom:1px solid #ddd;
+}
+
+table tr:hover{
+    background:#f4f7fc;
+}
+
+.present-text{
+    background:#4CAF50;
+    color:white;
+    padding:6px 12px;
+    border-radius:20px;
+}
+
+.absent-text{
+    background:#F44336;
+    color:white;
+    padding:6px 12px;
+    border-radius:20px;
+}

@@ -1,0 +1,80 @@
+.settings-page{
+    padding:30px;
+}
+
+.settings-page h1{
+    color:#0d47a1;
+    margin-bottom:30px;
+}
+
+.settings-card{
+    width:450px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 5px 10px rgba(0,0,0,.1);
+    text-align:center;
+}
+
+.profile-image{
+    width:100px;
+    height:100px;
+    background:#1976d2;
+    color:white;
+    border-radius:50%;
+    margin:auto;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:45px;
+}
+
+.settings-card h2{
+    margin-top:15px;
+}
+
+.settings-card p{
+    color:gray;
+    margin-bottom:20px;
+}
+
+.settings-card hr{
+    margin:20px 0;
+}
+
+.settings-card label{
+    display:block;
+    text-align:left;
+    margin-bottom:10px;
+    font-weight:bold;
+}
+
+.settings-card input{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+.save-btn{
+    width:100%;
+    padding:12px;
+    background:#1976d2;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.logout-btn{
+    width:100%;
+    padding:12px;
+    background:#d32f2f;
+    color:white;
+    border:none;
+    border-radius:8px;
+    margin-top:15px;
+    cursor:pointer;
+}
