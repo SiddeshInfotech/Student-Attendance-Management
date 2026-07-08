@@ -1,65 +1,89 @@
 import "../styles/Login.css";
+import { FaUserGraduate, FaEnvelope, FaLock } from "react-icons/fa";
 
 function Login({ goToSignup, goToForgot, goToDashboard }) {
   return (
     <div className="login-container">
-      <div className="login-card">
 
-        <div className="logo">🎓</div>
+      {/* Left Side */}
+      <div className="left-panel">
+        <div className="overlay">
+          <div className="brand">
+            <FaUserGraduate className="brand-icon" />
 
-        <h1 className="title">Student Attendance</h1>
-        <h2 className="subtitle">Management System</h2>
+            <h1>Student Attendance</h1>
 
-        <h3 className="heading">Admin Login</h3>
+            <h2>Management System</h2>
 
-        <input
-          type="email"
-          placeholder="Enter Email"
-        />
+            <p>
+              Smart attendance tracking platform for colleges and universities.
+              Manage students, monitor attendance and generate reports from one dashboard.
+            </p>
+          </div>
+        </div>
+      </div>
 
-        <input
-          type="password"
-          placeholder="Enter Password"
-        />
+      {/* Right Side */}
 
-        <div className="options">
-          <label className="remember">
-            <input type="checkbox" />
-            <span>Remember Me</span>
-          </label>
+      <div className="right-panel">
 
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              goToForgot();
-            }}
+        <div className="login-card">
+
+          <h3>Welcome Back 👋</h3>
+
+          <span>Admin Login</span>
+
+          <div className="input-box">
+            <FaEnvelope />
+            <input type="email" placeholder="Email Address" />
+          </div>
+
+          <div className="input-box">
+            <FaLock />
+            <input type="password" placeholder="Password" />
+          </div>
+
+          <div className="options">
+            <label>
+              <input type="checkbox" />
+              Remember Me
+            </label>
+
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                goToForgot();
+              }}
+            >
+              Forgot Password?
+            </a>
+          </div>
+
+          <button
+            className="login-btn"
+            onClick={goToDashboard}
           >
-            Forgot Password?
-          </a>
+            Login
+          </button>
+
+          <p className="signup-text">
+            Don't have an account?
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                goToSignup();
+              }}
+            >
+              Sign Up
+            </a>
+          </p>
+
         </div>
 
-        <button
-          className="login-btn"
-          onClick={goToDashboard}
-        >
-          Login
-        </button>
-
-        <p className="signup-text">
-          Don't have an account?
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              goToSignup();
-            }}
-          >
-            {" "}Sign Up
-          </a>
-        </p>
-
       </div>
+
     </div>
   );
 }

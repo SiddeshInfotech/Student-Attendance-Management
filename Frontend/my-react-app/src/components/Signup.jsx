@@ -1,60 +1,105 @@
 import "../styles/Signup.css";
+import {
+  FaUserGraduate,
+  FaUser,
+  FaEnvelope,
+  FaLock
+} from "react-icons/fa";
 
 function Signup({ goToLogin }) {
   return (
     <div className="signup-container">
-      <div className="signup-card">
 
-        <div className="logo">🎓</div>
+      {/* Left Panel */}
 
-        <h1 className="title">Student Attendance</h1>
-        <h2 className="subtitle">Management System</h2>
+      <div className="left-panel">
 
-        <h3 className="heading">Admin Sign Up</h3>
+        <div className="overlay">
 
-        <input
-          type="text"
-          placeholder="Enter Full Name"
-          className="input-box"
-        />
+          <div className="brand">
 
-        <input
-          type="email"
-          placeholder="Enter Email"
-          className="input-box"
-        />
+            <FaUserGraduate className="brand-icon" />
 
-        <input
-          type="password"
-          placeholder="Enter Password"
-          className="input-box"
-        />
+            <h1>Student Attendance</h1>
 
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          className="input-box"
-        />
+            <h2>Management System</h2>
 
-        <button className="signup-btn">
-          Sign Up
-        </button>
+            <p>
+              Create your administrator account and securely manage students,
+              attendance records and reports from one powerful dashboard.
+            </p>
 
-        <p className="bottom-text">
-          Already have an account?
+          </div>
 
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              goToLogin();
-            }}
-          >
-            {" "}Login
-          </a>
-        </p>
+        </div>
 
       </div>
+
+      {/* Right Panel */}
+
+      <div className="right-panel">
+
+        <div className="signup-card">
+
+          <h3>Create Account</h3>
+
+          <span>Admin Signup</span>
+
+          <div className="input-group">
+            <FaUser />
+            <input
+              type="text"
+              placeholder="Full Name"
+            />
+          </div>
+
+          <div className="input-group">
+            <FaEnvelope />
+            <input
+              type="email"
+              placeholder="Email Address"
+            />
+          </div>
+
+          <div className="input-group">
+            <FaLock />
+            <input
+              type="password"
+              placeholder="Password"
+            />
+          </div>
+
+          <div className="input-group">
+            <FaLock />
+            <input
+              type="password"
+              placeholder="Confirm Password"
+            />
+          </div>
+
+          <button className="signup-btn">
+            Sign Up
+          </button>
+
+          <p className="bottom-text">
+            Already have an account?
+
+            <a
+              href="#"
+              onClick={(e)=>{
+                e.preventDefault();
+                goToLogin();
+              }}
+            >
+              Login
+            </a>
+
+          </p>
+
+        </div>
+
+      </div>
+
     </div>
   );
 }

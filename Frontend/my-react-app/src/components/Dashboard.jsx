@@ -6,285 +6,429 @@ import Attendance from "./Attendance";
 import Reports from "./Reports";
 import Settings from "./Settings";
 
-function Dashboard({
-  logout,
-  goToStudents,
-  goToAttendance,
-  goToReports,
-  goToSettings,
-}) {
+import {
+  FaUserGraduate,
+  FaUsers,
+  FaClipboardCheck,
+  FaChartLine,
+  FaCog,
+  FaSignOutAlt,
+  FaSearch,
+  FaBell,
+  FaUserCircle,
+  FaUserCheck,
+  FaUserTimes,
+  FaChalkboardTeacher,
+  FaArrowUp
+} from "react-icons/fa";
+
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid
+} from "recharts";
+
+function Dashboard({ logout }) {
+
+  const [activePage, setActivePage] = useState("dashboard");
+
+  const attendanceData = [
+    { name: "Mon", present: 80 },
+    { name: "Tue", present: 95 },
+    { name: "Wed", present: 70 },
+    { name: "Thu", present: 90 },
+    { name: "Fri", present: 85 },
+  ];
+
   return (
-    <div className="dashboard">
 
-      {/* Sidebar */}
-      <div className="sidebar">
+<div className="dashboard">
 
-        <div className="logo">
-          🎓 <span>SAMS</span>
-        </div>
+{/* ================= SIDEBAR ================= */}
 
-        <ul>
-          <li className="active">🏠 Dashboard</li>
+<div className="sidebar">
 
-          <li onClick={goToStudents}>
-            👨‍🎓 Students
-          </li>
+<div className="logo">
 
-          <li onClick={goToAttendance}>
-            📅 Attendance
-          </li>
+<div className="logo-icon">
+<FaUserGraduate />
+</div>
 
-          <li onClick={goToReports}>
-            📊 Reports
-          </li>
+<div>
+<h2>SAMS</h2>
+<p>Admin Panel</p>
+</div>
 
-          <li onClick={goToSettings}>
-            ⚙️ Settings
-          </li>
+</div>
 
-          <li className="logout" onClick={logout}>
-            🚪 Logout
-          </li>
+<ul>
 
-        </ul>
+<li
+className={activePage==="dashboard" ? "active" : ""}
+onClick={()=>setActivePage("dashboard")}
+>
+<FaChartLine />
+<span>Dashboard</span>
+</li>
 
-      </div>
+<li
+className={activePage==="students" ? "active" : ""}
+onClick={()=>setActivePage("students")}
+>
+<FaUsers />
+<span>Students</span>
+</li>
 
-      {/* Main */}
+<li
+className={activePage==="attendance" ? "active" : ""}
+onClick={()=>setActivePage("attendance")}
+>
+<FaClipboardCheck />
+<span>Attendance</span>
+</li>
 
-      <div className="main">
+<li
+className={activePage==="reports" ? "active" : ""}
+onClick={()=>setActivePage("reports")}
+>
+<FaChartLine />
+<span>Reports</span>
+</li>
 
-        {/* Navbar */}
+<li
+className={activePage==="settings" ? "active" : ""}
+onClick={()=>setActivePage("settings")}
+>
+<FaCog />
+<span>Settings</span>
+</li>
 
-        <div className="navbar">
+<li
+className="logout"
+onClick={logout}
+>
+<FaSignOutAlt />
+<span>Logout</span>
+</li>
 
-          <div>
-            <h2>Student Attendance Management System</h2>
-            <p>Welcome Back, Admin 👋</p>
-          </div>
+</ul>
 
-          <div className="nav-right">
+</div>
 
-            <input
-              type="text"
-              placeholder="Search..."
-            />
+{/* ================= MAIN ================= */}
 
-            <span className="icon">🔔</span>
+<div className="main">
 
-            <div className="profile">
+{/* NAVBAR */}
 
-              <div className="avatar">
-                👤
-              </div>
+<div className="navbar">
 
-              <div>
-                <h4>Admin</h4>
-                <small>Administrator</small>
-              </div>
+<div>
 
-            </div>
+<h2>Student Attendance Management System</h2>
 
-          </div>
+<p>
+Welcome back, Admin 👋
+</p>
 
-        </div>
+</div>
 
-        {/* Cards */}
+<div className="nav-right">
 
-        <div className="cards">
+<div className="search-box">
 
-          <div className="card students">
+<FaSearch />
 
-            <div className="card-icon">
-              👨‍🎓
-            </div>
+<input
+type="text"
+placeholder="Search students..."
+/>
 
-            <h3>Total Students</h3>
+</div>
 
-            <h1>250</h1>
+<div className="notification">
 
-            <p>+10 New Students</p>
+<FaBell />
 
-          </div>
+<span>3</span>
 
-          <div className="card present">
+</div>
 
-            <div className="card-icon">
-              ✅
-            </div>
+<div className="profile">
 
-            <h3>Present Today</h3>
+<div className="avatar">
+<FaUserCircle />
+</div>
 
-            <h1>220</h1>
+<div>
+<h4>Admin</h4>
+<small>Administrator</small>
+</div>
 
-            <p>88% Attendance</p>
+</div>
 
-          </div>
+</div>
 
-          <div className="card absent">
+</div>
 
-            <div className="card-icon">
-              ❌
-            </div>
+{/* ================= PAGE CONTENT ================= */}
 
-            <h3>Absent Today</h3>
+{activePage === "dashboard" && (
+<>
+{/* ================= DASHBOARD HOME ================= */}
 
-            <h1>30</h1>
+<div className="cards">
 
-            <p>12% Absent</p>
+  <div className="dashboard-card blue">
 
-          </div>
+    <div className="card-top">
 
-          <div className="card teachers">
+      <h3>
+        <FaUsers />
+        Total Students
+      </h3>
 
-            <div className="card-icon">
-              👨‍🏫
-            </div>
-
-            <h3>Total Teachers</h3>
-
-            <h1>18</h1>
-
-            <p>Active Faculty</p>
-
-          </div>
-
-        </div>
-
-        {/* Table */}
-
-        <div className="table-box">
-
-          <div className="table-header">
-
-            <h2>Recent Attendance</h2>
-
-            <button>View All</button>
-
-          </div>
-
-          <table>
-
-            <thead>
-
-              <tr>
-
-                <th>Roll No</th>
-
-                <th>Name</th>
-
-                <th>Class</th>
-
-                <th>Date</th>
-
-                <th>Status</th>
-
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              <tr>
-
-                <td>101</td>
-
-                <td>Rahul Sharma</td>
-
-                <td>BCA-I</td>
-
-                <td>06/07/2026</td>
-
-                <td>
-                  <span className="present-text">
-                    Present
-                  </span>
-                </td>
-
-              </tr>
-
-              <tr>
-
-                <td>102</td>
-
-                <td>Priya Patil</td>
-
-                <td>BCA-II</td>
-
-                <td>06/07/2026</td>
-
-                <td>
-                  <span className="absent-text">
-                    Absent
-                  </span>
-                </td>
-
-              </tr>
-
-              <tr>
-
-                <td>103</td>
-
-                <td>Amit Verma</td>
-
-                <td>BCA-III</td>
-
-                <td>06/07/2026</td>
-
-                <td>
-                  <span className="present-text">
-                    Present
-                  </span>
-                </td>
-
-              </tr>
-
-              <tr>
-
-                <td>104</td>
-
-                <td>Sneha Gupta</td>
-
-                <td>BCA-II</td>
-
-                <td>06/07/2026</td>
-
-                <td>
-                  <span className="present-text">
-                    Present
-                  </span>
-                </td>
-
-              </tr>
-
-              <tr>
-
-                <td>105</td>
-
-                <td>Rohit Patil</td>
-
-                <td>BCA-I</td>
-
-                <td>06/07/2026</td>
-
-                <td>
-                  <span className="absent-text">
-                    Absent
-                  </span>
-                </td>
-
-              </tr>
-
-            </tbody>
-
-          </table>
-
-        </div>
-
+      <div className="circle">
+        <FaArrowUp />
       </div>
 
     </div>
-  );
+
+    <h1>250</h1>
+
+    <p>+10 New Students This Month</p>
+
+  </div>
+
+  <div className="dashboard-card green">
+
+    <div className="card-top">
+
+      <h3>
+        <FaUserCheck />
+        Present Today
+      </h3>
+
+      <div className="circle">
+        <FaArrowUp />
+      </div>
+
+    </div>
+
+    <h1>220</h1>
+
+    <p>88% Attendance Rate</p>
+
+  </div>
+
+  <div className="dashboard-card red">
+
+    <div className="card-top">
+
+      <h3>
+        <FaUserTimes />
+        Absent Today
+      </h3>
+
+      <div className="circle">
+        <FaArrowUp />
+      </div>
+
+    </div>
+
+    <h1>30</h1>
+
+    <p>12% Students Absent</p>
+
+  </div>
+
+  <div className="dashboard-card orange">
+
+    <div className="card-top">
+
+      <h3>
+        <FaChalkboardTeacher />
+        Total Classes
+      </h3>
+
+      <div className="circle">
+        <FaArrowUp />
+      </div>
+
+    </div>
+
+    <h1>18</h1>
+
+    <p>Running Successfully</p>
+
+  </div>
+
+</div>
+
+{/* ANALYTICS */}
+
+<div className="analytics">
+
+  <div className="chart-box">
+
+    <h2>Weekly Attendance Report</h2>
+
+    <ResponsiveContainer width="100%" height={300}>
+
+      <BarChart data={attendanceData}>
+
+        <CartesianGrid strokeDasharray="3 3"/>
+
+        <XAxis dataKey="name"/>
+
+        <YAxis/>
+
+        <Tooltip/>
+
+        <Bar
+          dataKey="present"
+          fill="#2563eb"
+          radius={[8,8,0,0]}
+        />
+
+      </BarChart>
+
+    </ResponsiveContainer>
+
+  </div>
+
+  <div className="overview">
+
+    <h2>Quick Overview</h2>
+
+    <div className="overview-item">
+      <span>📚 Total Courses</span>
+      <strong>12</strong>
+    </div>
+
+    <div className="overview-item">
+      <span>👨‍🏫 Faculty Members</span>
+      <strong>18</strong>
+    </div>
+
+    <div className="overview-item">
+      <span>📝 Today's Classes</span>
+      <strong>24</strong>
+    </div>
+
+    <div className="overview-item">
+      <span>📅 Attendance Rate</span>
+      <strong>88%</strong>
+    </div>
+
+    <div className="overview-item">
+      <span>🏆 Best Class</span>
+      <strong>BCA-II</strong>
+    </div>
+
+  </div>
+
+</div>
+
+{/* TABLE */}
+
+<div className="table-box">
+
+<div className="table-header">
+
+<h2>Recent Attendance</h2>
+
+<button>View All</button>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Roll No</th>
+<th>Name</th>
+<th>Class</th>
+<th>Date</th>
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+<td>101</td>
+<td>Rahul Sharma</td>
+<td>BCA-I</td>
+<td>08/07/2026</td>
+<td><span className="present-text">Present</span></td>
+</tr>
+
+<tr>
+<td>102</td>
+<td>Priya Patil</td>
+<td>BCA-II</td>
+<td>08/07/2026</td>
+<td><span className="absent-text">Absent</span></td>
+</tr>
+
+<tr>
+<td>103</td>
+<td>Amit Verma</td>
+<td>BCA-III</td>
+<td>08/07/2026</td>
+<td><span className="present-text">Present</span></td>
+</tr>
+
+<tr>
+<td>104</td>
+<td>Sneha Gupta</td>
+<td>BCA-II</td>
+<td>08/07/2026</td>
+<td><span className="present-text">Present</span></td>
+</tr>
+
+<tr>
+<td>105</td>
+<td>Rohit Patil</td>
+<td>BCA-I</td>
+<td>08/07/2026</td>
+<td><span className="absent-text">Absent</span></td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</>
+)}
+
+{/* ================= OTHER PAGES ================= */}
+
+{activePage === "students" && <Students />}
+
+{activePage === "attendance" && <Attendance />}
+
+{activePage === "reports" && <Reports />}
+
+{activePage === "settings" && <Settings />}
+
+</div>
+
+</div>
+
+);
+
 }
 
 export default Dashboard;

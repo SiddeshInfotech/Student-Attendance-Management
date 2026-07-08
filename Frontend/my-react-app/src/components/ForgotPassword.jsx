@@ -1,46 +1,82 @@
 import "../styles/ForgotPassword.css";
+import { FaUserGraduate, FaEnvelope } from "react-icons/fa";
 
 function ForgotPassword({ goToLogin }) {
   return (
     <div className="forgot-container">
-      <div className="forgot-card">
 
-        <div className="logo">🎓</div>
+      {/* Left Panel */}
 
-        <h1 className="title">Student Attendance</h1>
-        <h2 className="subtitle">Management System</h2>
+      <div className="left-panel">
 
-        <h3 className="heading">Forgot Password</h3>
+        <div className="overlay">
 
-        <p className="info">
-          Enter your registered email address to reset your password.
-        </p>
+          <div className="brand">
 
-        <input
-          type="email"
-          placeholder="Enter Registered Email"
-          className="input-box"
-        />
+            <FaUserGraduate className="brand-icon" />
 
-        <button className="reset-btn">
-          Reset Password
-        </button>
+            <h1>Student Attendance</h1>
 
-        <p className="bottom-text">
-          Remember your password?
+            <h2>Management System</h2>
 
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              goToLogin();
-            }}
-          >
-            {" "}Login
-          </a>
-        </p>
+            <p>
+              Forgot your password? Don't worry. Enter your registered email
+              address and we'll help you reset your password securely.
+            </p>
+
+          </div>
+
+        </div>
 
       </div>
+
+      {/* Right Panel */}
+
+      <div className="right-panel">
+
+        <div className="forgot-card">
+
+          <h3>Reset Password</h3>
+
+          <span>Recover your account</span>
+
+          <div className="input-group">
+
+            <FaEnvelope />
+
+            <input
+              type="email"
+              placeholder="Registered Email Address"
+            />
+
+          </div>
+
+          <button className="reset-btn">
+
+            Send Reset Link
+
+          </button>
+
+          <p className="bottom-text">
+
+            Remember your password?
+
+            <a
+              href="#"
+              onClick={(e)=>{
+                e.preventDefault();
+                goToLogin();
+              }}
+            >
+              Login
+            </a>
+
+          </p>
+
+        </div>
+
+      </div>
+
     </div>
   );
 }

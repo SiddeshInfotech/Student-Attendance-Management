@@ -5,7 +5,7 @@ function Attendance() {
     <div className="attendance-page">
 
       <div className="attendance-header">
-        <h1>Attendance Management</h1>
+        <h1>Attendance  Management</h1>
 
         <button>Save Attendance</button>
       </div>
