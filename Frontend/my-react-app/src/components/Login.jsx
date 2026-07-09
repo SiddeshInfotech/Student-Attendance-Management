@@ -1,52 +1,108 @@
 import "../styles/Login.css";
-import { FaUserGraduate, FaEnvelope, FaLock } from "react-icons/fa";
+import StudentImage from "../assets/images/student-login.png";
 
-function Login({ goToSignup, goToForgot, goToDashboard }) {
+import {
+  FaEnvelope,
+  FaLock
+} from "react-icons/fa";
+
+function Login({
+  goToSignup,
+  goToForgot,
+  goToDashboard,
+}) {
+
   return (
+
     <div className="login-container">
 
-      {/* Left Side */}
+      {/* ================= LEFT PANEL ================= */}
+
       <div className="left-panel">
+
         <div className="overlay">
+
           <div className="brand">
-            <FaUserGraduate className="brand-icon" />
 
-            <h1>Student Attendance</h1>
+            {/* Student Image */}
 
-            <h2>Management System</h2>
+            <img
+              src={StudentImage}
+              alt="Student"
+              className="student-image"
+            />
+
+            <h1>
+              Student Attendance
+            </h1>
+
+            <h2>
+              Management System
+            </h2>
+
+            <div className="line"></div>
 
             <p>
               Smart attendance tracking platform for colleges and universities.
               Manage students, monitor attendance and generate reports from one dashboard.
             </p>
+
           </div>
+
         </div>
+
       </div>
 
-      {/* Right Side */}
+      {/* ================= RIGHT PANEL ================= */}
 
       <div className="right-panel">
 
         <div className="login-card">
 
-          <h3>Welcome Back 👋</h3>
+          <h3>
+            Welcome Back 👋
+          </h3>
 
-          <span>Admin Login</span>
+          <span>
+            Admin Login
+          </span>
+
+          {/* Email */}
 
           <div className="input-box">
+
             <FaEnvelope />
-            <input type="email" placeholder="Email Address" />
+
+            <input
+              type="email"
+              placeholder="Email Address"
+            />
+
           </div>
 
+          {/* Password */}
+
           <div className="input-box">
+
             <FaLock />
-            <input type="password" placeholder="Password" />
+
+            <input
+              type="password"
+              placeholder="Password"
+            />
+
           </div>
+
+          {/* Options */}
 
           <div className="options">
+
             <label>
+
               <input type="checkbox" />
+
               Remember Me
+
             </label>
 
             <a
@@ -58,7 +114,10 @@ function Login({ goToSignup, goToForgot, goToDashboard }) {
             >
               Forgot Password?
             </a>
+
           </div>
+
+          {/* Login */}
 
           <button
             className="login-btn"
@@ -67,8 +126,12 @@ function Login({ goToSignup, goToForgot, goToDashboard }) {
             Login
           </button>
 
+          {/* Signup */}
+
           <p className="signup-text">
+
             Don't have an account?
+
             <a
               href="#"
               onClick={(e) => {
@@ -78,6 +141,7 @@ function Login({ goToSignup, goToForgot, goToDashboard }) {
             >
               Sign Up
             </a>
+
           </p>
 
         </div>
@@ -85,7 +149,9 @@ function Login({ goToSignup, goToForgot, goToDashboard }) {
       </div>
 
     </div>
+
   );
+
 }
 
 export default Login;

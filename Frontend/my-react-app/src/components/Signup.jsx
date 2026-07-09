@@ -1,4 +1,5 @@
 import "../styles/Signup.css";
+import StudentImage from "../assets/images/student-login.png";
 import {
   FaUserGraduate,
   FaUser,
@@ -18,7 +19,13 @@ function Signup({ goToLogin }) {
 
           <div className="brand">
 
-            <FaUserGraduate className="brand-icon" />
+            {/* Student Image */}
+            
+            <img
+              src={StudentImage}
+              alt="Student"
+              className="student-image"
+            />
 
             <h1>Student Attendance</h1>
 

@@ -1,5 +1,7 @@
 import "../styles/ForgotPassword.css";
-import { FaUserGraduate, FaEnvelope } from "react-icons/fa";
+import StudentImage from "../assets/images/student-login.png";
+
+import { FaEnvelope } from "react-icons/fa";
 
 function ForgotPassword({ goToLogin }) {
   return (
@@ -13,7 +15,12 @@ function ForgotPassword({ goToLogin }) {
 
           <div className="brand">
 
-            <FaUserGraduate className="brand-icon" />
+            {/* Student Image */}
+            <img
+              src={StudentImage}
+              alt="Student"
+              className="student-image"
+            />
 
             <h1>Student Attendance</h1>
 
@@ -52,9 +59,7 @@ function ForgotPassword({ goToLogin }) {
           </div>
 
           <button className="reset-btn">
-
             Send Reset Link
-
           </button>
 
           <p className="bottom-text">
@@ -63,7 +68,7 @@ function ForgotPassword({ goToLogin }) {
 
             <a
               href="#"
-              onClick={(e)=>{
+              onClick={(e) => {
                 e.preventDefault();
                 goToLogin();
               }}

@@ -14,7 +14,7 @@ body{
 .dashboard{
     display:flex;
     min-height:100vh;
-    background:linear-gradient(180deg,#eaecf1);
+    background:#eef2ff;
 }
 
 /* =========================
@@ -578,7 +578,7 @@ tbody td{
 }
 
 .table-box::-webkit-scrollbar-track{
-    background:#e2e8f0;
+    background:#f6f7f8;
     border-radius:10px;
 }
 
