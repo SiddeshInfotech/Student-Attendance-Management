@@ -95,16 +95,21 @@ input[type="radio"]{
     justify-content:space-between;
     align-items:center;
     background:#fff;
-    padding:25px;
+    padding:25px 35px;
     border-radius:18px;
     box-shadow:0 4px 15px rgba(0,0,0,.1);
+}
+
+.welcome-left{
+    flex:1;
 }
 
 .welcome-left h1{
     font-size:28px;
     margin:0;
     color:#111;
-}
+    white-space:nowrap;
+    }
 
 .welcome-left p{
     margin-top:10px;
@@ -115,7 +120,8 @@ input[type="radio"]{
     display:flex;
     align-items:center;
     gap:20px;
-}
+    flex-shrink:0;
+    }
 
 .top-search{
     padding:12px;
