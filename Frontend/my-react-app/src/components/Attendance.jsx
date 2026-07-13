@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import "../styles/Attendance.css";
 
 function Attendance() {
-
   const [search, setSearch] = useState("");
 
   const [students, setStudents] = useState(() => {
@@ -39,53 +38,43 @@ function Attendance() {
 
   return (
     <div className="attendance-page">
+
       <div className="top-section">
+        <div className="welcome-card">
 
-  <div className="welcome-card">
+          <div className="welcome-left">
+            <h1>Student Attendance Management System</h1>
+            <p>Welcome back, Admin 👋</p>
 
-    <div className="welcome-left">
-      <h1>Student Attendance Management System</h1>
-      <p>Welcome back, Admin 👋</p>
-    </div>
+            <input
+              type="text"
+              placeholder="Search Student Name"
+              className="search-box"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
 
-    <div className="welcome-right">
+          <div className="welcome-right">
 
-      <input
-        type="text"
-        placeholder="Search students..."
-        className="top-search"
-      />
+            <div className="bell-icon">
+              🔔
+              <span className="badge">3</span>
+            </div>
 
-      <div className="bell-icon">
-        🔔
-        <span className="badge">3</span>
-      </div>
+            <div className="admin-profile">
+              <div className="profile-icon">👤</div>
 
-      <div className="admin-profile">
-        <div className="profile-icon">👤</div>
-        <div>
-          <h4>Admin</h4>
-          <p>Administrator</p>
+              <div>
+                <h4>Admin</h4>
+                <p>Administrator</p>
+              </div>
+            </div>
+
+          </div>
+
         </div>
       </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-      <h1 className="main-title">
-        Student Attendance Management System
-      </h1>
-
-      <input
-        type="text"
-        placeholder="Search Student Name"
-        className="search-box"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
 
       <div className="attendance-header">
 
@@ -98,9 +87,7 @@ function Attendance() {
         </button>
 
       </div>
-
       <table>
-
         <thead>
           <tr>
             <th>Roll No</th>
@@ -112,14 +99,11 @@ function Attendance() {
         </thead>
 
         <tbody>
-
           {filteredStudents.map((student) => (
             <tr key={student.roll}>
 
               <td>{student.roll}</td>
-
               <td>{student.name}</td>
-
               <td>{student.class}</td>
 
               <td>
@@ -146,9 +130,7 @@ function Attendance() {
 
             </tr>
           ))}
-
         </tbody>
-
       </table>
 
     </div>
