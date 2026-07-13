@@ -39,6 +39,41 @@ function Attendance() {
 
   return (
     <div className="attendance-page">
+      <div className="top-section">
+
+  <div className="welcome-card">
+
+    <div className="welcome-left">
+      <h1>Student Attendance Management System</h1>
+      <p>Welcome back, Admin 👋</p>
+    </div>
+
+    <div className="welcome-right">
+
+      <input
+        type="text"
+        placeholder="Search students..."
+        className="top-search"
+      />
+
+      <div className="bell-icon">
+        🔔
+        <span className="badge">3</span>
+      </div>
+
+      <div className="admin-profile">
+        <div className="profile-icon">👤</div>
+        <div>
+          <h4>Admin</h4>
+          <p>Administrator</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
       <h1 className="main-title">
         Student Attendance Management System
