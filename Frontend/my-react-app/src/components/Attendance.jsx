@@ -1,19 +1,72 @@
+import { useState, useEffect } from "react";
 import "../styles/Attendance.css";
 
 function Attendance() {
+
+  const [search, setSearch] = useState("");
+
+  const [students, setStudents] = useState(() => {
+    const saved = localStorage.getItem("attendanceData");
+
+    return saved
+      ? JSON.parse(saved)
+      : [
+          { roll: 101, name: "Hemangi Suryawanshi", class: "BCA-I", status: "" },
+          { roll: 102, name: "Rani Patil", class: "BCA-II", status: "" },
+          { roll: 103, name: "Amit Verma", class: "BCA-III", status: "" },
+          { roll: 104, name: "Sneha Patil", class: "BCA-I", status: "" },
+          { roll: 105, name: "Rohit Patil", class: "BCA-II", status: "" }
+        ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("attendanceData", JSON.stringify(students));
+  }, [students]);
+
+  const handleAttendance = (roll, value) => {
+    setStudents(
+      students.map((student) =>
+        student.roll === roll
+          ? { ...student, status: value }
+          : student
+      )
+    );
+  };
+
+  const filteredStudents = students.filter((student) =>
+    student.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="attendance-page">
 
-      <div className="attendance-header">
-        <h1>Attendance  Management</h1>
+      <h1 className="main-title">
+        Student Attendance Management System
+      </h1>
 
-        <button>Save Attendance</button>
+      <input
+        type="text"
+        placeholder="Search Student Name"
+        className="search-box"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      <div className="attendance-header">
+
+        <h2>Attendance Management</h2>
+
+        <button
+          onClick={() => alert("Attendance Saved Successfully")}
+        >
+          Save Attendance
+        </button>
+
       </div>
 
       <table>
 
         <thead>
-
           <tr>
             <th>Roll No</th>
             <th>Name</th>
@@ -21,34 +74,43 @@ function Attendance() {
             <th>Present</th>
             <th>Absent</th>
           </tr>
-
         </thead>
 
         <tbody>
 
-          <tr>
-            <td>101</td>
-            <td>Rahul Sharma</td>
-            <td>BCA-I</td>
-            <td><input type="radio" name="101" /></td>
-            <td><input type="radio" name="101" /></td>
-          </tr>
+          {filteredStudents.map((student) => (
+            <tr key={student.roll}>
 
-          <tr>
-            <td>102</td>
-            <td>Priya Patil</td>
-            <td>BCA-II</td>
-            <td><input type="radio" name="102" /></td>
-            <td><input type="radio" name="102" /></td>
-          </tr>
+              <td>{student.roll}</td>
 
-          <tr>
-            <td>103</td>
-            <td>Amit Verma</td>
-            <td>BCA-III</td>
-            <td><input type="radio" name="103" /></td>
-            <td><input type="radio" name="103" /></td>
-          </tr>
+              <td>{student.name}</td>
+
+              <td>{student.class}</td>
+
+              <td>
+                <input
+                  type="radio"
+                  name={student.roll}
+                  checked={student.status === "Present"}
+                  onChange={() =>
+                    handleAttendance(student.roll, "Present")
+                  }
+                />
+              </td>
+
+              <td>
+                <input
+                  type="radio"
+                  name={student.roll}
+                  checked={student.status === "Absent"}
+                  onChange={() =>
+                    handleAttendance(student.roll, "Absent")
+                  }
+                />
+              </td>
+
+            </tr>
+          ))}
 
         </tbody>
 
