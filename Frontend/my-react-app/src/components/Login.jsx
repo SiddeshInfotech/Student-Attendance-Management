@@ -1,157 +1,105 @@
-import "../styles/Login.css";
-import StudentImage from "../assets/images/student-login.png";
-
 import {
   FaEnvelope,
-  FaLock
+  FaLock,
 } from "react-icons/fa";
 
-function Login({
-  goToSignup,
-  goToForgot,
-  goToDashboard,
-}) {
+import "../styles/Login.css";
+
+function Login({ setPage }) {
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    // Temporary Login
+    setPage("dashboard");
+  };
 
   return (
+    <div className="login-page">
 
-    <div className="login-container">
+      <div className="top-heading">
+        <h1>Student Attendance</h1>
+        <p>Management System</p>
+      </div>
 
-      {/* ================= LEFT PANEL ================= */}
+      <div className="login-card">
 
-      <div className="left-panel">
+        <h2>Welcome Back</h2>
 
-        <div className="overlay">
+        <p className="subtitle">
+          Sign in to your admin account
+        </p>
 
-          <div className="brand">
+        {/* Email */}
+        <div className="input-box">
+          <FaEnvelope className="input-icon" />
+          <input
+            type="email"
+            placeholder="Email Address"
+            required
+          />
+        </div>
 
-            {/* Student Image */}
+        {/* Password */}
+        <div className="input-box">
+          <FaLock className="input-icon" />
+          <input
+            type="password"
+            placeholder="Password"
+            required
+          />
+        </div>
 
-            <img
-              src={StudentImage}
-              alt="Student"
-              className="student-image"
-            />
+        <div className="options">
 
-            <h1>
-              Student Attendance
-            </h1>
+          <label className="remember">
+            <input type="checkbox" />
+            <span>Remember Me</span>
+          </label>
 
-            <h2>
-              Management System
-            </h2>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              setPage("forgot");
+            }}
+          >
+            Forgot Password?
+          </a>
 
-            <div className="line"></div>
+        </div>
 
-            <p>
-              Smart attendance tracking platform for colleges and universities.
-              Manage students, monitor attendance and generate reports from one dashboard.
-            </p>
+        {/* Login Button */}
+        <button
+          className="login-btn"
+          onClick={handleLogin}
+        >
+          Login
+        </button>
 
-          </div>
+        <div className="signup-text">
+          Don't have an account?{" "}
+
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              setPage("signup");
+            }}
+          >
+            Sign Up
+          </a>
 
         </div>
 
       </div>
 
-      {/* ================= RIGHT PANEL ================= */}
-
-      <div className="right-panel">
-
-        <div className="login-card">
-
-          <h3>
-            Welcome Back 👋
-          </h3>
-
-          <span>
-            Admin Login
-          </span>
-
-          {/* Email */}
-
-          <div className="input-box">
-
-            <FaEnvelope />
-
-            <input
-              type="email"
-              placeholder="Email Address"
-            />
-
-          </div>
-
-          {/* Password */}
-
-          <div className="input-box">
-
-            <FaLock />
-
-            <input
-              type="password"
-              placeholder="Password"
-            />
-
-          </div>
-
-          {/* Options */}
-
-          <div className="options">
-
-            <label>
-
-              <input type="checkbox" />
-
-              Remember Me
-
-            </label>
-
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                goToForgot();
-              }}
-            >
-              Forgot Password?
-            </a>
-
-          </div>
-
-          {/* Login */}
-
-          <button
-            className="login-btn"
-            onClick={goToDashboard}
-          >
-            Login
-          </button>
-
-          {/* Signup */}
-
-          <p className="signup-text">
-
-            Don't have an account?
-
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                goToSignup();
-              }}
-            >
-              Sign Up
-            </a>
-
-          </p>
-
-        </div>
-
+      <div className="footer">
+        © 2024 Attendance System. Designed for Education.
       </div>
 
     </div>
-
   );
-
 }
 
 export default Login;

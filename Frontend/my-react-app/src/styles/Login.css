@@ -1,388 +1,293 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:"Poppins",sans-serif;
+    font-family:"Inter",sans-serif;
 }
 
-html,
 body{
-    width:100%;
-    height:100%;
-    margin:0;
-    padding:0;
+    background:#f8f9fb;
     overflow-x:hidden;
-    overflow-y:auto;
 }
 
-body{
-    background:#0f172a;
-}
-
-.login-container{
-    width:100%;
-    height:100vh;
+.login-page{
+    min-height:100vh;
     display:flex;
-    overflow:hidden;
-    position:relative;
-    background:linear-gradient(135deg,#08142f,#153b9b,#2563eb);
-}
-
-/* =========================
-   BACKGROUND CIRCLES
-========================= */
-
-.login-container::before{
-    content:"";
-    position:absolute;
-    width:350px;
-    height:350px;
-    border-radius:50%;
-    background:rgba(255,255,255,.05);
-    top:-120px;
-    left:-120px;
-}
-
-.login-container::after{
-    content:"";
-    position:absolute;
-    width:280px;
-    height:280px;
-    border-radius:50%;
-    background:rgba(255,255,255,.05);
-    bottom:-80px;
-    left:35%;
-}
-
-/* =========================
-   LEFT PANEL
-========================= */
-
-.left-panel{
-    width:55%;
-    display:flex;
-    justify-content:center;
+    flex-direction:column;
     align-items:center;
-    padding:50px;
-    position:relative;
-    z-index:2;
+    justify-content:center;
+    padding:40px 20px;
 }
 
-.overlay{
-    width:100%;
-    max-width:620px;
+.top-heading{
+    text-align:center;
+    margin-bottom:45px;
 }
 
-.brand{
-    color:#fff;
-    text-align:left;
-}
-
-/* =========================
-   STUDENT IMAGE
-========================= */
-
-.student-image{
-    width:500px;
-    max-width:100%;
-    height:auto;
-    display:block;
-    margin:0 auto 20px;
-    animation:none !important;
-    transform:none !important;
-}
-
-@keyframes float{
-    0%{
-        transform:translateY(0);
-    }
-    50%{
-        transform:translateY(-12px);
-    }
-    100%{
-        transform:translateY(0);
-    }
-}
-
-/* =========================
-   HEADING
-========================= */
-
-.brand h1{
+.top-heading h1{
     font-size:58px;
     font-weight:700;
-    color:#fff;
-    line-height:1.1;
-    text-align:left;
-    margin:0;
+    color:#111827;
+    letter-spacing:-1px;
 }
 
-.brand h2{
-    font-size:30px;
-    font-weight:600;
-    color:#7db4ff;
-    text-align:left;
-    margin:2px 0 0;
+.top-heading p{
+    margin-top:10px;
+    font-size:28px;
+    color:#6b7280;
+    font-weight:400;
 }
-
-.line{
-    display:none;
-}
-
-.brand p{
-    margin-top:15px;
-    max-width:460px;
-    color:#dbeafe;
-    font-size:17px;
-    text-align:left;
-    line-height:1.8;
-}
-
-/* =========================
-   RIGHT PANEL
-========================= */
-
-.right-panel{
-    width:45%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
-    position:relative;
-    z-index:2;
-}
-
-/* =========================
-   LOGIN CARD
-========================= */
 
 .login-card{
     width:100%;
-    max-width:420px;
-    padding:45px 40px;
+    max-width:560px;
+    background:#ffffff;
     border-radius:28px;
-    background:rgba(255,255,255,.14);
-    backdrop-filter:blur(25px);
-    -webkit-backdrop-filter:blur(25px);
-    border:1px solid rgba(255,255,255,.18);
-    box-shadow:0 20px 45px rgba(0,0,0,.35);
-    animation:cardFade .8s ease;
+    padding:55px;
+    border:1px solid #ececec;
+    box-shadow:
+    0 8px 30px rgba(0,0,0,.05);
 }
 
-@keyframes cardFade{
-    from{
-        opacity:0;
-        transform:translateY(40px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-.login-card h3{
-    color:#fff;
-    font-size:34px;
+.login-card h2{
+    font-size:46px;
     font-weight:700;
-    margin-bottom:8px;
-    text-align:center;
+    color:#111827;
 }
 
-.login-card span{
-    display:block;
-    text-align:center;
-    color:#cbd5e1;
-    margin-bottom:30px;
+.subtitle{
+    margin-top:10px;
+    margin-bottom:35px;
+    color:#6b7280;
+    font-size:24px;
 }
-
-/* =========================
-   INPUT BOX
-========================= */
 
 .input-box{
+    height:72px;
+    border:1px solid #dcdfe5;
+    border-radius:16px;
     display:flex;
     align-items:center;
-    background:rgba(255,255,255,.10);
-    border:1px solid rgba(255,255,255,.18);
-    border-radius:15px;
-    padding:0 18px;
-    margin-bottom:20px;
+    padding:0 22px;
+    margin-bottom:22px;
     transition:.3s;
 }
 
-.input-box:hover,
-.input-box:focus-within{
-    background:rgba(255,255,255,.18);
-    border-color:#60a5fa;
+.input-box:hover{
+    border-color:#111827;
 }
 
-.input-box svg{
-    color:#fff;
-    margin-right:12px;
-    font-size:18px;
+.input-box:focus-within{
+    border-color:#111827;
+}
+
+.input-icon{
+    color:#9ca3af;
+    font-size:22px;
+    margin-right:18px;
 }
 
 .input-box input{
-    flex:1;
+    width:100%;
     border:none;
     outline:none;
     background:transparent;
-    color:#fff;
-    padding:17px 0;
-    font-size:16px;
+    font-size:24px;
+    color:#111827;
 }
 
 .input-box input::placeholder{
-    color:#dbeafe;
+    color:#9ca3af;
 }
-
-/* =========================
-   OPTIONS
-========================= */
 
 .options{
     display:flex;
-    justify-content:space-between;
     align-items:center;
-    margin:5px 0 25px;
+    justify-content:space-between;
+    margin:28px 0;
 }
 
-.options label{
+.remember{
     display:flex;
     align-items:center;
-    gap:8px;
-    color:#fff;
-    font-size:14px;
+    gap:12px;
+    font-size:22px;
+    color:#374151;
 }
 
-.options input{
-    accent-color:#3b82f6;
+.remember input{
+    width:22px;
+    height:22px;
+    cursor:pointer;
 }
 
 .options a{
-    color:#bfdbfe;
     text-decoration:none;
-    transition:.3s;
+    color:#111827;
+    font-size:22px;
+    font-weight:600;
 }
-
-.options a:hover{
-    color:#fff;
-}
-
-/* =========================
-   BUTTON
-========================= */
-
 .login-btn{
     width:100%;
-    padding:16px;
+    height:72px;
     border:none;
-    border-radius:15px;
-    cursor:pointer;
+    border-radius:16px;
+    background:#000;
     color:#fff;
-    font-size:17px;
+    font-size:26px;
     font-weight:600;
-    background:linear-gradient(135deg,#3b82f6,#2563eb);
+    cursor:pointer;
     transition:.3s;
+    margin-top:8px;
+    box-shadow:0 10px 25px rgba(0,0,0,.18);
 }
 
 .login-btn:hover{
-    transform:translateY(-3px);
+    background:#1a1a1a;
+    transform:translateY(-2px);
 }
 
-/* =========================
-   SIGNUP
-========================= */
+.login-btn:active{
+    transform:scale(.98);
+}
 
 .signup-text{
-    margin-top:25px;
+    margin-top:38px;
     text-align:center;
-    color:#dbeafe;
+    font-size:22px;
+    color:#6b7280;
 }
 
 .signup-text a{
-    margin-left:6px;
-    color:#fff;
     text-decoration:none;
-    font-weight:600;
+    color:#111827;
+    font-weight:700;
 }
 
 .signup-text a:hover{
-    color:#60a5fa;
+    text-decoration:underline;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media(max-width:992px){
-
-    .login-container{
-        flex-direction:column;
-        overflow-y:auto;
-    }
-
-    .left-panel,
-    .right-panel{
-        width:100%;
-    }
-
-    .left-panel{
-        padding:40px 20px;
-        text-align:center;
-    }
-
-    .student-image{
-        width:320px;
-    }
-
-    .brand h1{
-        font-size:40px;
-        text-align:center;
-    }
-
-    .brand h2{
-        text-align:center;
-        font-size:24px;
-    }
-
-    .brand p{
-        text-align:center;
-        margin:15px auto 0;
-    }
-
-    .right-panel{
-        padding:30px 20px 50px;
-    }
+.footer{
+    margin-top:45px;
+    color:#9ca3af;
+    font-size:18px;
+    text-align:center;
 }
 
-@media(max-width:576px){
+/* Tablet */
 
-    .student-image{
-        width:240px;
-    }
+@media (max-width:768px){
 
-    .brand h1{
-        font-size:30px;
-    }
+.login-page{
+    padding:30px 18px;
+}
 
-    .brand h2{
-        font-size:20px;
-    }
+.top-heading{
+    margin-bottom:30px;
+}
 
-    .login-card{
-        padding:30px 22px;
-    }
+.top-heading h1{
+    font-size:42px;
+}
 
-    .login-card h3{
-        font-size:26px;
-    }
+.top-heading p{
+    font-size:22px;
+}
 
-    .options{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:12px;
-    }
+.login-card{
+    max-width:100%;
+    padding:35px 28px;
+}
+
+.login-card h2{
+    font-size:34px;
+}
+
+.subtitle{
+    font-size:18px;
+}
+
+.input-box{
+    height:60px;
+}
+
+.input-box input{
+    font-size:18px;
+}
+
+.remember,
+.options a{
+    font-size:17px;
+}
+
+.login-btn{
+    height:60px;
+    font-size:22px;
+}
+
+.signup-text{
+    font-size:18px;
+}
+
+.footer{
+    font-size:15px;
+}
+
+}
+
+/* Mobile */
+
+@media (max-width:480px){
+
+.top-heading h1{
+    font-size:34px;
+}
+
+.top-heading p{
+    font-size:18px;
+}
+
+.login-card{
+    padding:25px 20px;
+    border-radius:20px;
+}
+
+.login-card h2{
+    font-size:28px;
+}
+
+.subtitle{
+    font-size:16px;
+}
+
+.options{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:15px;
+}
+
+.remember{
+    font-size:16px;
+}
+
+.options a{
+    font-size:16px;
+}
+
+.login-btn{
+    font-size:20px;
+    height:56px;
+}
+
+.signup-text{
+    font-size:16px;
+}
+
+.footer{
+    font-size:14px;
+}
+
 }

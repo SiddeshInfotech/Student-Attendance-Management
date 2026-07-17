@@ -1,109 +1,102 @@
-import "../styles/Signup.css";
-import StudentImage from "../assets/images/student-login.png";
 import {
-  FaUserGraduate,
   FaUser,
   FaEnvelope,
-  FaLock
+  FaLock,
+  FaRedo,
 } from "react-icons/fa";
 
-function Signup({ goToLogin }) {
+import "../styles/Signup.css";
+
+function Signup({ setPage }) {
   return (
-    <div className="signup-container">
+    <div className="signup-page">
 
-      {/* Left Panel */}
+      <div className="heading">
 
-      <div className="left-panel">
+        <h1>Student Attendance</h1>
 
-        <div className="overlay">
+        <p>MANAGEMENT SYSTEM</p>
 
-          <div className="brand">
+      </div>
 
-            {/* Student Image */}
-            
-            <img
-              src={StudentImage}
-              alt="Student"
-              className="student-image"
-            />
+      <div className="signup-card">
 
-            <h1>Student Attendance</h1>
+        <h2>Create Account</h2>
 
-            <h2>Management System</h2>
+        <span className="subtitle">
+          Admin Signup
+        </span>
 
-            <p>
-              Create your administrator account and securely manage students,
-              attendance records and reports from one powerful dashboard.
-            </p>
+        <div className="input-box">
 
-          </div>
+          <FaUser className="icon" />
+
+          <input
+            type="text"
+            placeholder="Full Name"
+          />
+
+        </div>
+
+        <div className="input-box">
+
+          <FaEnvelope className="icon" />
+
+          <input
+            type="email"
+            placeholder="Email Address"
+          />
+
+        </div>
+
+        <div className="input-box">
+
+          <FaLock className="icon" />
+
+          <input
+            type="password"
+            placeholder="Password"
+          />
+
+        </div>
+
+        <div className="input-box">
+
+          <FaRedo className="icon" />
+
+          <input
+            type="password"
+            placeholder="Confirm Password"
+          />
+
+        </div>
+
+        <button className="signup-btn">
+          Sign Up
+        </button>
+
+        <div className="login-link">
+
+          Already have an account?
+
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              setPage("login");
+            }}
+          >
+            Login
+          </a>
 
         </div>
 
       </div>
 
-      {/* Right Panel */}
+      <div className="footer">
 
-      <div className="right-panel">
-
-        <div className="signup-card">
-
-          <h3>Create Account</h3>
-
-          <span>Admin Signup</span>
-
-          <div className="input-group">
-            <FaUser />
-            <input
-              type="text"
-              placeholder="Full Name"
-            />
-          </div>
-
-          <div className="input-group">
-            <FaEnvelope />
-            <input
-              type="email"
-              placeholder="Email Address"
-            />
-          </div>
-
-          <div className="input-group">
-            <FaLock />
-            <input
-              type="password"
-              placeholder="Password"
-            />
-          </div>
-
-          <div className="input-group">
-            <FaLock />
-            <input
-              type="password"
-              placeholder="Confirm Password"
-            />
-          </div>
-
-          <button className="signup-btn">
-            Sign Up
-          </button>
-
-          <p className="bottom-text">
-            Already have an account?
-
-            <a
-              href="#"
-              onClick={(e)=>{
-                e.preventDefault();
-                goToLogin();
-              }}
-            >
-              Login
-            </a>
-
-          </p>
-
-        </div>
+        © 2024 ScholarTrack Attendance Systems.
+        All rights reserved.
 
       </div>
 
