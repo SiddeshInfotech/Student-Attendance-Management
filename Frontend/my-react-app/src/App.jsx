@@ -3,6 +3,7 @@ import { useState } from "react";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import ForgotPassword from "./components/ForgotPassword";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const [page, setPage] = useState("login");
@@ -16,11 +17,15 @@ function App() {
       {page === "signup" && (
         <Signup setPage={setPage} />
       )}
-       
+
       {page === "forgot" && (
         <ForgotPassword setPage={setPage} />
       )}
-      
+
+      {page === "dashboard" && (
+        <Dashboard setPage={setPage} />
+      )}
+
     </>
   );
 }
