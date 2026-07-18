@@ -1,0 +1,119 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Roboto",sans-serif;
+}
+
+.register-page{
+    width:100%;
+    min-height:100vh;
+    background:url("https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:30px;
+}
+
+.register-card{
+    width:460px;
+    background:rgba(255,255,255,.18);
+    backdrop-filter:blur(15px);
+    border-radius:20px;
+    padding:35px;
+    color:#fff;
+    box-shadow:0 15px 40px rgba(0,0,0,.30);
+    animation:fadeIn .7s ease;
+}
+
+.register-card h1{
+    text-align:center;
+    margin-bottom:25px;
+    color:#fff;
+}
+
+.input-box{
+    display:flex;
+    align-items:center;
+    background:#fff;
+    border-radius:10px;
+    margin-bottom:18px;
+    padding:0 12px;
+}
+
+.icon{
+    color:#2563eb;
+    font-size:18px;
+}
+
+.input-box input{
+    flex:1;
+    border:none;
+    outline:none;
+    padding:14px;
+    font-size:15px;
+    background:transparent;
+}
+
+.register-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    font-size:17px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.register-btn:hover{
+    background:#1d4ed8;
+    transform:translateY(-2px);
+}
+
+.back-login{
+    text-align:center;
+    margin-top:20px;
+}
+
+.back-login a{
+    color:#fff;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.back-login a:hover{
+    color:#60a5fa;
+}
+
+@keyframes fadeIn{
+
+from{
+    opacity:0;
+    transform:translateY(40px);
+}
+
+to{
+    opacity:1;
+    transform:translateY(0);
+}
+
+}
+
+@media(max-width:600px){
+
+.register-card{
+    width:100%;
+    padding:25px;
+}
+
+.register-card h1{
+    font-size:26px;
+}
+
+}

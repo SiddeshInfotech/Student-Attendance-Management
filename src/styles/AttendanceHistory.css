@@ -1,0 +1,182 @@
+.history-page{
+
+    min-height:100vh;
+    background:#f1f5f9;
+    padding:30px;
+
+}
+
+
+/* Header */
+
+.history-header{
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    color:#2563eb;
+    margin-bottom:30px;
+
+}
+
+
+.history-header svg{
+
+    font-size:35px;
+
+}
+
+
+.history-header h1{
+
+    color:#1e293b;
+
+}
+
+
+
+/* Search */
+
+.history-search{
+
+    width:100%;
+    background:white;
+    padding:15px 20px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:25px;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+
+}
+
+
+.history-search svg{
+
+    color:#2563eb;
+    font-size:20px;
+
+}
+
+
+
+.history-search input{
+
+    width:100%;
+    border:none;
+    outline:none;
+    font-size:16px;
+
+}
+
+
+
+/* Table */
+
+.history-table{
+
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    overflow-x:auto;
+
+}
+
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+
+}
+
+
+
+thead{
+
+    background:#2563eb;
+    color:white;
+
+}
+
+
+
+th,
+td{
+
+    padding:15px;
+    text-align:center;
+    border-bottom:1px solid #e2e8f0;
+
+}
+
+
+
+tbody tr:hover{
+
+    background:#f8fafc;
+
+}
+
+
+
+/* Status */
+
+.history-present,
+.history-absent{
+
+    padding:8px 18px;
+    border-radius:20px;
+    font-weight:600;
+
+}
+
+
+.history-present{
+
+    background:#dcfce7;
+    color:#15803d;
+
+}
+
+
+
+.history-absent{
+
+    background:#fee2e2;
+    color:#b91c1c;
+
+}
+
+
+
+/* Responsive */
+
+@media(max-width:600px){
+
+    .history-page{
+
+        padding:15px;
+
+    }
+
+
+    .history-header h1{
+
+        font-size:24px;
+
+    }
+
+
+    th,
+    td{
+
+        padding:10px;
+        font-size:14px;
+
+    }
+
+}
