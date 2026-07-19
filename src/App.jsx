@@ -1,14 +1,14 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Login from "./pages/Login";
-import Registration from "./pages/Registration";
-import ForgotPassword from "./pages/ForgotPassword";
+import Login from "./page/Login";
+import Register from "./page/Register";
+import ForgotPassword from "./page/ForgotPassword";
 
-import Dashboard from "./pages/Dashboard";
-import MyProfile from "./pages/MyProfile";
-import MyAttendance from "./pages/MyAttendance";
-import AttendanceHistory from "./pages/AttendanceHistory";
-import ChangePassword from "./pages/ChangePassword";
+import Dashboard from "./page/Dashboard";
+import MyProfile from "./page/MyProfile";
+import MyAttendance from "./page/MyAttendance";
+import AttendanceHistory from "./page/AttendanceHistory";
+import ChangePassword from "./page/ChangePassword";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -35,7 +35,7 @@ function App() {
 
         <Route
           path="/register"
-          element={<Registration />}
+          element={<Register />}
         />
 
 
