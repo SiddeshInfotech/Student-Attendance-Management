@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { FaUserCircle, FaEdit, FaSave } from "react-icons/fa";
 import "../styles/MyProfile.css";
 
 const MyProfile = () => {
@@ -7,7 +6,7 @@ const MyProfile = () => {
     localStorage.getItem("currentStudent")
   );
 
-  const [isEdit, setIsEdit] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
   const [student, setStudent] = useState({
     fullName: currentStudent?.fullName || "",
@@ -28,22 +27,15 @@ const MyProfile = () => {
     let students =
       JSON.parse(localStorage.getItem("students")) || [];
 
-    students = students.map((item) =>
+    const updatedStudents = students.map((item) =>
       item.id === currentStudent.id
-        ? {
-            ...item,
-            fullName: student.fullName,
-            rollNo: student.rollNo,
-            className: student.className,
-            email: student.email,
-            username: student.username,
-          }
+        ? { ...item, ...student }
         : item
     );
 
     localStorage.setItem(
       "students",
-      JSON.stringify(students)
+      JSON.stringify(updatedStudents)
     );
 
     localStorage.setItem(
@@ -56,94 +48,80 @@ const MyProfile = () => {
 
     alert("Profile Updated Successfully");
 
-    setIsEdit(false);
+    setEditMode(false);
   };
 
   return (
     <div className="profile-page">
-
       <div className="profile-card">
-
-        <div className="profile-image">
-          <FaUserCircle />
-        </div>
 
         <h1>My Profile</h1>
 
         <div className="profile-form">
 
           <label>Full Name</label>
-
           <input
             type="text"
             name="fullName"
             value={student.fullName}
-            disabled={!isEdit}
+            disabled={!editMode}
             onChange={handleChange}
           />
 
           <label>Roll Number</label>
-
           <input
             type="text"
             name="rollNo"
             value={student.rollNo}
-            disabled={!isEdit}
+            disabled={!editMode}
             onChange={handleChange}
           />
 
           <label>Class</label>
-
           <input
             type="text"
             name="className"
             value={student.className}
-            disabled={!isEdit}
+            disabled={!editMode}
             onChange={handleChange}
           />
 
           <label>Email</label>
-
           <input
             type="email"
             name="email"
             value={student.email}
-            disabled={!isEdit}
+            disabled={!editMode}
             onChange={handleChange}
           />
 
           <label>Username</label>
-
           <input
             type="text"
             name="username"
             value={student.username}
-            disabled={!isEdit}
+            disabled={!editMode}
             onChange={handleChange}
           />
 
-          {isEdit ? (
+          {!editMode ? (
+            <button
+              className="edit-btn"
+              onClick={() => setEditMode(true)}
+            >
+              Edit Profile
+            </button>
+          ) : (
             <button
               className="save-btn"
               onClick={saveProfile}
             >
-              <FaSave />
               Save Profile
-            </button>
-          ) : (
-            <button
-              className="edit-btn"
-              onClick={() => setIsEdit(true)}
-            >
-              <FaEdit />
-              Edit Profile
             </button>
           )}
 
         </div>
-
       </div>
-
     </div>
   );
 };
