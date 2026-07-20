@@ -96,7 +96,7 @@ const ChangePassword = () => {
               <FaKey />
             </div>
 
-            <h1>Change Password</h1>
+            <h3>Change Password</h3>
 
             <form onSubmit={handleSubmit}>
 

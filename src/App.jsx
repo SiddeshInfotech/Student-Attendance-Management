@@ -12,7 +12,7 @@ import ChangePassword from "./page/ChangePassword";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
-import "./App.css";
+import "./styles/App.css";
 
 
 function App() {
