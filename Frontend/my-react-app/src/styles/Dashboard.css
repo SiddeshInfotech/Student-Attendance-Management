@@ -2429,3 +2429,140 @@
   .indiv-search-input { font-size: 14px; }
   .reports-date-range-display { font-size: 12px; padding: 8px 12px; }
 }
+
+/* ==========================================================
+   GLOBAL — Bigger native calendar popup for all date inputs
+   ========================================================== */
+
+/* Make the calendar icon bigger */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="month"]::-webkit-calendar-picker-indicator {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+  filter: none;
+  padding: 2px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="month"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Make the date text inside the input bigger */
+input[type="date"]::-webkit-datetime-edit,
+input[type="month"]::-webkit-datetime-edit {
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  padding: 4px 2px;
+}
+
+input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+input[type="month"]::-webkit-datetime-edit-fields-wrapper {
+  font-size: 15px;
+  padding: 0;
+}
+
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-year-field,
+input[type="month"]::-webkit-datetime-edit-month-field,
+input[type="month"]::-webkit-datetime-edit-year-field {
+  font-size: 15px;
+  font-weight: 600;
+  padding: 2px 4px;
+}
+
+/* All date/month inputs in the dashboard — ensure consistent sizing */
+.dashboard-content input[type="date"],
+.dashboard-content input[type="month"] {
+  min-height: 52px;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  padding: 0 16px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  color: #0f172a;
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.dashboard-content input[type="date"]:focus,
+.dashboard-content input[type="month"]:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+/* ── History tab date inputs — wide & tall ─────────────────── */
+.history-date-input {
+  width: 100%;
+  height: 54px;
+  min-width: 260px;
+  padding: 0 18px;
+  border: 2px solid #cbd5e1;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.history-date-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+.history-date-input::-webkit-calendar-picker-indicator {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.history-date-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+/* ── Scale ALL calendar popups bigger via font-size trick ───── */
+.dashboard-content input[type="date"],
+.dashboard-content input[type="month"] {
+  font-size: 16px;
+}
+
+/* Chromium-based: make the picker icon consistently large */
+.dashboard-content input[type="date"]::-webkit-calendar-picker-indicator,
+.dashboard-content input[type="month"]::-webkit-calendar-picker-indicator {
+  width: 26px;
+  height: 26px;
+  padding: 4px;
+  cursor: pointer;
+  opacity: 0.6;
+  background-size: 20px;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.dashboard-content input[type="date"]::-webkit-calendar-picker-indicator:hover,
+.dashboard-content input[type="month"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+@media (max-width: 767px) {
+  .history-date-input {
+    min-width: 100%;
+  }
+}

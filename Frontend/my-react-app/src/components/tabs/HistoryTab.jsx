@@ -131,33 +131,25 @@ function HistoryTab({ store }) {
         {/* Custom date range */}
         {period === "custom" && (
           <div className="history-custom-range">
-            <div className="modal-input-group" style={{ minWidth: "160px" }}>
-              <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>From</label>
+            <div className="modal-input-group" style={{ minWidth: "280px" }}>
+              <label className="reports-date-label">From Date</label>
               <input
                 type="date"
                 value={customStart}
                 max={customEnd}
                 onChange={(e) => { setCustomStart(e.target.value); setPage(1); }}
-                style={{
-                  height: "40px", padding: "0 12px", border: "1.5px solid #cbd5e1",
-                  borderRadius: "8px", fontSize: "14px", color: "#0f172a",
-                  outline: "none", fontFamily: "Inter, sans-serif",
-                }}
+                className="history-date-input"
               />
             </div>
-            <div className="modal-input-group" style={{ minWidth: "160px" }}>
-              <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>To</label>
+            <div className="modal-input-group" style={{ minWidth: "280px" }}>
+              <label className="reports-date-label">To Date</label>
               <input
                 type="date"
                 value={customEnd}
                 min={customStart}
                 max={todayStr()}
                 onChange={(e) => { setCustomEnd(e.target.value); setPage(1); }}
-                style={{
-                  height: "40px", padding: "0 12px", border: "1.5px solid #cbd5e1",
-                  borderRadius: "8px", fontSize: "14px", color: "#0f172a",
-                  outline: "none", fontFamily: "Inter, sans-serif",
-                }}
+                className="history-date-input"
               />
             </div>
           </div>

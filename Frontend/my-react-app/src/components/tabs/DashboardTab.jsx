@@ -240,6 +240,7 @@ function DashboardTab({ store, currentDate, currentTime, setActiveTab }) {
                 <th>Roll No</th>
                 <th>Student Name</th>
                 <th>Class</th>
+                <th>Division</th>
                 <th>Date</th>
                 <th>Status</th>
               </tr>
@@ -257,7 +258,8 @@ function DashboardTab({ store, currentDate, currentTime, setActiveTab }) {
                         <span className="student-name">{record.student.name}</span>
                       </div>
                     </td>
-                    <td>{record.student.grade} / {record.student.division}</td>
+                    <td>{record.student.grade}</td>
+                    <td><span className="division-badge">{record.student.division}</span></td>
                     <td><span className="arrival-time">{formatDate(record.date)}</span></td>
                     <td>
                       <span className={`status-badge ${record.status.toLowerCase()}`}>
@@ -268,7 +270,7 @@ function DashboardTab({ store, currentDate, currentTime, setActiveTab }) {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="table-empty-state">
+                  <td colSpan="6" className="table-empty-state">
                     No attendance records found. Mark attendance to get started.
                   </td>
                 </tr>
