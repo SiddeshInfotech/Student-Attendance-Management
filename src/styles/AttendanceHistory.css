@@ -1,63 +1,71 @@
 .history-page{
-    margin-left:260px;
-    min-height:100vh;
-    background:#f1f5f9;
-    padding:30px;
+    width:100%;
+    min-height:calc(100vh - 70px);
+    background:#f8fafc;
+    padding:35px;
     animation:fadeIn .5s ease;
 }
 
-/* Header */
+/* ================= Header ================= */
 
 .history-header{
     display:flex;
-    justify-content:center;
     align-items:center;
-    gap:12px;
+    justify-content:center;
+    gap:15px;
     margin-bottom:30px;
 }
 
-.history-header svg{
+.history-icon{
     font-size:38px;
     color:#2563eb;
 }
 
 .history-header h1{
-    color:#1e293b;
-    font-size:32px;
+    font-size:34px;
+    font-weight:700;
+    color:#000;
 }
 
-/* Search */
+/* ================= Search ================= */
 
 .history-search{
+    width:100%;
     display:flex;
     align-items:center;
-    gap:12px;
+    gap:15px;
     background:#fff;
-    padding:15px 20px;
+    padding:16px 22px;
     border-radius:15px;
-    margin-bottom:25px;
+    margin-bottom:30px;
     box-shadow:0 8px 20px rgba(0,0,0,.08);
 }
 
-.history-search svg{
-    color:#2563eb;
+.search-icon{
     font-size:20px;
+    color:#2563eb;
 }
 
 .history-search input{
-    width:100%;
+    flex:1;
     border:none;
     outline:none;
-    font-size:16px;
     background:transparent;
+    font-size:16px;
+    color:#334155;
 }
 
-/* Table */
+.history-search input::placeholder{
+    color:#94a3b8;
+}
+
+/* ================= Table ================= */
 
 .history-table{
+    width:100%;
     background:#fff;
-    padding:20px;
     border-radius:18px;
+    padding:25px;
     box-shadow:0 8px 20px rgba(0,0,0,.08);
     overflow-x:auto;
 }
@@ -73,24 +81,31 @@
 }
 
 .history-table th{
-    padding:15px;
+    padding:16px;
     text-align:center;
     font-size:16px;
+    font-weight:600;
 }
 
 .history-table td{
-    padding:15px;
+    padding:16px;
     text-align:center;
     border-bottom:1px solid #e2e8f0;
+    color:#334155;
+}
+
+.history-table tbody tr{
+    transition:.3s;
 }
 
 .history-table tbody tr:hover{
     background:#f8fafc;
 }
 
-/* Status */
+/* ================= Status ================= */
 
 .history-present{
+    display:inline-block;
     background:#dcfce7;
     color:#15803d;
     padding:8px 18px;
@@ -99,40 +114,44 @@
 }
 
 .history-absent{
+    display:inline-block;
     background:#fee2e2;
-    color:#b91c1c;
+    color:#dc2626;
     padding:8px 18px;
     border-radius:20px;
     font-weight:600;
 }
 
-/* Animation */
+/* ================= No Record ================= */
+
+.no-record{
+    padding:30px;
+    font-size:16px;
+    color:#64748b;
+    font-weight:500;
+}
+
+/* ================= Animation ================= */
 
 @keyframes fadeIn{
+
     from{
         opacity:0;
-        transform:translateY(25px);
+        transform:translateY(20px);
     }
+
     to{
         opacity:1;
         transform:translateY(0);
     }
-}
-
-/* Responsive */
-
-@media(max-width:992px){
-
-    .history-page{
-        margin-left:220px;
-    }
 
 }
+
+/* ================= Responsive ================= */
 
 @media(max-width:768px){
 
     .history-page{
-        margin-left:0;
         padding:20px;
     }
 
@@ -148,8 +167,17 @@
         padding:15px;
     }
 
+    .history-header{
+        flex-direction:column;
+        gap:8px;
+    }
+
     .history-header h1{
         font-size:24px;
+    }
+
+    .history-table{
+        padding:15px;
     }
 
     .history-table th,

@@ -171,7 +171,7 @@ Management System
 
 
 <p>
-Smart College Attendance Solution
+ Track Attendance Easily
 </p>
 
 

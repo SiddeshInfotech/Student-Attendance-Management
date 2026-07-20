@@ -7,24 +7,36 @@ import Sidebar from "../components/Sidebar";
 import "../styles/AttendanceHistory.css";
 
 const AttendanceHistory = () => {
+
   const student = JSON.parse(
     localStorage.getItem("currentStudent")
   );
 
-  const attendance = student?.attendance || [];
+  if (!student) {
+    return (
+      <div className="dashboard-container">
+        <h2 style={{ padding: "40px" }}>
+          Please Login First
+        </h2>
+      </div>
+    );
+  }
+
+  const attendance = student.attendance || [];
 
   const [search, setSearch] = useState("");
 
-  const filteredRecords = attendance.filter((item) => {
-    return (
-      item.date.includes(search) ||
-      item.subject
-        .toLowerCase()
-        .includes(search.toLowerCase())
-    );
-  });
+  const filteredRecords = attendance.filter((item) =>
+    item.date
+      .toLowerCase()
+      .includes(search.toLowerCase()) ||
+    item.subject
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
 
   return (
+
     <div className="dashboard-container">
 
       <Sidebar />
@@ -35,6 +47,8 @@ const AttendanceHistory = () => {
 
         <div className="history-page">
 
+          {/* Heading */}
+
           <div className="history-header">
 
             <FaHistory className="history-icon" />
@@ -43,13 +57,15 @@ const AttendanceHistory = () => {
 
           </div>
 
+          {/* Search */}
+
           <div className="history-search">
 
             <FaSearch className="search-icon" />
 
             <input
               type="text"
-              placeholder="Search by Date or Subject"
+              placeholder="Search by Date or Subject..."
               value={search}
               onChange={(e) =>
                 setSearch(e.target.value)
@@ -58,6 +74,8 @@ const AttendanceHistory = () => {
 
           </div>
 
+          {/* Table */}
+
           <div className="history-table">
 
             <table>
@@ -65,10 +83,15 @@ const AttendanceHistory = () => {
               <thead>
 
                 <tr>
+
                   <th>No.</th>
+
                   <th>Date</th>
+
                   <th>Subject</th>
+
                   <th>Status</th>
+
                 </tr>
 
               </thead>
@@ -109,8 +132,10 @@ const AttendanceHistory = () => {
 
                   <tr>
 
-                    <td colSpan="4">
-                      No Records Found
+                    <td colSpan="4" className="no-record">
+
+                      No Attendance Records Found
+
                     </td>
 
                   </tr>
@@ -128,7 +153,9 @@ const AttendanceHistory = () => {
       </div>
 
     </div>
+
   );
+
 };
 
 export default AttendanceHistory;

@@ -4,6 +4,8 @@ import {
   FaCalendarCheck,
   FaHistory,
   FaKey,
+  FaUserGraduate,
+  FaBookOpen,
 } from "react-icons/fa";
 
 import Navbar from "../components/Navbar";
@@ -21,56 +23,103 @@ const Dashboard = () => {
   if (!student) {
     return (
       <div className="dashboard-container">
-        <h2 style={{ padding: "40px" }}>
-          Please Login First
-        </h2>
+        <div className="login-message">
+          <h2>Please Login First</h2>
+
+          <Link to="/" className="back-login-btn">
+            Back To Login
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="dashboard-container">
-
       <Sidebar />
 
       <div className="dashboard-content">
-
         <Navbar />
 
         <div className="dashboard-body">
 
-          <div className="welcome-card">
-            <h1>
-              Welcome, {student.fullName}
-            </h1>
+          {/* Welcome Card */}
 
-            <p>
-              Student Attendance Management System
-            </p>
+          <div className="welcome-card">
+
+            <div className="welcome-left">
+
+              <h1>
+                Welcome,
+                <span> {student.fullName}</span>
+              </h1>
+
+              <p>
+                Student Attendance Management System
+              </p>
+
+            </div>
+
+            <div className="welcome-icon">
+              <FaUserGraduate />
+            </div>
+
           </div>
+
+          {/* Student Information */}
 
           <div className="student-card">
 
-            <div>
-              <h3>Student Name</h3>
-              <p>{student.fullName}</p>
+            <div className="info-box">
+
+              <FaUser className="info-icon" />
+
+              <div>
+                <h3>Student Name</h3>
+                <p>{student.fullName}</p>
+              </div>
+
             </div>
 
-            <div>
-              <h3>Roll Number</h3>
-              <p>{student.rollNo}</p>
+            <div className="info-box">
+
+              <FaBookOpen className="info-icon" />
+
+              <div>
+                <h3>Roll Number</h3>
+                <p>{student.rollNo}</p>
+              </div>
+
             </div>
 
-            <div>
-              <h3>Class</h3>
-              <p>{student.className}</p>
+            <div className="info-box">
+
+              <FaUserGraduate className="info-icon" />
+
+              <div>
+                <h3>Class</h3>
+                <p>{student.className}</p>
+              </div>
+
             </div>
 
           </div>
 
+          {/* Attendance */}
+
           <AttendancePercentageCard />
 
-          <DownloadReportButton />
+          {/* Download */}
+
+          <div className="download-section">
+            <DownloadReportButton />
+          </div>
+
+          {/* Quick Actions */}
+
+          <h2 className="section-title">
+            Quick Actions
+          </h2>
 
           <div className="quick-actions">
 
@@ -79,7 +128,13 @@ const Dashboard = () => {
               className="action-card"
             >
               <FaUser className="card-icon" />
+
               <h3>My Profile</h3>
+
+              <p>
+                View & Edit Profile
+              </p>
+
             </Link>
 
             <Link
@@ -87,7 +142,13 @@ const Dashboard = () => {
               className="action-card"
             >
               <FaCalendarCheck className="card-icon" />
+
               <h3>My Attendance</h3>
+
+              <p>
+                View Attendance
+              </p>
+
             </Link>
 
             <Link
@@ -95,7 +156,15 @@ const Dashboard = () => {
               className="action-card"
             >
               <FaHistory className="card-icon" />
-              <h3>Attendance History</h3>
+
+              <h3>
+                Attendance History
+              </h3>
+
+              <p>
+                Previous Records
+              </p>
+
             </Link>
 
             <Link
@@ -103,7 +172,15 @@ const Dashboard = () => {
               className="action-card"
             >
               <FaKey className="card-icon" />
-              <h3>Change Password</h3>
+
+              <h3>
+                Change Password
+              </h3>
+
+              <p>
+                Secure Your Account
+              </p>
+
             </Link>
 
           </div>
