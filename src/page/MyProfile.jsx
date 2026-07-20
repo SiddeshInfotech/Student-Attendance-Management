@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 import "../styles/MyProfile.css";
 
 const MyProfile = () => {
@@ -52,76 +54,91 @@ const MyProfile = () => {
   };
 
   return (
-    <div className="profile-page">
-      <div className="profile-card">
+    <div className="dashboard-container">
 
-        <h1>My Profile</h1>
+      <Sidebar />
 
-        <div className="profile-form">
+      <div className="dashboard-content">
 
-          <label>Full Name</label>
-          <input
-            type="text"
-            name="fullName"
-            value={student.fullName}
-            disabled={!editMode}
-            onChange={handleChange}
-          />
+        <Navbar />
 
-          <label>Roll Number</label>
-          <input
-            type="text"
-            name="rollNo"
-            value={student.rollNo}
-            disabled={!editMode}
-            onChange={handleChange}
-          />
+        <div className="profile-page">
 
-          <label>Class</label>
-          <input
-            type="text"
-            name="className"
-            value={student.className}
-            disabled={!editMode}
-            onChange={handleChange}
-          />
+          <div className="profile-card">
 
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={student.email}
-            disabled={!editMode}
-            onChange={handleChange}
-          />
+            <h1>My Profile</h1>
 
-          <label>Username</label>
-          <input
-            type="text"
-            name="username"
-            value={student.username}
-            disabled={!editMode}
-            onChange={handleChange}
-          />
+            <div className="profile-form">
 
-          {!editMode ? (
-            <button
-              className="edit-btn"
-              onClick={() => setEditMode(true)}
-            >
-              Edit Profile
-            </button>
-          ) : (
-            <button
-              className="save-btn"
-              onClick={saveProfile}
-            >
-              Save Profile
-            </button>
-          )}
+              <label>Full Name</label>
+              <input
+                type="text"
+                name="fullName"
+                value={student.fullName}
+                disabled={!editMode}
+                onChange={handleChange}
+              />
+
+              <label>Roll Number</label>
+              <input
+                type="text"
+                name="rollNo"
+                value={student.rollNo}
+                disabled={!editMode}
+                onChange={handleChange}
+              />
+
+              <label>Class</label>
+              <input
+                type="text"
+                name="className"
+                value={student.className}
+                disabled={!editMode}
+                onChange={handleChange}
+              />
+
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                value={student.email}
+                disabled={!editMode}
+                onChange={handleChange}
+              />
+
+              <label>Username</label>
+              <input
+                type="text"
+                name="username"
+                value={student.username}
+                disabled={!editMode}
+                onChange={handleChange}
+              />
+
+              {!editMode ? (
+                <button
+                  className="edit-btn"
+                  onClick={() => setEditMode(true)}
+                >
+                  Edit Profile
+                </button>
+              ) : (
+                <button
+                  className="save-btn"
+                  onClick={saveProfile}
+                >
+                  Save Profile
+                </button>
+              )}
+
+            </div>
+
+          </div>
 
         </div>
+
       </div>
+
     </div>
   );
 };

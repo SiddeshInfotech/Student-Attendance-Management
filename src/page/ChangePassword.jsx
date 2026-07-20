@@ -1,270 +1,161 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  FaLock,
-  FaKey
-} from "react-icons/fa";
+import { FaLock, FaKey } from "react-icons/fa";
+
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 
 import "../styles/ChangePassword.css";
 
-
 const ChangePassword = () => {
-
-
   const navigate = useNavigate();
-
 
   const currentStudent = JSON.parse(
     localStorage.getItem("currentStudent")
   );
 
-
-
-  const [passwords,setPasswords] = useState({
-
-    oldPassword:"",
-    newPassword:"",
-    confirmPassword:""
-
+  const [passwords, setPasswords] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
 
-
-
-  const handleChange = (e)=>{
-
+  const handleChange = (e) => {
     setPasswords({
-
       ...passwords,
-
-      [e.target.name]:e.target.value
-
+      [e.target.name]: e.target.value,
     });
-
   };
 
-
-
-  const handleSubmit = (e)=>{
-
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-
-
-    if(!currentStudent){
-
+    if (!currentStudent) {
       alert("Please Login First");
-
       navigate("/");
-
       return;
-
     }
 
-
-
-    if(
-      passwords.oldPassword !== currentStudent.password
-    ){
-
+    if (passwords.oldPassword !== currentStudent.password) {
       alert("Old Password is incorrect");
-
       return;
-
     }
 
-
-
-    if(
-      passwords.newPassword !== passwords.confirmPassword
-    ){
-
+    if (passwords.newPassword !== passwords.confirmPassword) {
       alert("New Passwords do not match");
-
       return;
-
     }
-
-
 
     let students =
-      JSON.parse(
-        localStorage.getItem("students")
-      ) || [];
+      JSON.parse(localStorage.getItem("students")) || [];
 
-
-
-    const updatedStudents =
-      students.map((student)=>{
-
-
-        if(
-          student.id === currentStudent.id
-        ){
-
-          return {
-
-            ...student,
-
-            password:passwords.newPassword
-
-          };
-
-        }
-
-
-        return student;
-
-
-      });
-
-
+    const updatedStudents = students.map((student) => {
+      if (student.id === currentStudent.id) {
+        return {
+          ...student,
+          password: passwords.newPassword,
+        };
+      }
+      return student;
+    });
 
     localStorage.setItem(
       "students",
       JSON.stringify(updatedStudents)
     );
 
+    const updatedCurrentStudent = {
+      ...currentStudent,
+      password: passwords.newPassword,
+    };
 
-
-    localStorage.removeItem(
-      "currentStudent"
+    localStorage.setItem(
+      "currentStudent",
+      JSON.stringify(updatedCurrentStudent)
     );
 
+    alert("Password Updated Successfully");
 
-
-    alert(
-      "Password Changed Successfully. Please Login Again."
-    );
-
-
-
-    navigate("/");
-
-
+    navigate("/dashboard");
   };
 
-
-
   return (
+    <div className="dashboard-container">
 
-    <div className="change-page">
+      <Sidebar />
 
+      <div className="dashboard-content">
 
-      <div className="change-card">
+        <Navbar />
 
+        <div className="change-page">
 
-        <div className="change-icon">
+          <div className="change-card">
 
-          <FaKey/>
+            <div className="change-icon">
+              <FaKey />
+            </div>
+
+            <h1>Change Password</h1>
+
+            <form onSubmit={handleSubmit}>
+
+              <div className="password-box">
+                <FaLock />
+
+                <input
+                  type="password"
+                  name="oldPassword"
+                  placeholder="Old Password"
+                  value={passwords.oldPassword}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="password-box">
+                <FaLock />
+
+                <input
+                  type="password"
+                  name="newPassword"
+                  placeholder="New Password"
+                  value={passwords.newPassword}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="password-box">
+                <FaLock />
+
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  placeholder="Confirm New Password"
+                  value={passwords.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="change-btn"
+              >
+                Update Password
+              </button>
+
+            </form>
+
+          </div>
 
         </div>
 
-
-
-        <h1>
-          Change Password
-        </h1>
-
-
-
-        <form onSubmit={handleSubmit}>
-
-
-          <div className="password-box">
-
-            <FaLock/>
-
-            <input
-
-              type="password"
-
-              name="oldPassword"
-
-              placeholder="Old Password"
-
-              value={passwords.oldPassword}
-
-              onChange={handleChange}
-
-              required
-
-            />
-
-          </div>
-
-
-
-
-          <div className="password-box">
-
-            <FaLock/>
-
-            <input
-
-              type="password"
-
-              name="newPassword"
-
-              placeholder="New Password"
-
-              value={passwords.newPassword}
-
-              onChange={handleChange}
-
-              required
-
-            />
-
-          </div>
-
-
-
-
-          <div className="password-box">
-
-            <FaLock/>
-
-            <input
-
-              type="password"
-
-              name="confirmPassword"
-
-              placeholder="Confirm New Password"
-
-              value={passwords.confirmPassword}
-
-              onChange={handleChange}
-
-              required
-
-            />
-
-          </div>
-
-
-
-
-          <button className="change-btn">
-
-            Update Password
-
-          </button>
-
-
-
-        </form>
-
-
-
       </div>
 
-
     </div>
-
   );
-
 };
-
 
 export default ChangePassword;

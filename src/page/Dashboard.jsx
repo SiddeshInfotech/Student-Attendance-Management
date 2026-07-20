@@ -18,6 +18,16 @@ const Dashboard = () => {
     localStorage.getItem("currentStudent")
   );
 
+  if (!student) {
+    return (
+      <div className="dashboard-container">
+        <h2 style={{ padding: "40px" }}>
+          Please Login First
+        </h2>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-container">
 
@@ -29,50 +39,38 @@ const Dashboard = () => {
 
         <div className="dashboard-body">
 
-          {/* Welcome Card */}
-
           <div className="welcome-card">
-
             <h1>
-              Welcome, {student?.fullName}
+              Welcome, {student.fullName}
             </h1>
 
             <p>
               Student Attendance Management System
             </p>
-
           </div>
-
-          {/* Student Information */}
 
           <div className="student-card">
 
             <div>
               <h3>Student Name</h3>
-              <p>{student?.fullName}</p>
+              <p>{student.fullName}</p>
             </div>
 
             <div>
               <h3>Roll Number</h3>
-              <p>{student?.rollNo}</p>
+              <p>{student.rollNo}</p>
             </div>
 
             <div>
               <h3>Class</h3>
-              <p>{student?.className}</p>
+              <p>{student.className}</p>
             </div>
 
           </div>
 
-          {/* Attendance Percentage */}
-
           <AttendancePercentageCard />
 
-          {/* Download Report Button */}
-
           <DownloadReportButton />
-
-          {/* Quick Actions */}
 
           <div className="quick-actions">
 

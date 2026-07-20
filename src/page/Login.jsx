@@ -7,6 +7,8 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
+
+import studentsData from "../data/students";
 import "../styles/Login.css";
 
 const Login = () => {
@@ -30,11 +32,18 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    const students = JSON.parse(localStorage.getItem("students")) || [];
+    // Registered students from localStorage
+    const localStudents =
+      JSON.parse(localStorage.getItem("students")) || [];
+
+    // Use localStorage students if available, otherwise use default students
+    const students =
+      localStudents.length > 0 ? localStudents : studentsData;
 
     const student = students.find(
       (item) =>
-        item.username === username &&
+        item.username.trim().toLowerCase() ===
+          username.trim().toLowerCase() &&
         item.password === password
     );
 
@@ -67,126 +76,84 @@ const Login = () => {
 
   return (
     <div className="login-page">
-
       <div className="overlay">
-
         <div className="left-section">
+          <FaUserGraduate className="graduate-icon" />
 
-          <FaUserGraduate className="graduate-icon"/>
-
-          <h1>
-            Student Attendance
-          </h1>
-
-          <h2>
-            Management System
-          </h2>
-
-          <p>
-            Track Attendance Easily
-          </p>
-
+          <h1>Student Attendance</h1>
+          <h2>Management System</h2>
+          <p>Track Attendance Easily</p>
         </div>
 
         <div className="login-card">
-
-          <h2>
-            Student Login
-          </h2>
+          <h2>Student Login</h2>
 
           <form onSubmit={handleLogin}>
-
             <div className="input-box">
-
-              <FaUser className="input-icon"/>
+              <FaUser className="input-icon" />
 
               <input
                 type="text"
                 placeholder="Username"
                 value={username}
-                onChange={(e)=>setUsername(e.target.value)}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
-
             </div>
 
             <div className="input-box">
-
-              <FaLock className="input-icon"/>
+              <FaLock className="input-icon" />
 
               <input
-                type={
-                  showPassword
-                    ? "text"
-                    : "password"
-                }
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 value={password}
-                onChange={(e)=>setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
 
               <span
                 className="eye"
-                onClick={()=>
-                  setShowPassword(!showPassword)
-                }
+                onClick={() => setShowPassword(!showPassword)}
               >
-                {
-                  showPassword
-                  ? <FaEyeSlash/>
-                  : <FaEye/>
-                }
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
-
             </div>
 
             <div className="remember">
-
               <label>
-
                 <input
                   type="checkbox"
                   checked={rememberMe}
-                  onChange={(e)=>
-                    setRememberMe(
-                      e.target.checked
-                    )
+                  onChange={(e) =>
+                    setRememberMe(e.target.checked)
                   }
                 />
-
                 Remember Me
-
               </label>
 
               <Link to="/forgot-password">
                 Forgot Password?
               </Link>
-
             </div>
 
             <button
+              type="submit"
               className="login-btn"
             >
               Login
             </button>
 
             <div className="register-link">
-
               New Student?
-
               <Link to="/register">
+                {" "}
                 Register
               </Link>
-
             </div>
-
           </form>
-
         </div>
-
       </div>
-
     </div>
   );
 };
