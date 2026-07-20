@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import {
   FaUserGraduate,
   FaUser,
@@ -11,151 +12,384 @@ import {
 import studentsData from "../data/students";
 import "../styles/Login.css";
 
+
 const Login = () => {
+
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
 
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("rememberStudent"));
+  const [username,setUsername] = useState("");
+  const [password,setPassword] = useState("");
 
-    if (saved) {
+  const [showPassword,setShowPassword] = useState(false);
+
+  const [rememberMe,setRememberMe] = useState(false);
+
+
+
+  // Remember Login
+  useEffect(()=>{
+
+    const saved =
+      JSON.parse(
+        localStorage.getItem("rememberStudent")
+      );
+
+
+    if(saved){
+
       setUsername(saved.username);
       setPassword(saved.password);
       setRememberMe(true);
-    }
-  }, []);
 
-  const handleLogin = (e) => {
+    }
+
+
+  },[]);
+
+
+
+  const handleLogin = (e)=>{
+
     e.preventDefault();
 
-    // Registered students from localStorage
-    const localStudents =
-      JSON.parse(localStorage.getItem("students")) || [];
 
-    // Use localStorage students if available, otherwise use default students
+
+    const registeredStudents =
+      JSON.parse(
+        localStorage.getItem("students")
+      ) || [];
+
+
+
     const students =
-      localStudents.length > 0 ? localStudents : studentsData;
+      registeredStudents.length > 0
+      ? registeredStudents
+      : studentsData;
 
-    const student = students.find(
-      (item) =>
-        item.username.trim().toLowerCase() ===
-          username.trim().toLowerCase() &&
+
+
+
+    const student =
+      students.find((item)=>
+
+        item.username.toLowerCase()
+        === username.trim().toLowerCase()
+
+        &&
+
         item.password === password
-    );
 
-    if (!student) {
-      alert("Invalid Username or Password");
+      );
+
+
+
+    if(!student){
+
+      alert(
+        "Invalid Username or Password"
+      );
+
       return;
+
     }
+
+
+
 
     localStorage.setItem(
       "currentStudent",
       JSON.stringify(student)
     );
 
-    if (rememberMe) {
+
+
+    if(rememberMe){
+
       localStorage.setItem(
         "rememberStudent",
+
         JSON.stringify({
+
           username,
-          password,
+          password
+
         })
+
       );
-    } else {
-      localStorage.removeItem("rememberStudent");
+
+    }
+    else{
+
+      localStorage.removeItem(
+        "rememberStudent"
+      );
+
     }
 
-    alert("Login Successful");
+
+
+    alert(
+      "Login Successful"
+    );
+
 
     navigate("/dashboard");
+
+
   };
 
-  return (
-    <div className="login-page">
-      <div className="overlay">
-        <div className="left-section">
-          <FaUserGraduate className="graduate-icon" />
 
-          <h1>Student Attendance</h1>
-          <h2>Management System</h2>
-          <p>Track Attendance Easily</p>
-        </div>
 
-        <div className="login-card">
-          <h2>Student Login</h2>
 
-          <form onSubmit={handleLogin}>
-            <div className="input-box">
-              <FaUser className="input-icon" />
 
-              <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </div>
+  return(
 
-            <div className="input-box">
-              <FaLock className="input-icon" />
+<div className="login-page">
 
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
 
-              <span
-                className="eye"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </span>
-            </div>
+<div className="overlay">
 
-            <div className="remember">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) =>
-                    setRememberMe(e.target.checked)
-                  }
-                />
-                Remember Me
-              </label>
 
-              <Link to="/forgot-password">
-                Forgot Password?
-              </Link>
-            </div>
 
-            <button
-              type="submit"
-              className="login-btn"
-            >
-              Login
-            </button>
+<div className="left-section">
 
-            <div className="register-link">
-              New Student?
-              <Link to="/register">
-                {" "}
-                Register
-              </Link>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+
+<FaUserGraduate 
+className="graduate-icon"
+/>
+
+
+<h1>
+Student Attendance
+</h1>
+
+
+<h2>
+Management System
+</h2>
+
+
+<p>
+Smart College Attendance Solution
+</p>
+
+
+</div>
+
+
+
+
+
+<div className="login-card">
+
+
+<div className="logo-box">
+
+<FaUserGraduate/>
+
+</div>
+
+
+<h2>
+Student Login
+</h2>
+
+
+
+<form onSubmit={handleLogin}>
+
+
+<div className="input-box">
+
+<FaUser className="input-icon"/>
+
+
+<input
+
+type="text"
+
+placeholder="Username"
+
+value={username}
+
+onChange={(e)=>
+setUsername(e.target.value)
+}
+
+required
+
+/>
+
+</div>
+
+
+
+
+
+<div className="input-box">
+
+
+<FaLock className="input-icon"/>
+
+
+
+<input
+
+type={
+showPassword
+?
+"text"
+:
+"password"
+}
+
+placeholder="Password"
+
+value={password}
+
+onChange={(e)=>
+setPassword(e.target.value)
+}
+
+required
+
+/>
+
+
+
+
+<span
+
+className="eye"
+
+onClick={()=>
+setShowPassword(!showPassword)
+}
+
+>
+
+
+{
+
+showPassword
+
+?
+
+<FaEyeSlash/>
+
+:
+
+<FaEye/>
+
+}
+
+
+</span>
+
+
+
+</div>
+
+
+
+
+
+<div className="remember">
+
+
+<label>
+
+
+<input
+
+type="checkbox"
+
+checked={rememberMe}
+
+onChange={(e)=>
+setRememberMe(
+e.target.checked
+)
+}
+
+/>
+
+
+Remember Me
+
+
+</label>
+
+
+
+
+
+<Link to="/forgot-password">
+
+Forgot Password?
+
+</Link>
+
+
+</div>
+
+
+
+
+
+
+<button
+
+type="submit"
+
+className="login-btn"
+
+>
+
+Login
+
+</button>
+
+
+
+
+
+
+<div className="register-link">
+
+
+New Student?
+
+
+<Link to="/register">
+
+Register
+
+</Link>
+
+
+</div>
+
+
+
+</form>
+
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
   );
+
 };
+
 
 export default Login;
