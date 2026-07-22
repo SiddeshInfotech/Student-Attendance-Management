@@ -1,0 +1,249 @@
+/* ===========================
+   Navbar
+=========================== */
+
+.navbar{
+    height:75px;
+    width:100%;
+    background:#ffffff;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 25px;
+
+    border-bottom:1px solid #e2e8f0;
+    box-shadow:0 4px 12px rgba(0,0,0,.06);
+
+    position:sticky;
+    top:0;
+    z-index:999;
+
+    box-sizing:border-box;
+    overflow:hidden;
+}
+
+
+/* ===========================
+   Left Section
+=========================== */
+
+.navbar-left{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+
+    min-width:0;
+}
+
+
+.navbar-left h2{
+    margin:0;
+
+    font-size:22px;
+    font-weight:700;
+
+    color:#1e293b;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+
+.navbar-left h2 span{
+    color:#2563eb;
+}
+
+
+.navbar-left p{
+    margin:0;
+
+    font-size:13px;
+
+    color:#64748b;
+
+    white-space:nowrap;
+}
+
+
+/* ===========================
+   Right Section
+=========================== */
+
+.navbar-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    flex-shrink:0;
+
+}
+
+
+/* ===========================
+   Date Box
+=========================== */
+
+.date-box{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    background:#f1f5f9;
+
+    padding:8px 12px;
+
+    border-radius:10px;
+
+    color:#334155;
+
+    font-size:13px;
+
+}
+
+
+.date-box svg{
+
+    color:#2563eb;
+
+}
+
+
+/* ===========================
+   Profile Box
+=========================== */
+
+
+.profile-box{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+
+.profile-icon{
+
+    font-size:42px;
+
+    color:#2563eb;
+
+}
+
+
+.profile-box h4{
+
+    margin:0;
+
+    font-size:15px;
+
+    color:#1e293b;
+
+}
+
+
+.profile-box small{
+
+    color:#64748b;
+
+    font-size:12px;
+
+}
+
+
+
+/* ===========================
+   Mobile
+=========================== */
+
+
+@media(max-width:768px){
+
+
+    .navbar{
+
+        padding:0 15px;
+
+    }
+
+
+    .navbar-left h2{
+
+        font-size:18px;
+
+    }
+
+
+    .navbar-left p{
+
+        font-size:11px;
+
+    }
+
+
+    .date-box{
+
+        display:none;
+
+    }
+
+
+    .profile-icon{
+
+        font-size:38px;
+
+    }
+
+
+}
+
+
+
+@media(max-width:600px){
+
+
+    .navbar{
+
+        height:auto;
+
+        padding:12px 15px;
+
+        gap:10px;
+
+    }
+
+
+    .navbar-left{
+
+        text-align:center;
+
+    }
+
+
+    .navbar-right{
+
+        gap:8px;
+
+    }
+
+
+    .profile-box h4,
+    .profile-box small{
+
+        display:none;
+
+    }
+
+
+}

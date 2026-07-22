@@ -55,20 +55,16 @@ const Login = () => {
 
 
 
-    const registeredStudents =
-      JSON.parse(
-        localStorage.getItem("students")
-      ) || [];
+   const registeredStudents =
+  JSON.parse(
+    localStorage.getItem("students")
+  ) || [];
 
-
-
-    const students =
-      registeredStudents.length > 0
-      ? registeredStudents
-      : studentsData;
-
-
-
+// Merge default students + registered students
+const students = [
+  ...studentsData,
+  ...registeredStudents,
+];
 
     const student =
       students.find((item)=>

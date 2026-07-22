@@ -141,7 +141,33 @@ username:student.username,
 password:student.password,
 
 
-attendance:[]
+attendance: [
+  {
+    date: "2026-07-01",
+    subject: "Java Programming",
+    status: "Present",
+  },
+  {
+    date: "2026-07-02",
+    subject: "Python",
+    status: "Present",
+  },
+  {
+    date: "2026-07-03",
+    subject: "React JS",
+    status: "Absent",
+  },
+  {
+    date: "2026-07-04",
+    subject: "HTML",
+    status: "Present",
+  },
+  {
+    date: "2026-07-05",
+    subject: "CSS",
+    status: "Present",
+  }
+]
 
 
 };

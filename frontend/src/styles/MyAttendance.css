@@ -11,9 +11,9 @@
 .attendance-title{
     text-align:center;
     color:#000;
-    font-size:34px;
+    font-size:30px;
     font-weight:700;
-    margin-bottom:35px;
+    margin-bottom:25px;
 }
 
 /* Summary Cards */
@@ -26,45 +26,75 @@
 }
 
 .summary-card{
-    background:#fff;
-    border-radius:18px;
-    padding:30px 20px;
-    text-align:center;
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    background:#ffffff;
+    border-radius:15px;
+    padding:18px 15px;
+    height:120px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    box-shadow:0 6px 15px rgba(0,0,0,.08);
+
     transition:.3s;
 }
 
+
 .summary-card:hover{
     transform:translateY(-5px);
-    box-shadow:0 12px 28px rgba(0,0,0,.12);
+    box-shadow:0 12px 25px rgba(0,0,0,.12);
 }
+
+
 
 .summary-icon{
-    font-size:42px;
-    margin-bottom:12px;
+    font-size:30px;
+    margin-bottom:5px;
     color:#2563eb;
 }
-
 .summary-card h3{
     color:#334155;
     font-size:18px;
     margin-bottom:10px;
 }
 
-.summary-card p{
-    font-size:30px;
-    font-weight:bold;
-    color:#2563eb;
+.summary-card{
+    border-radius:18px;
+    padding:18px 15px;
+    height:120px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+    transition:.3s;
 }
 
-.present-card .summary-icon,
-.present-card p{
-    color:#16a34a;
+
+/* Total Classes */
+
+.summary-card.total{
+    background:linear-gradient(135deg,#bfdbfe,#dbeafe);
+    color:#1d4ed8;
 }
 
-.absent-card .summary-icon,
-.absent-card p{
-    color:#dc2626;
+
+.summary-card.present{
+    background:linear-gradient(135deg,#bbf7d0,#dcfce7);
+    color:#15803d;
+}
+
+
+.summary-card.absent{
+    background:linear-gradient(135deg,#fecaca,#fee2e2);
+    color:#b91c1c;
 }
 
 /* Search */

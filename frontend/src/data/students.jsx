@@ -5,8 +5,8 @@ const defaultStudents = [
     rollNo: "101",
     className: "Computer Engineering",
     email: "hemangi@gmail.com",
-    username: "hemangi",
-    password: "123456",
+    username: "rani",
+    password: "12345",
 
     attendance: [
       {

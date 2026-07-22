@@ -43,24 +43,26 @@ const MyAttendance = () => {
 
         <div className="attendance-page">
 
-          <h1>My Attendance</h1>
+          <h1 className="attendance-title">
+            My Attendance
+          </h1>
 
           <div className="attendance-summary">
 
-            <div className="summary-card">
-              <FaBook />
+            <div className="summary-card total">
+             <FaBook className="summary-icon"/>
               <h3>Total Classes</h3>
               <p>{totalClasses}</p>
             </div>
 
             <div className="summary-card present">
-              <FaCheckCircle />
+              <FaCheckCircle className="summary-icon"/>
               <h3>Present</h3>
               <p>{presentDays}</p>
             </div>
 
             <div className="summary-card absent">
-              <FaTimesCircle />
+              <FaTimesCircle className="summary-icon"/>
               <h3>Absent</h3>
               <p>{absentDays}</p>
             </div>

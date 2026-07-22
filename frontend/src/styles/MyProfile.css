@@ -29,11 +29,10 @@
 
 .profile-header h1{
     color:#000;
-    font-size:34px;
+    font-size:26px !important;
     font-weight:700;
     margin-bottom:8px;
 }
-
 .profile-header p{
     color:#64748b;
     font-size:15px;

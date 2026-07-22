@@ -1,0 +1,157 @@
+.sidebar{
+    width:220px;
+    height:100vh;
+    position:fixed;
+    top:0;
+    left:0;
+    background:#1E293B;
+    color:#ffffff;
+    padding:22px 16px;
+    overflow-y:auto;
+    box-shadow:none;
+    z-index:1000;
+    transition:all .3s ease;
+}
+
+/* ===========================
+   Logo
+=========================== */
+
+.sidebar-logo{
+    text-align:center;
+    margin-bottom:35px;
+    padding-bottom:18px;
+    border-bottom:1px solid rgba(255,255,255,.10);
+}
+
+.sidebar-logo h2{
+    font-size:22px;
+    font-weight:700;
+    color:#ffffff;
+    letter-spacing:.5px;
+}
+
+/* ===========================
+   Menu
+=========================== */
+
+.sidebar-menu{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    flex:1;
+}
+
+.sidebar-menu a{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 14px;
+    color:#CBD5E1;
+    text-decoration:none;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:500;
+    transition:all .3s ease;
+}
+
+.sidebar-menu a svg{
+    font-size:15px;
+    min-width:18px;
+}
+
+.sidebar-menu a:hover{
+    background:#334155;
+    color:#ffffff;
+    transform:translateX(5px);
+}
+
+.sidebar-menu .active{
+    background:#2563EB;
+    color:#ffffff;
+    font-weight:600;
+    box-shadow:0 4px 12px rgba(37,99,235,.30);
+}
+
+.sidebar-menu .active svg{
+    color:#ffffff;
+}
+
+/* ===========================
+   Logout Button
+=========================== */
+
+.logout-btn{
+    width:100%;
+    margin-top:auto;
+    padding:11px;
+    border:none;
+    border-radius:8px;
+    background:#DC2626;
+    color:#ffffff;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.logout-btn:hover{
+    background:#B91C1C;
+    transform:translateY(-2px);
+}
+
+/* ===========================
+   Scrollbar
+=========================== */
+
+.sidebar::-webkit-scrollbar{
+    width:6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+    background:#475569;
+    border-radius:10px;
+}
+
+.sidebar::-webkit-scrollbar-track{
+    background:transparent;
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media(max-width:992px){
+
+    .sidebar{
+        width:220px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .sidebar{
+        width:220px;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+        min-height:auto;
+    }
+
+    .sidebar-logo{
+        margin-bottom:20px;
+    }
+
+    .sidebar-menu{
+        gap:8px;
+    }
+
+}

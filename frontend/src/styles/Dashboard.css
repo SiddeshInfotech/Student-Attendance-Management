@@ -6,16 +6,21 @@
 
 .dashboard-content{
     flex:1;
-    margin-left:260px;
+    margin-left:220px;
+    width:calc(100% - 220px);
+    min-height:100vh;
     display:flex;
     flex-direction:column;
-    min-height:100vh;
+    overflow-x:hidden;
 }
 
 .dashboard-body{
     padding:30px;
 }
 
+/* =============================
+   Login Message
+============================= */
 
 .login-message{
     width:100%;
@@ -45,6 +50,10 @@
     background:#1d4ed8;
 }
 
+/* =============================
+   Welcome Card
+============================= */
+
 .welcome-card{
     display:flex;
     justify-content:space-between;
@@ -54,7 +63,6 @@
     margin:0 auto 30px;
 
     background:linear-gradient(135deg,#0f172a,#1e40af,#2563eb);
-
     color:#fff;
 
     padding:22px 30px;
@@ -91,9 +99,9 @@
     font-size:55px;
 }
 
-/* ============================= */
-/* Student Cards */
-/* ============================= */
+/* =============================
+   Student Cards
+============================= */
 
 .student-card{
     display:grid;
@@ -116,9 +124,6 @@
 }
 
 .info-box:hover{
-    transform:translateY(-3px);
-}
-.info-box:hover{
     transform:translateY(-5px);
 }
 
@@ -133,6 +138,7 @@
     align-items:center;
     font-size:18px;
 }
+
 .info-box h3{
     color:#2563eb;
     margin-bottom:5px;
@@ -145,17 +151,18 @@
     font-size:15px;
     font-weight:500;
 }
-/* ============================= */
-/* Download Button */
-/* ============================= */
+
+/* =============================
+   Download Section
+============================= */
 
 .download-section{
     margin:25px 0;
 }
 
-/* ============================= */
-/* Section Title */
-/* ============================= */
+/* =============================
+   Section Title
+============================= */
 
 .section-title{
     color:#1e293b;
@@ -164,19 +171,18 @@
     font-weight:700;
 }
 
-/* ============================= */
-/* Quick Actions */
-/* ============================= */
+/* =============================
+   Quick Actions
+============================= */
 
 .quick-actions{
     display:grid;
     grid-template-columns:repeat(4,1fr);
     gap:20px;
 }
-
-/* ============================= */
-/* Action Cards */
-/* ============================= */
+/* =============================
+   Action Cards
+============================= */
 
 .action-card{
     background:#ffffff;
@@ -247,9 +253,9 @@
     line-height:1.5;
 }
 
-/* ============================= */
-/* Animation */
-/* ============================= */
+/* =============================
+   Animation
+============================= */
 
 @keyframes fadeIn{
     from{
@@ -268,14 +274,14 @@
     animation:fadeIn .6s ease;
 }
 
-/* ============================= */
-/* Large Tablet */
-/* ============================= */
+/* =============================
+   Large Tablet
+============================= */
 
 @media(max-width:1200px){
 
     .dashboard-content{
-        margin-left:240px;
+        margin-left:220px;
     }
 
     .student-card{
@@ -288,9 +294,9 @@
 
 }
 
-/* ============================= */
-/* Tablet */
-/* ============================= */
+/* =============================
+   Tablet
+============================= */
 
 @media(max-width:992px){
 
@@ -306,9 +312,9 @@
 
 }
 
-/* ============================= */
-/* Mobile */
-/* ============================= */
+/* =============================
+   Mobile
+============================= */
 
 @media(max-width:768px){
 
@@ -344,9 +350,9 @@
 
 }
 
-/* ============================= */
-/* Small Mobile */
-/* ============================= */
+/* =============================
+   Small Mobile
+============================= */
 
 @media(max-width:480px){
 
@@ -355,11 +361,11 @@
     }
 
     .welcome-card{
-        padding:25px;
+        padding:20px;
     }
 
     .welcome-left h1{
-        font-size:23px;
+        font-size:22px;
     }
 
     .section-title{
@@ -367,17 +373,30 @@
     }
 
     .action-card{
-        min-height:170px;
-        padding:22px;
-    }
+    background:#ffffff;
+    border-radius:18px;
+    padding:22px 18px;
+    text-align:center;
+    text-decoration:none;
+    color:#1e293b;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    transition:all .35s ease;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    min-height:160px;
+    position:relative;
+    overflow:hidden;
+}
 
-    .card-icon{
-        font-size:42px;
-    }
-
+  .card-icon{
+    font-size:42px;
+    margin-bottom:12px;
+}
     .info-box{
         flex-direction:column;
         text-align:center;
     }
 
-}    
+}
