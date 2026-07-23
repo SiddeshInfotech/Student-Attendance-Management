@@ -144,7 +144,7 @@ function Dashboard({ setPage }) {
 
         {/* Footer / Logout */}
         <div className="sidebar-footer">
-          <button className="logout-btn" onClick={() => setPage("login")}>
+          <button className="logout-btn" onClick={() => setPage("landing")}>
             <FaSignOutAlt />
             <span>Log Out</span>
           </button>

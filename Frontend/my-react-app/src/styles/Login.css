@@ -665,6 +665,24 @@ body {
    RESPONSIVE BREAKPOINTS
    ========================================================== */
 
+/* ── Standard Laptops: 1024px – 1366px ───────────────────── */
+@media (max-width: 1366px) {
+  .login-left {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  .login-right {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding: clamp(1rem, 4vw, 3rem);
+  }
+
+  .illustration-container {
+    padding: 2rem;
+  }
+}
+
 /* ── Tablet: 768px – 1023px ──────────────────────────────── */
 @media (max-width: 1023px) {
   .login-left {
