@@ -224,7 +224,8 @@ function Signup({ setPage }) {
                   and{" "}
                   <a href="#" style={{ color: "#2563eb", fontWeight: "600", textDecoration: "none" }} onClick={(e) => e.preventDefault()}>
                     Privacy Policy
-                  </a>
+                  </a>{" "}
+                  regarding my academic data.
                 </span>
               </label>
             </div>

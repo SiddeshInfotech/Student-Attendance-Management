@@ -10,9 +10,9 @@ import { FcGoogle } from "react-icons/fc";
 import "../styles/Login.css";
 import studentAttendanceImg from "../assets/images/student_attendance_illustration.png";
 
-function Login({ setPage }) {
-  const [email, setEmail] = useState("admin@attendance.com");
-  const [password, setPassword] = useState("admin");
+function StudentLogin({ setPage }) {
+  const [email, setEmail] = useState("student@attendance.com");
+  const [password, setPassword] = useState("student123");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,12 +25,12 @@ function Login({ setPage }) {
 
     // Validate credentials
     setTimeout(() => {
-      if (email === "admin@attendance.com" && password === "admin") {
+      if (email === "student@attendance.com" && password === "student123") {
         setIsLoading(false);
-        setPage("dashboard");
+        setPage("student-dashboard");
       } else {
         setIsLoading(false);
-        setError("Invalid email or password. Try: admin@attendance.com / admin");
+        setError("Invalid email or password. Try: student@attendance.com / admin");
       }
     }, 1200);
   };
@@ -161,7 +161,7 @@ function Login({ setPage }) {
                 className="forgot-password-link"
                 onClick={(e) => {
                   e.preventDefault();
-                  setPage("forgot");
+                  setPage("student-forgot");
                 }}
               >
                 Forgot Password?
@@ -207,10 +207,10 @@ function Login({ setPage }) {
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                setPage("signup");
+                setPage("student-signup");
               }}
             >
-              Sign-up
+              Register
             </a>
           </div>
 
@@ -221,4 +221,4 @@ function Login({ setPage }) {
   );
 }
 
-export default Login;
+export default StudentLogin;

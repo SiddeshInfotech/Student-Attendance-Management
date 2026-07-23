@@ -1,43 +1,56 @@
 import { useState } from "react";
 import {
+  FaUser,
   FaEnvelope,
   FaLock,
   FaEye,
   FaEyeSlash,
   FaSignInAlt,
 } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
-import "../styles/Login.css";
+import "../styles/Signup.css";
 import studentAttendanceImg from "../assets/images/student_attendance_illustration.png";
 
-function Login({ setPage }) {
-  const [email, setEmail] = useState("admin@attendance.com");
-  const [password, setPassword] = useState("admin");
+function StudentSignup({ setPage }) {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [agreeToTerms, setAgreeToTerms] = useState(true);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleLogin = (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
-    setIsLoading(true);
     setError("");
+    setSuccess("");
 
-    // Validate credentials
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+
+    setIsLoading(true);
+
     setTimeout(() => {
-      if (email === "admin@attendance.com" && password === "admin") {
-        setIsLoading(false);
-        setPage("dashboard");
-      } else {
-        setIsLoading(false);
-        setError("Invalid email or password. Try: admin@attendance.com / admin");
-      }
+      setIsLoading(false);
+      setSuccess("Account created successfully! Redirecting to login...");
+      setTimeout(() => {
+        setPage("student-login");
+      }, 1500);
     }, 1200);
   };
 
   return (
     <div className="login-container">
-      {/* Left side illustration */}
+      {/* Left side illustration - same as login for brand consistency */}
       <div className="login-left">
         <div className="brand">
           <div className="brand-logo-icon">
@@ -88,11 +101,11 @@ function Login({ setPage }) {
                 </svg>
               </div>
             </div>
-            <h2>Welcome Back</h2>
-            <p className="card-subtitle">Sign in to continue managing student attendance</p>
+            <h2>Create Account</h2>
+            <p className="card-subtitle">Student Register</p>
           </div>
 
-          <form onSubmit={handleLogin} className="login-form">
+          <form onSubmit={handleSignup} className="login-form">
             {error && (
               <div className="error-alert">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="error-alert-icon">
@@ -103,6 +116,30 @@ function Login({ setPage }) {
                 <span>{error}</span>
               </div>
             )}
+            {success && (
+              <div className="success-alert">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="success-alert-icon">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                <span>{success}</span>
+              </div>
+            )}
+            <div className="input-group">
+              <label htmlFor="fullName">Full Name</label>
+              <div className="input-field-wrapper">
+                <FaUser className="input-icon" />
+                <input
+                  id="fullName"
+                  type="text"
+                  placeholder="Enter your full name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
             <div className="input-group">
               <label htmlFor="email">Email Address</label>
               <div className="input-field-wrapper">
@@ -125,7 +162,7 @@ function Login({ setPage }) {
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
+                  placeholder="Create a password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -134,7 +171,6 @@ function Login({ setPage }) {
                   type="button"
                   className="password-toggle"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
                     <FaEyeSlash className="toggle-icon" />
@@ -145,27 +181,53 @@ function Login({ setPage }) {
               </div>
             </div>
 
-            <div className="form-actions">
+            <div className="input-group">
+              <label htmlFor="confirmPassword">Confirm Password</label>
+              <div className="input-field-wrapper">
+                <FaLock className="input-icon" />
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? (
+                    <FaEyeSlash className="toggle-icon" />
+                  ) : (
+                    <FaEye className="toggle-icon" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div className="form-actions" style={{ justifyContent: "flex-start", marginTop: "8px", marginBottom: "8px" }}>
               <label className="checkbox-container">
                 <input
                   type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
+                  checked={agreeToTerms}
+                  onChange={(e) => setAgreeToTerms(e.target.checked)}
+                  required
                 />
                 <span className="checkbox-checkmark"></span>
-                <span className="checkbox-label">Remember Me</span>
+                <span className="checkbox-label" style={{ lineHeight: "1.4" }}>
+                  I agree to the{" "}
+                  <a href="#" style={{ color: "#2563eb", fontWeight: "600", textDecoration: "none" }} onClick={(e) => e.preventDefault()}>
+                    Terms of Service
+                  </a>{" "}
+                  and{" "}
+                  <a href="#" style={{ color: "#2563eb", fontWeight: "600", textDecoration: "none" }} onClick={(e) => e.preventDefault()}>
+                    Privacy Policy
+                  </a>{" "}
+                  regarding my academic data.
+                </span>
               </label>
-
-              <a
-                href="#"
-                className="forgot-password-link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setPage("forgot");
-                }}
-              >
-                Forgot Password?
-              </a>
             </div>
 
             <button type="submit" className="login-submit-btn" disabled={isLoading}>
@@ -173,52 +235,29 @@ function Login({ setPage }) {
                 <div className="loading-spinner"></div>
               ) : (
                 <>
-                  <FaSignInAlt className="btn-icon" />
-                  <span>Log In</span>
+                  <FaSignInAlt className="btn-icon" style={{ transform: "rotate(180deg)" }} />
+                  <span>Register</span>
                 </>
               )}
             </button>
           </form>
 
-          <div className="auth-divider">
-            <span>OR CONTINUE WITH</span>
-          </div>
-
-          <div className="social-auth-row">
-            <button type="button" className="social-auth-btn">
-              <FcGoogle className="social-btn-icon" />
-              <span>Continue with Google</span>
-            </button>
-
-            <button type="button" className="social-auth-btn">
-              <svg className="social-btn-icon microsoft-icon" viewBox="0 0 23 23" width="24" height="24">
-                <rect x="0" y="0" width="11" height="11" fill="#f25022" />
-                <rect x="12" y="0" width="11" height="11" fill="#7fba00" />
-                <rect x="0" y="12" width="11" height="11" fill="#00a4ef" />
-                <rect x="12" y="12" width="11" height="11" fill="#ffb900" />
-              </svg>
-              <span>Continue with Microsoft</span>
-            </button>
-          </div>
-
           <div className="signup-prompt">
-            Don't have an account?{" "}
+            Already have an account?{" "}
             <a
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                setPage("signup");
+                setPage("student-login");
               }}
             >
-              Sign-up
+              Login
             </a>
           </div>
-
-
         </div>
       </div>
     </div>
   );
 }
 
-export default Login;
+export default StudentSignup;

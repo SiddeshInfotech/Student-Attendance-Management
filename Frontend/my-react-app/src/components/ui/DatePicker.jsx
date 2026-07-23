@@ -17,7 +17,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { FaChevronLeft, FaChevronRight, FaCalendarAlt } from "react-icons/fa";
 import "../../styles/DatePicker.css";
 
-const DAYS   = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const DAYS   = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 const MONTHS = [
   "January","February","March","April","May","June",
   "July","August","September","October","November","December",
@@ -33,7 +33,7 @@ const formatDisplay = (dateStr) => {
   return `${parseInt(d, 10)} ${MONTHS[parseInt(m, 10) - 1].slice(0, 3)} ${y}`;
 };
 
-function DatePicker({ value, onChange, max, min, placeholder = "Select date" }) {
+function DatePicker({ value, onChange, max, min, placeholder = "Select date", className = "", style = {} }) {
   const [open, setOpen]             = useState(false);
   const [viewYear, setViewYear]     = useState(0);
   const [viewMonth, setViewMonth]   = useState(0); // 1-based
@@ -67,8 +67,7 @@ function DatePicker({ value, onChange, max, min, placeholder = "Select date" }) 
   const calendarDays = useMemo(() => {
     const firstDay  = new Date(viewYear, viewMonth - 1, 1);
     const lastDay   = new Date(viewYear, viewMonth, 0).getDate();
-    let startDow    = firstDay.getDay(); // 0=Sun
-    startDow = startDow === 0 ? 6 : startDow - 1; // Convert to Mon=0
+    const startDow  = firstDay.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
 
     const cells = [];
 
@@ -128,7 +127,8 @@ function DatePicker({ value, onChange, max, min, placeholder = "Select date" }) 
       {/* Trigger input */}
       <button
         type="button"
-        className="dp-trigger"
+        className={`dp-trigger ${className}`}
+        style={style}
         onClick={() => setOpen(!open)}
       >
         <FaCalendarAlt className="dp-trigger-icon" />

@@ -2180,12 +2180,14 @@
   position: relative;
   display: flex;
   align-items: center;
+  gap: 0;
   background: #fff;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
   height: 52px;
   transition: border-color 0.2s, box-shadow 0.2s;
   overflow: hidden;
+  padding-left: 14px;
 }
 
 .indiv-search-wrapper:focus-within {
@@ -2194,12 +2196,11 @@
 }
 
 .indiv-search-icon {
-  position: absolute;
-  left: 16px;
   color: #94a3b8;
   font-size: 15px;
   pointer-events: none;
-  z-index: 1;
+  flex-shrink: 0;
+  margin-right: 10px;
 }
 
 .indiv-search-input {
@@ -2208,7 +2209,7 @@
   border: none;
   outline: none;
   background: transparent;
-  padding: 0 44px 0 46px;
+  padding: 0 44px 0 0;
   font-size: 15px;
   font-family: 'Inter', sans-serif;
   color: #0f172a;

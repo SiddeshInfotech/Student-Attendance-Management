@@ -16,6 +16,7 @@ import {
   FaSave, FaExclamationTriangle, FaSearch,
 } from "react-icons/fa";
 import { todayStr, formatDateFull } from "../../store/useAttendanceStore";
+import DatePicker from "../ui/DatePicker";
 
 function AttendanceTab({ store, triggerBanner }) {
   const { students, getAttendanceForDate, isAttendanceSaved, saveAttendanceForDate } = store;
@@ -114,17 +115,17 @@ function AttendanceTab({ store, triggerBanner }) {
               <FaCalendarAlt style={{ marginRight: "6px", color: "#3b82f6" }} />
               Select Date
             </label>
-            <input
-              type="date"
+            <DatePicker
               value={selectedDate}
               max={todayStr()}
-              onChange={(e) => setSelectedDate(e.target.value)}
+              onChange={(dateStr) => setSelectedDate(dateStr)}
               style={{
                 height: "46px", padding: "0 14px",
                 border: "1.5px solid #cbd5e1", borderRadius: "10px",
                 fontSize: "15px", color: "#0f172a", outline: "none",
                 fontFamily: "Inter, sans-serif", background: "#fff",
               }}
+              placeholder="Select Date"
             />
           </div>
 

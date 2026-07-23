@@ -21,6 +21,7 @@ import { jsPDF } from "jspdf";
 import {
   todayStr, nDaysAgo, formatDate, dateRange,
 } from "../../store/useAttendanceStore";
+import DatePicker from "../ui/DatePicker";
 
 const MONTHS_FULL = [
   "January","February","March","April","May","June",
@@ -460,12 +461,12 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
                 <FaCalendarAlt style={{ marginRight: "6px", color: "#3b82f6" }} />
                 From Date
               </label>
-              <input
-                type="date"
+              <DatePicker
                 value={customStart}
                 max={customEnd}
-                onChange={(e) => setCustomStart(e.target.value)}
+                onChange={(dateStr) => setCustomStart(dateStr)}
                 style={dateInputStyle}
+                placeholder="From Date"
               />
             </div>
             <div className="modal-input-group" style={{ flex: "1", minWidth: "200px", maxWidth: "300px" }}>
@@ -473,13 +474,13 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
                 <FaCalendarAlt style={{ marginRight: "6px", color: "#10b981" }} />
                 To Date
               </label>
-              <input
-                type="date"
+              <DatePicker
                 value={customEnd}
                 min={customStart}
                 max={todayStr()}
-                onChange={(e) => setCustomEnd(e.target.value)}
+                onChange={(dateStr) => setCustomEnd(dateStr)}
                 style={dateInputStyle}
+                placeholder="To Date"
               />
             </div>
             <div style={{ display: "flex", alignItems: "flex-end", paddingBottom: "2px" }}>
@@ -618,7 +619,7 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
               {/* ── Improved student search ────────────── */}
               <div className="modal-input-group" ref={searchRef} style={{ position: "relative" }}>
                 <label className="reports-date-label">
-                  <FaSearch style={{ marginRight: "6px", color: "#3b82f6" }} />
+                  <FaSearch style={{ marginRight: "10px", color: "#3b82f6" }} />
                   Search Student
                 </label>
 
@@ -692,25 +693,25 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
                   <label className="reports-date-label">
                     <FaCalendarAlt style={{ marginRight: "5px", color: "#3b82f6" }} /> From
                   </label>
-                  <input
-                    type="date"
+                  <DatePicker
                     value={indivStart}
                     max={indivEnd}
-                    onChange={(e) => setIndivStart(e.target.value)}
+                    onChange={(dateStr) => setIndivStart(dateStr)}
                     style={dateInputStyle}
+                    placeholder="From Date"
                   />
                 </div>
                 <div className="modal-input-group">
                   <label className="reports-date-label">
                     <FaCalendarAlt style={{ marginRight: "5px", color: "#10b981" }} /> To
                   </label>
-                  <input
-                    type="date"
+                  <DatePicker
                     value={indivEnd}
                     min={indivStart}
                     max={todayStr()}
-                    onChange={(e) => setIndivEnd(e.target.value)}
+                    onChange={(dateStr) => setIndivEnd(dateStr)}
                     style={dateInputStyle}
+                    placeholder="To Date"
                   />
                 </div>
               </div>
@@ -748,12 +749,12 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
                   <FaCalendarAlt style={{ marginRight: "6px", color: "#7c3aed" }} />
                   Any Date in the Week
                 </label>
-                <input
-                  type="date"
+                <DatePicker
                   value={weekDate}
                   max={todayStr()}
-                  onChange={(e) => setWeekDate(e.target.value)}
+                  onChange={(dateStr) => setWeekDate(dateStr)}
                   style={dateInputStyle}
+                  placeholder="Select Date"
                 />
               </div>
 

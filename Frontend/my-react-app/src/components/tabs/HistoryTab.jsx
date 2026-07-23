@@ -17,6 +17,7 @@ import {
   FaFilter,
 } from "react-icons/fa";
 import { todayStr, nDaysAgo, formatDate } from "../../store/useAttendanceStore";
+import DatePicker from "../ui/DatePicker";
 
 const ROWS_PER_PAGE = 15;
 
@@ -133,23 +134,23 @@ function HistoryTab({ store }) {
           <div className="history-custom-range">
             <div className="modal-input-group" style={{ minWidth: "280px" }}>
               <label className="reports-date-label">From Date</label>
-              <input
-                type="date"
+              <DatePicker
                 value={customStart}
                 max={customEnd}
-                onChange={(e) => { setCustomStart(e.target.value); setPage(1); }}
+                onChange={(dateStr) => { setCustomStart(dateStr); setPage(1); }}
                 className="history-date-input"
+                placeholder="From Date"
               />
             </div>
             <div className="modal-input-group" style={{ minWidth: "280px" }}>
               <label className="reports-date-label">To Date</label>
-              <input
-                type="date"
+              <DatePicker
                 value={customEnd}
                 min={customStart}
                 max={todayStr()}
-                onChange={(e) => { setCustomEnd(e.target.value); setPage(1); }}
+                onChange={(dateStr) => { setCustomEnd(dateStr); setPage(1); }}
                 className="history-date-input"
+                placeholder="To Date"
               />
             </div>
           </div>
