@@ -18,6 +18,16 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
+import {
+  getAllStudents,
+  addStudent as apiAddStudent,
+  updateStudent as apiUpdateStudent,
+  deleteStudent as apiDeleteStudent,
+} from "../services/studentService.js";
+import {
+  getAllAttendance,
+  markAttendance as apiMarkAttendance,
+} from "../services/attendanceService.js";
 
 // ── Storage Keys ─────────────────────────────────────────
 const STUDENTS_KEY    = "sam_students";
@@ -128,23 +138,44 @@ export function useAttendanceStore() {
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [isLoaded, setIsLoaded]           = useState(false);
 
-  // Load from localStorage on mount
+  // Load from API or localStorage on mount
   useEffect(() => {
-    let storedStudents    = load(STUDENTS_KEY);
-    let storedAttendance  = load(ATTENDANCE_KEY);
+    const initializeData = async () => {
+      try {
+        // Try fetching from API first
+        const apiStudents = await getAllStudents();
+        const apiAttendance = await getAllAttendance();
+        
+        setStudents(apiStudents || []);
+        setAttendanceRecords(apiAttendance || []);
+        setIsLoaded(true);
+        
+        // Update local storage with fresh API data
+        save(STUDENTS_KEY, apiStudents);
+        save(ATTENDANCE_KEY, apiAttendance);
+      } catch (err) {
+        console.warn("API unavailable, falling back to local storage:", err);
+        
+        // Fallback to local storage logic
+        let storedStudents    = load(STUDENTS_KEY);
+        let storedAttendance  = load(ATTENDANCE_KEY);
 
-    // First-time load: seed with sample data
-    if (!storedStudents || storedStudents.length === 0) {
-      const { seedStudents, seedAttendance } = generateSeedData();
-      storedStudents   = seedStudents;
-      storedAttendance = seedAttendance;
-      save(STUDENTS_KEY, seedStudents);
-      save(ATTENDANCE_KEY, seedAttendance);
-    }
+        // First-time load: seed with sample data
+        if (!storedStudents || storedStudents.length === 0) {
+          const { seedStudents, seedAttendance } = generateSeedData();
+          storedStudents   = seedStudents;
+          storedAttendance = seedAttendance;
+          save(STUDENTS_KEY, seedStudents);
+          save(ATTENDANCE_KEY, seedAttendance);
+        }
 
-    setStudents(storedStudents);
-    setAttendanceRecords(storedAttendance || []);
-    setIsLoaded(true);
+        setStudents(storedStudents);
+        setAttendanceRecords(storedAttendance || []);
+        setIsLoaded(true);
+      }
+    };
+    
+    initializeData();
   }, []);
 
   // Persist whenever state changes (after initial load)
@@ -187,6 +218,12 @@ export function useAttendanceStore() {
     };
 
     setStudents((prev) => [...prev, newStudent]);
+    
+    // Background API sync
+    apiAddStudent(newStudent).catch(err => {
+      console.warn("Failed to sync new student to API, saved locally:", err);
+    });
+    
     return null; // success
   }, [students]);
 
@@ -194,12 +231,22 @@ export function useAttendanceStore() {
     setStudents((prev) =>
       prev.map((s) => (s.id === id ? { ...s, ...updates } : s))
     );
+    
+    // Background API sync
+    apiUpdateStudent(id, updates).catch(err => {
+      console.warn("Failed to sync student update to API:", err);
+    });
   }, []);
 
   const deleteStudent = useCallback((id) => {
     setStudents((prev) => prev.filter((s) => s.id !== id));
     // Also delete their attendance records
     setAttendanceRecords((prev) => prev.filter((a) => a.studentId !== id));
+    
+    // Background API sync
+    apiDeleteStudent(id).catch(err => {
+      console.warn("Failed to sync student deletion to API:", err);
+    });
   }, []);
 
   // ── Attendance CRUD ─────────────────────────────────────
@@ -246,6 +293,12 @@ export function useAttendanceStore() {
         date,
         status,
       }));
+      
+      // Background API sync
+      apiMarkAttendance({ records: newRecords }).catch(err => {
+        console.warn("Failed to sync attendance to API, saved locally:", err);
+      });
+      
       return [...filtered, ...newRecords];
     });
     return null; // success

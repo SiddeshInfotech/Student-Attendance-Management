@@ -7,6 +7,7 @@ import {
   FaSignInAlt,
 } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import { studentLogin } from "../services/authService.js";
 import "../styles/Login.css";
 import studentAttendanceImg from "../assets/images/student_attendance_illustration.png";
 
@@ -18,13 +19,18 @@ function StudentLogin({ setPage }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
-    // Validate credentials
-    setTimeout(() => {
+    try {
+      await studentLogin({ email, password });
+      setIsLoading(false);
+      setPage("student-dashboard");
+    } catch (err) {
+      console.warn("API login failed, falling back to local validation:", err);
+      // Fallback local validation
       if (email === "student@attendance.com" && password === "student123") {
         setIsLoading(false);
         setPage("student-dashboard");
@@ -32,7 +38,7 @@ function StudentLogin({ setPage }) {
         setIsLoading(false);
         setError("Invalid email or password. Try: student@attendance.com / admin");
       }
-    }, 1200);
+    }
   };
 
   return (

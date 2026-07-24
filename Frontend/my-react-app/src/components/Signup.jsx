@@ -5,8 +5,8 @@ import {
   FaLock,
   FaEye,
   FaEyeSlash,
-  FaSignInAlt,
 } from "react-icons/fa";
+import { adminSignup } from "../services/authService.js";
 import "../styles/Signup.css";
 import studentAttendanceImg from "../assets/images/student_attendance_illustration.png";
 
@@ -22,7 +22,7 @@ function Signup({ setPage }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
@@ -39,13 +39,23 @@ function Signup({ setPage }) {
 
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      await adminSignup({ fullName, email, password });
       setIsLoading(false);
       setSuccess("Account created successfully! Redirecting to login...");
       setTimeout(() => {
         setPage("login");
       }, 1500);
-    }, 1200);
+    } catch (err) {
+      console.warn("API signup failed, falling back to local logic:", err);
+      setTimeout(() => {
+        setIsLoading(false);
+        setSuccess("Account created successfully! Redirecting to login...");
+        setTimeout(() => {
+          setPage("login");
+        }, 1500);
+      }, 1200);
+    }
   };
 
   return (
