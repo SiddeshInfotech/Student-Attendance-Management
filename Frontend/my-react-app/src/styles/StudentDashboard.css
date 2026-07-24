@@ -132,7 +132,7 @@
 }
 
 .sd-header-title {
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 700;
   color: #0F172A;
 }
@@ -161,7 +161,7 @@
 .sd-profile-details h2 {
   margin: 0 0 0.25rem 0;
   color: #0F172A;
-  font-size: 1.75rem;
+  font-size: 2rem;
 }
 
 .sd-profile-tags {
@@ -203,7 +203,7 @@
   border-radius: 6px;
   color: #64748B;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 1.125rem;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -223,7 +223,7 @@
   border: none;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -252,13 +252,13 @@
 
 .sd-stat-label {
   color: #64748B;
-  font-size: 1rem;
+  font-size: 1.125rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
 }
 
 .sd-stat-value {
-  font-size: 2.25rem;
+  font-size: 2.5rem;
   font-weight: 700;
   color: #0F172A;
 }
@@ -355,7 +355,7 @@
 
 .sd-form-label {
   display: block;
-  font-size: 1rem;
+  font-size: 1.125rem;
   font-weight: 500;
   color: #475569;
   margin-bottom: 0.5rem;
@@ -366,7 +366,7 @@
   padding: 0.75rem 1rem;
   border: 1px solid #CBD5E1;
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   color: #1E293B;
   transition: border-color 0.2s;
   outline: none;
@@ -389,7 +389,7 @@
   border-radius: 8px;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.125rem;
   cursor: pointer;
   transition: background-color 0.2s;
   width: 100%;
@@ -460,14 +460,14 @@
 }
 
 .sd-profile-name-large {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #0F172A;
   margin-bottom: 0.25rem;
 }
 
 .sd-profile-id-large {
-  font-size: 1rem;
+  font-size: 1.25rem;
   color: #64748B;
   margin-bottom: 0.75rem;
 }
@@ -501,7 +501,7 @@
 }
 
 .sd-profile-stat-label {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #475569;
   letter-spacing: 0.5px;
@@ -516,7 +516,7 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 1.75rem;
+  font-size: 2rem;
   margin-bottom: 0.75rem;
 }
 
