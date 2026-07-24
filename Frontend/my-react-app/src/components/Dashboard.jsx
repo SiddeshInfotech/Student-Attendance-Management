@@ -29,6 +29,8 @@ import {
   FaCog,
   FaCheck,
   FaExclamationTriangle,
+  FaBars,
+  FaTimes,
 } from "react-icons/fa";
 
 import { useAttendanceStore } from "../store/useAttendanceStore";
@@ -52,10 +54,11 @@ const NAV_ITEMS = [
 ];
 
 function Dashboard({ setPage }) {
-  const [activeTab, setActiveTab] = useState("dashboard");
-  const [banner, setBanner]       = useState({ msg: "", type: "success" });
-  const [currentTime, setCurrentTime] = useState("");
-  const [currentDate, setCurrentDate] = useState("");
+  const [activeTab, setActiveTab]       = useState("dashboard");
+  const [banner, setBanner]             = useState({ msg: "", type: "success" });
+  const [currentTime, setCurrentTime]   = useState("");
+  const [currentDate, setCurrentDate]   = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Shared settings (for PDF headers)
   const [schoolName,   setSchoolName]   = useState("Siddesh Infotech High School");
@@ -63,6 +66,12 @@ function Dashboard({ setPage }) {
 
   // Central data store
   const store = useAttendanceStore();
+
+  // Close sidebar on tab selection on mobile
+  const handleTabClick = (id) => {
+    setActiveTab(id);
+    setIsSidebarOpen(false);
+  };
 
   // ── Live clock ───────────────────────────────────────────
   useEffect(() => {
@@ -108,8 +117,31 @@ function Dashboard({ setPage }) {
         </div>
       )}
 
+      {/* ── Mobile Top Header Bar with Hamburger Menu ───── */}
+      <header className="mobile-header-bar">
+        <button
+          className="mobile-hamburger-btn"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          aria-label="Toggle Navigation Menu"
+        >
+          {isSidebarOpen ? <FaTimes /> : <FaBars />}
+        </button>
+        <div className="mobile-header-title">
+          <h3>ScholarTrack</h3>
+          <span>Admin</span>
+        </div>
+      </header>
+
+      {/* ── Mobile Sidebar Overlay Backdrop ──────────────── */}
+      {isSidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* ── Sidebar ───────────────────────────────────────── */}
-      <aside className="dashboard-sidebar">
+      <aside className={`dashboard-sidebar ${isSidebarOpen ? "open" : ""}`}>
         {/* Brand */}
         <div className="sidebar-brand">
           <div className="sidebar-brand-icon">
@@ -124,6 +156,13 @@ function Dashboard({ setPage }) {
             <h3>ScholarTrack</h3>
             <span>Admin Portal</span>
           </div>
+          <button
+            className="sidebar-close-btn"
+            onClick={() => setIsSidebarOpen(false)}
+            aria-label="Close Sidebar"
+          >
+            <FaTimes />
+          </button>
         </div>
 
         {/* Nav */}
@@ -133,7 +172,7 @@ function Dashboard({ setPage }) {
               key={id}
               href="#"
               className={`menu-item ${activeTab === id ? "active" : ""}`}
-              onClick={(e) => { e.preventDefault(); setActiveTab(id); }}
+              onClick={(e) => { e.preventDefault(); handleTabClick(id); }}
               title={label}
             >
               <Icon className="menu-icon" />

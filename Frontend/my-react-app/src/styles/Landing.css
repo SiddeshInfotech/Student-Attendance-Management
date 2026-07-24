@@ -11,40 +11,51 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  max-width: 100%;
   background: linear-gradient(135deg, #0F172A 0%, #1e3a8a 50%, #2563EB 100%);
   color: #ffffff;
+  overflow-x: hidden;
 }
 
 .landing-split {
   display: flex;
   flex: 1;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  align-items: stretch;
 }
 
 .landing-left {
-  flex: 6;
-  padding: 4rem 5rem;
+  flex: 1.2;
+  padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 5vw, 5rem);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
 }
 
 .landing-content {
   max-width: 900px;
   width: 100%;
+  margin: 0 auto 0 0;
 }
 
 /* Brand Logo */
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.875rem;
+  gap: clamp(0.625rem, 1.2vw, 0.875rem);
   z-index: 2;
-  margin-bottom: 2rem;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
   animation: fadeInDown 0.8s ease-out;
 }
 
 .brand-logo-icon {
-  width: 4rem;
-  height: 4rem;
+  width: clamp(3rem, 5vw, 4rem);
+  height: clamp(3rem, 5vw, 4rem);
   background: rgba(37, 99, 235, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
@@ -57,8 +68,8 @@
 }
 
 .brand-logo-icon svg {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: clamp(1.75rem, 3vw, 2.25rem);
+  height: clamp(1.75rem, 3vw, 2.25rem);
 }
 
 .brand-text {
@@ -67,20 +78,20 @@
 }
 
 .brand-title {
-  font-size: 1.75rem;
+  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
   font-weight: 700;
   letter-spacing: 0.5px;
   color: #ffffff;
 }
 
 .brand-subtitle {
-  font-size: 1.1875rem;
+  font-size: clamp(0.875rem, 1.4vw, 1.1875rem);
   font-weight: 600;
   color: #10b981;
 }
 
 .landing-right {
-  flex: 5;
+  flex: 0.8;
   background: none;
   position: sticky;
   top: 0;
@@ -89,53 +100,55 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  padding-right: 4rem;
+  padding: clamp(1rem, 3vw, 3rem);
 }
 
 .landing-img {
+  width: 100%;
   max-width: 90%;
-  max-height: 90%;
+  max-height: 85vh;
   object-fit: contain;
-  border-radius: 30px;
+  border-radius: 24px;
   filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.3));
 }
 
 /* Hero Section */
 .hero-section {
-  margin-bottom: 4rem;
+  margin-bottom: clamp(2rem, 4vw, 4rem);
   animation: fadeInDown 1s ease-out;
 }
 
 .hero-title {
-  font-size: 3.5rem;
+  font-size: clamp(2.125rem, 4.5vw, 3.5rem);
   font-weight: 700;
   line-height: 1.2;
-  margin-bottom: 1rem;
+  margin-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
   background: linear-gradient(to right, #ffffff, #93c5fd);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .hero-subtitle {
-  font-size: 1.5rem;
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
   font-weight: 500;
   color: #10B981;
-  margin-bottom: 1.5rem;
+  margin-bottom: clamp(1rem, 2vw, 1.5rem);
 }
 
 .hero-description {
-  font-size: 1.1rem;
+  font-size: clamp(0.9375rem, 1.4vw, 1.1rem);
   font-weight: 300;
   color: #cbd5e1;
   line-height: 1.6;
+  max-width: 750px;
 }
 
 /* Portals Section */
 .portals-section {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  margin-bottom: 5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  gap: clamp(1rem, 2vw, 2rem);
+  margin-bottom: clamp(2.5rem, 4vw, 5rem);
   animation: fadeInUp 1s ease-out 0.3s both;
 }
 
@@ -145,13 +158,13 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  padding: 2.5rem;
-  flex: 1;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  height: 100%;
 }
 
 .portal-card:hover {
@@ -161,8 +174,8 @@
 }
 
 .portal-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+  font-size: clamp(2.25rem, 3.5vw, 3rem);
+  margin-bottom: clamp(0.75rem, 1.5vw, 1rem);
 }
 
 .admin-icon {
@@ -174,7 +187,7 @@
 }
 
 .portal-card h3 {
-  font-size: 1.5rem;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: #ffffff;
@@ -182,22 +195,26 @@
 
 .portal-card p {
   color: #cbd5e1;
-  font-size: 0.95rem;
+  font-size: clamp(0.875rem, 1.2vw, 0.95rem);
   font-weight: 300;
   margin-bottom: 1.5rem;
   line-height: 1.5;
+  flex-grow: 1;
 }
 
 .portal-btn {
-  padding: 0.8rem 2rem;
+  padding: clamp(0.625rem, 1.2vw, 0.8rem) clamp(1.5rem, 2.5vw, 2rem);
   border-radius: 50px;
-  font-size: 1rem;
+  font-size: clamp(0.875rem, 1.3vw, 1rem);
   font-weight: 600;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   color: #ffffff;
   margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .admin-btn {
@@ -208,7 +225,7 @@
 .admin-btn:hover {
   background: #059669;
   box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 .student-btn {
@@ -219,36 +236,36 @@
 .student-btn:hover {
   background: #1d4ed8;
   box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 /* Features Section */
 .features-section {
-  margin-bottom: 4rem;
+  margin-bottom: clamp(2rem, 4vw, 4rem);
   animation: fadeInUp 1s ease-out 0.6s both;
 }
 
 .features-title {
-  font-size: 2rem;
+  font-size: clamp(1.375rem, 2.5vw, 2rem);
   font-weight: 600;
-  margin-bottom: 2rem;
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
   color: #ffffff;
 }
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: clamp(1rem, 1.8vw, 1.5rem);
 }
 
 .feature-item {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 15px;
-  padding: 1.5rem;
+  padding: clamp(1rem, 1.8vw, 1.5rem);
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: clamp(0.875rem, 1.5vw, 1.25rem);
   transition: background 0.3s ease;
 }
 
@@ -257,35 +274,35 @@
 }
 
 .feature-icon {
-  font-size: 1.8rem;
+  font-size: clamp(1.375rem, 2vw, 1.8rem);
   color: #ffffff;
   background: rgba(30, 58, 138, 0.8);
-  padding: 0.8rem;
+  padding: clamp(0.6rem, 1vw, 0.8rem);
   border-radius: 12px;
+  flex-shrink: 0;
 }
 
 .feature-text h4 {
-  font-size: 1.1rem;
+  font-size: clamp(0.9375rem, 1.3vw, 1.1rem);
   font-weight: 700;
   margin-bottom: 0.25rem;
   color: #ffffff;
 }
 
 .feature-text p {
-  font-size: 0.85rem;
+  font-size: clamp(0.78125rem, 1vw, 0.85rem);
   color: #94a3b8;
   font-weight: 300;
 }
 
 /* Footer */
 .landing-footer {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  margin-top: auto;
+  padding: clamp(1.25rem, 2.5vw, 2rem) 1rem;
   text-align: center;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   color: #94a3b8;
-  font-size: 0.9rem;
+  font-size: clamp(0.8125rem, 1vw, 0.9rem);
   font-weight: 300;
 }
 
@@ -314,31 +331,137 @@
   }
 }
 
-/* Responsive Design */
-@media screen and (max-width: 1200px) {
+/* ==========================================================
+   Comprehensive Responsive Media Queries
+   ========================================================== */
+
+/* Ultra-Wide Displays (1600px+) */
+@media screen and (min-width: 1600px) {
+  .landing-split {
+    gap: 2rem;
+  }
+
   .landing-left {
-    padding: 3rem 2rem;
+    padding: 5rem 6rem;
   }
 }
 
-@media screen and (max-width: 992px) {
-  .landing-container {
-    flex-direction: column;
-  }
-
+/* Standard Large Laptops (1440px) */
+@media screen and (max-width: 1440px) {
   .landing-left {
-    height: auto;
-    overflow-y: visible;
+    padding: 3rem 4rem;
+  }
+}
+
+/* Standard Laptops (1366px) */
+@media screen and (max-width: 1366px) {
+  .landing-left {
+    padding: 2.5rem 3rem;
+  }
+}
+
+/* Small Laptops (1200px) */
+@media screen and (max-width: 1200px) {
+  .landing-left {
+    padding: 2rem 2.5rem;
   }
 
   .landing-right {
-    height: 400px;
+    padding: 1.5rem;
+  }
+}
+
+/* Tablets / Medium Screens (992px) */
+@media screen and (max-width: 992px) {
+  .landing-split {
+    flex-direction: column-reverse;
+  }
+
+  .landing-left {
+    flex: unset;
+    width: 100%;
+    padding: 2.5rem 2rem;
+  }
+
+  .landing-right {
+    flex: unset;
     position: relative;
-    border-left: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    height: 340px;
+    width: 100%;
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .landing-img {
+    max-height: 280px;
+  }
+}
+
+/* Tablets Portrait (768px) */
+@media screen and (max-width: 768px) {
+  .landing-right {
+    height: 280px;
+  }
+
+  .landing-img {
+    max-height: 220px;
+  }
+
+  .landing-left {
+    padding: 1.75rem 1.25rem;
+  }
+}
+
+/* Large Mobile Screens (576px) */
+@media screen and (max-width: 576px) {
+  .landing-right {
+    height: 220px;
+  }
+
+  .landing-img {
+    max-height: 180px;
   }
 
   .portals-section {
-    flex-direction: column;
+    grid-template-columns: 1fr;
+  }
+
+  .portal-btn {
+    width: 100%;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Medium Mobile Screens (480px) */
+@media screen and (max-width: 480px) {
+  .landing-right {
+    display: none;
+    /* Hide illustration on small phones to maximize form/content focus */
+  }
+
+  .brand {
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-section {
+    margin-bottom: 1.75rem;
+  }
+}
+
+/* Standard Mobile Screens (375px & 320px) */
+@media screen and (max-width: 375px) {
+  .landing-left {
+    padding: 1.25rem 0.875rem;
+  }
+
+  .portal-card {
+    padding: 1.25rem 1rem;
+  }
+
+  .feature-item {
+    padding: 0.875rem;
   }
 }

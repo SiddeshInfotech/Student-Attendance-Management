@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaChartPie, FaSignOutAlt, FaBookOpen, FaUserCircle } from "react-icons/fa";
+import { FaChartPie, FaSignOutAlt, FaBookOpen, FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
 import "../styles/StudentDashboard.css";
 import StudentOverviewTab from "./student-tabs/StudentOverviewTab";
 import StudentProfileTab from "./student-tabs/StudentProfileTab";
@@ -8,6 +8,7 @@ export default function StudentDashboard({ setPage }) {
   const [activeTab, setActiveTab] = useState("overview");
   const [currentTime, setCurrentTime] = useState("");
   const [currentDate, setCurrentDate] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const tick = () => {
@@ -26,11 +27,39 @@ export default function StudentDashboard({ setPage }) {
     return () => clearInterval(id);
   }, []);
 
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    setIsSidebarOpen(false);
+  };
+
   return (
     <div className="sd-container">
+
+      {/* Mobile Top Header Bar with Hamburger Menu */}
+      <header className="sd-mobile-header-bar">
+        <button
+          className="sd-mobile-hamburger-btn"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          aria-label="Toggle Navigation Menu"
+        >
+          {isSidebarOpen ? <FaTimes /> : <FaBars />}
+        </button>
+        <div className="sd-mobile-header-title">
+          <h3>ScholarTrack</h3>
+          <span>Student</span>
+        </div>
+      </header>
+
+      {/* Mobile Sidebar Overlay Backdrop */}
+      {isSidebarOpen && (
+        <div
+          className="sd-sidebar-overlay"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
       
       {/* Sidebar */}
-      <aside className="sd-sidebar">
+      <aside className={`sd-sidebar ${isSidebarOpen ? "open" : ""}`}>
         <div className="sd-brand">
           <div className="sd-brand-icon">
              <FaBookOpen size={18} />
@@ -39,18 +68,25 @@ export default function StudentDashboard({ setPage }) {
             <h3>ScholarTrack</h3>
             <span>Student Portal</span>
           </div>
+          <button
+            className="sd-sidebar-close-btn"
+            onClick={() => setIsSidebarOpen(false)}
+            aria-label="Close Sidebar"
+          >
+            <FaTimes />
+          </button>
         </div>
 
         <nav className="sd-nav">
           <a
             className={`sd-nav-item ${activeTab === "overview" ? "active" : ""}`}
-            onClick={() => setActiveTab("overview")}
+            onClick={() => handleTabClick("overview")}
           >
             <FaChartPie /> Dashboard
           </a>
           <a
             className={`sd-nav-item ${activeTab === "profile" ? "active" : ""}`}
-            onClick={() => setActiveTab("profile")}
+            onClick={() => handleTabClick("profile")}
           >
             <FaUserCircle /> Profile
           </a>
