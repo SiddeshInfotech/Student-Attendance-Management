@@ -1,12 +1,18 @@
 import React, { useState, useMemo } from "react";
 import { FaPen, FaEnvelope, FaPhoneAlt, FaBell, FaShieldAlt, FaQuestionCircle, FaSignOutAlt, FaChevronRight, FaChevronDown, FaExternalLinkAlt, FaIdBadge, FaUsers, FaCalendarAlt } from "react-icons/fa";
 import { useAttendanceStore, todayStr, nDaysAgo } from "../../store/useAttendanceStore";
+import { getUser } from "../../services/apiClient";
 
 export default function StudentProfileTab({ currentDate, currentTime }) {
   const store = useAttendanceStore();
+  const loggedInUser = getUser();
   
-  const studentId = "s1";
-  const student = store.students.find(s => s.id === studentId) || {
+  // Find the student matching the logged-in user
+  const student = store.students.find(s => 
+    (loggedInUser && s.user === loggedInUser.user_id) || 
+    (loggedInUser && s.user_details?.user_id === loggedInUser.user_id) ||
+    (loggedInUser && s.name?.toLowerCase() === loggedInUser.full_name?.toLowerCase())
+  ) || store.students[0] || {
     id: "s1", name: "Aarav Sharma", rollNo: "101", grade: "Grade 10", division: "A", phone: "9876543210"
   };
 

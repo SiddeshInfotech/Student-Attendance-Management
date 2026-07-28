@@ -5,6 +5,7 @@ import {
   FaLock,
   FaEye,
   FaEyeSlash,
+  FaSignInAlt,
 } from "react-icons/fa";
 import { studentSignup } from "../services/authService.js";
 import "../styles/Signup.css";
@@ -42,19 +43,13 @@ function StudentSignup({ setPage }) {
     try {
       await studentSignup({ fullName, email, password });
       setIsLoading(false);
-      setSuccess("Account created successfully! Redirecting to login...");
+      setSuccess("Account created successfully! Redirecting to dashboard...");
       setTimeout(() => {
-        setPage("student-login");
-      }, 1500);
-    } catch (err) {
-      console.warn("API signup failed, falling back to local logic:", err);
-      setTimeout(() => {
-        setIsLoading(false);
-        setSuccess("Account created successfully! Redirecting to login...");
-        setTimeout(() => {
-          setPage("student-login");
-        }, 1500);
+        setPage("student-dashboard");
       }, 1200);
+    } catch (err) {
+      setIsLoading(false);
+      setError(err.message || "Signup failed. Please try again.");
     }
   };
 

@@ -5,16 +5,17 @@ import {
   FaLock,
   FaEye,
   FaEyeSlash,
+  FaSignInAlt,
 } from "react-icons/fa";
 import { adminSignup } from "../services/authService.js";
 import "../styles/Signup.css";
 import studentAttendanceImg from "../assets/images/student_attendance_illustration.png";
 
 function Signup({ setPage }) {
-  const [fullName, setFullName] = useState("Siddesh Admin");
-  const [email, setEmail] = useState("siddesh.admin@attendance.com");
-  const [password, setPassword] = useState("siddesh123");
-  const [confirmPassword, setConfirmPassword] = useState("siddesh123");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,19 +43,13 @@ function Signup({ setPage }) {
     try {
       await adminSignup({ fullName, email, password });
       setIsLoading(false);
-      setSuccess("Account created successfully! Redirecting to login...");
+      setSuccess("Account created successfully! Redirecting to dashboard...");
       setTimeout(() => {
-        setPage("login");
-      }, 1500);
-    } catch (err) {
-      console.warn("API signup failed, falling back to local logic:", err);
-      setTimeout(() => {
-        setIsLoading(false);
-        setSuccess("Account created successfully! Redirecting to login...");
-        setTimeout(() => {
-          setPage("login");
-        }, 1500);
+        setPage("dashboard");
       }, 1200);
+    } catch (err) {
+      setIsLoading(false);
+      setError(err.message || "Signup failed. Please try again.");
     }
   };
 

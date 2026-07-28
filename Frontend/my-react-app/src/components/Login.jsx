@@ -12,8 +12,8 @@ import "../styles/Login.css";
 import studentAttendanceImg from "../assets/images/student_attendance_illustration.png";
 
 function Login({ setPage }) {
-  const [email, setEmail] = useState("admin@attendance.com");
-  const [password, setPassword] = useState("admin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,15 +29,8 @@ function Login({ setPage }) {
       setIsLoading(false);
       setPage("dashboard");
     } catch (err) {
-      console.warn("API login failed, falling back to local validation:", err);
-      // Fallback local validation
-      if (email === "admin@attendance.com" && password === "admin") {
-        setIsLoading(false);
-        setPage("dashboard");
-      } else {
-        setIsLoading(false);
-        setError("Invalid email or password. Try: admin@attendance.com / admin");
-      }
+      setIsLoading(false);
+      setError(err.message || "Invalid email or password. Please try again.");
     }
   };
 

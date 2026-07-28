@@ -3,12 +3,18 @@ import { FaDownload, FaCalendarDay, FaCalendarWeek, FaCalendarAlt, FaCalendar } 
 import { useAttendanceStore, todayStr, nDaysAgo, dateRange, formatDate } from "../../store/useAttendanceStore";
 import { jsPDF } from "jspdf";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { getUser } from "../../services/apiClient";
 
 export default function StudentOverviewTab({ currentDate, currentTime }) {
   const store = useAttendanceStore();
+  const loggedInUser = getUser();
   
-  // Hardcoded to the first student for demonstration since login is hardcoded
-  const student = store.students[0] || {
+  // Find the student matching the logged-in user
+  const student = store.students.find(s => 
+    (loggedInUser && s.user === loggedInUser.user_id) || 
+    (loggedInUser && s.user_details?.user_id === loggedInUser.user_id) ||
+    (loggedInUser && s.name?.toLowerCase() === loggedInUser.full_name?.toLowerCase())
+  ) || store.students[0] || {
     id: "s1", name: "Aarav Sharma", rollNo: "101", grade: "Grade 10", division: "A", phone: "9876543210"
   };
 
