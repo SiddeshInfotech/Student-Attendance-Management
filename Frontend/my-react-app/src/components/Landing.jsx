@@ -23,7 +23,7 @@ function Landing({ setPage }) {
           className="video-bg"
         >
           {/* A stunning abstract technology network video */}
-          <source src="https://cdn.pixabay.com/video/2020/03/19/33890-398284535_large.mp4" type="video/mp4" />
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-a-world-map-in-a-network-31547-large.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         <div className="video-overlay"></div>

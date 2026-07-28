@@ -13,6 +13,8 @@
   min-height: 100dvh;
   width: 100%;
   color: #ffffff;
+  background: linear-gradient(135deg, #0F172A 0%, #1e3a8a 50%, #2563EB 100%);
+  /* Fallback if video fails */
   overflow-x: hidden;
   display: flex;
   justify-content: center;
@@ -44,8 +46,10 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.65); /* Dark overlay for text readability */
-  backdrop-filter: blur(4px); /* Slight blur to focus on UI */
+  background: rgba(0, 0, 0, 0.65);
+  /* Dark overlay for text readability */
+  backdrop-filter: blur(4px);
+  /* Slight blur to focus on UI */
   -webkit-backdrop-filter: blur(4px);
 }
 
@@ -56,7 +60,8 @@
   padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 5vw, 2rem);
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center everything */
+  align-items: center;
+  /* Center everything */
   z-index: 1;
 }
 
@@ -326,7 +331,8 @@
 }
 
 /* Make elements pop out */
-.portal-card, .feature-item {
+.portal-card,
+.feature-item {
   transform-style: preserve-3d;
 }
 
@@ -340,11 +346,25 @@
 }
 
 @keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-30px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
