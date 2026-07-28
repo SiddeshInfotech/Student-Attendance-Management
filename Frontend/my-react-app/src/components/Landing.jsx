@@ -45,13 +45,147 @@ const IconBolt = () => (
     <path d="M13 2L4.5 13.5H12L11 22l8.5-11.5H12L13 2z" />
   </svg>
 );
+const IconGraduation = () => (
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+    <path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5" />
+  </svg>
+);
+const IconBuilding = () => (
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="2" width="16" height="20" rx="2" />
+    <path d="M9 6h2M13 6h2M9 10h2M13 10h2M9 14h2M13 14h2M9 18h6" />
+  </svg>
+);
+const IconMobile = () => (
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="5" y="2" width="14" height="20" rx="2" />
+    <path d="M12 18h.01" />
+  </svg>
+);
+const IconBell = () => (
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
+  </svg>
+);
+const IconUsers = () => (
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+  </svg>
+);
+const IconAward = () => (
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="8" r="7" />
+    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+  </svg>
+);
+const IconTarget = () => (
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="12" r="6" />
+    <circle cx="12" cy="12" r="2" />
+  </svg>
+);
 
 const FEATURES = [
-  { icon: <IconCheck />, title: "Digital Attendance", text: "Automated and error-free tracking using secure biometric and digital ID verification workflows." },
-  { icon: <IconChart />, title: "Real-Time Analytics", text: "Instant access to organizational metrics, historical trends, and predictive behavioral modelling." },
-  { icon: <IconLock />, title: "Enterprise Security", text: "State-of-the-art protection featuring end-to-end encryption for all sensitive organizational data." },
-  { icon: <IconDash />, title: "Management Dashboard", text: "Centralized workspace for monitoring and control for all profiles across multiple geographical locations." },
-  { icon: <IconBolt />, title: "Performance Scalability", text: "Optimized for rapid scaling and low-latency real-time times, supporting thousands of simultaneous events without degradation." },
+  {
+    icon: <IconCheck />,
+    badge: "AUTOMATED",
+    title: "Digital Attendance",
+    text: "Automated and error-free tracking using secure biometric and digital ID verification workflows.",
+    highlights: ["Biometric verification", "100% Zero-proxy accuracy", "Instant log creation"]
+  },
+  {
+    icon: <IconChart />,
+    badge: "ANALYTICS",
+    title: "Real-Time Analytics",
+    text: "Instant access to organizational metrics, historical trends, and predictive behavioral modelling.",
+    highlights: ["Custom report builder", "Attendance percentage graphs", "Export to PDF & Excel"]
+  },
+  {
+    icon: <IconLock />,
+    badge: "PROTECTION",
+    title: "Enterprise Security",
+    text: "State-of-the-art protection featuring end-to-end encryption for all sensitive organizational data.",
+    highlights: ["AES-256 data encryption", "Role-based access control", "GDPR & ISO compliant"]
+  },
+  {
+    icon: <IconDash />,
+    badge: "COMMAND CENTER",
+    title: "Management Dashboard",
+    text: "Centralized workspace for monitoring and control across multiple geographical locations.",
+    highlights: ["Multi-branch oversight", "Live active user count", "Unified alert stream"]
+  },
+  {
+    icon: <IconBolt />,
+    badge: "HIGH SPEED",
+    title: "Performance Scalability",
+    text: "Optimized for rapid scaling and low-latency real-time sync, supporting thousands of simultaneous events.",
+    highlights: ["Sub-second log sync", "Auto-scaling infrastructure", "99.9% uptime SLA"]
+  },
+  {
+    icon: <IconShield />,
+    badge: "INTEGRITY",
+    title: "Proxy Prevention Engine",
+    text: "Advanced anti-proxy algorithms and biometric verification ensuring absolute attendance integrity.",
+    highlights: ["Geofence verification", "Biometric cross-check", "Audit-trail logging"]
+  }
+];
+
+const SOLUTIONS = [
+  {
+    icon: <IconGraduation />,
+    badge: "UNIVERSITIES & COLLEGES",
+    title: "Academic Institutions",
+    text: "Automated lecture tracking, campus-wide faculty dashboards, and seamlessly integrated student portal access with ERP syncing.",
+    features: ["Classroom biometric check-in", "Automated roll-call logs", "SIS & LMS Integration"]
+  },
+  {
+    icon: <IconBuilding />,
+    badge: "ENTERPRISE WORKFORCE",
+    title: "Corporate Offices",
+    text: "Multi-location shift management, biometric turnstile integration, and real-time attendance export for payroll processing.",
+    features: ["Shift & overtime tracking", "Multi-branch monitoring", "Payroll automated export"]
+  },
+  {
+    icon: <IconMobile />,
+    badge: "HYBRID & REMOTE",
+    title: "Smart Mobile Check-In",
+    text: "GPS geofenced attendance logging with facial verification for field teams, remote employees, and outdoor events.",
+    features: ["GPS geofence radius", "Biometric selfie validation", "Offline sync support"]
+  },
+  {
+    icon: <IconBell />,
+    badge: "REAL-TIME ALERTS",
+    title: "Automated Notifications",
+    text: "Instant SMS, WhatsApp, and email alerts for absenteeism, late entry thresholds, and weekly summary reports.",
+    features: ["Instant parent/admin alert", "Customizable threshold rules", "Scheduled PDF reports"]
+  }
+];
+
+const ABOUT_US = [
+  {
+    icon: <IconTarget />,
+    title: "Mission Driven Precision",
+    text: "Engineered to eliminate manual error and proxy attendance through tamper-proof automated tracking for 100% data reliability."
+  },
+  {
+    icon: <IconAward />,
+    title: "Enterprise-Grade Trust",
+    text: "ISO 27001-certified security standards ensuring confidential student and organizational records remain protected round the clock."
+  },
+  {
+    icon: <IconUsers />,
+    title: "User-Centric Experience",
+    text: "Thoughtfully crafted interfaces designed for effortless navigation by administrators, educators, and students alike."
+  },
+  {
+    icon: <IconBolt />,
+    title: "High Performance Engine",
+    text: "Powered by modern cloud infrastructure delivering 99.9% uptime SLA with low-latency real-time synchronization."
+  }
 ];
 
 function Landing({ setPage }) {
@@ -64,7 +198,7 @@ function Landing({ setPage }) {
       <nav className="st-nav">
         <div className="st-nav-inner">
           <div className="st-logo">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
               <rect x="8" y="2" width="8" height="4" rx="1" ry="1" fill="currentColor" />
               <path d="M9 14l2 2 4-4" />
@@ -118,10 +252,73 @@ function Landing({ setPage }) {
         </div>
       </section>
 
+      {/* ── Solutions ───────────────────────────── */}
+      <section className="st-solutions" id="solutions">
+        <div className="st-section-inner">
+          <div className="st-section-header">
+            <div className="st-section-tag">TAILORED CAPABILITIES</div>
+            <h2>Tailored Solutions for Every Institution</h2>
+            <p>Designed to scale across universities, corporate campuses, hybrid teams, and automated alert environments.</p>
+          </div>
+          <div className="st-solutions-grid">
+            {SOLUTIONS.map((sol) => (
+              <div className="st-solution-card" key={sol.title}>
+                <div className="st-solution-card-top">
+                  <div className="st-solution-icon">{sol.icon}</div>
+                  <span className="st-sol-badge">{sol.badge}</span>
+                </div>
+                <h3>{sol.title}</h3>
+                <p>{sol.text}</p>
+                <ul className="st-solution-features">
+                  {sol.features.map((item, idx) => (
+                    <li key={idx}>
+                      <span className="st-bullet-check">✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Features ───────────────────────────── */}
+      <section className="st-features" id="features">
+        <div className="st-section-inner">
+          <div className="st-section-header">
+            <div className="st-section-tag">CORE ENGINE</div>
+            <h2>Why Choose ScholarTrack?</h2>
+            <p>Built for high-stakes educational &amp; enterprise environments where data precision, security, and absolute reliability are non-negotiable.</p>
+          </div>
+          <div className="st-features-grid">
+            {FEATURES.map((feat) => (
+              <div className="st-feature-card" key={feat.title}>
+                <div className="st-feature-card-top">
+                  <div className="st-feature-icon">{feat.icon}</div>
+                  <span className="st-feat-badge">{feat.badge}</span>
+                </div>
+                <h3>{feat.title}</h3>
+                <p>{feat.text}</p>
+                <ul className="st-feature-highlights">
+                  {feat.highlights.map((item, idx) => (
+                    <li key={idx}>
+                      <span className="st-bullet-check">✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Portals ────────────────────────────── */}
       <section className="st-portals" id="portals">
         <div className="st-section-inner">
           <div className="st-section-header">
+            <div className="st-section-tag">SECURE ACCESS</div>
             <h2>Integrated Access Portals</h2>
             <p>Select your entry point to manage workforce data or view individual performance metrics.</p>
           </div>
@@ -150,33 +347,40 @@ function Landing({ setPage }) {
         </div>
       </section>
 
-      {/* ── Features ───────────────────────────── */}
-      <section className="st-features" id="features">
-        <div className="st-section-inner st-features-inner">
-          <div className="st-features-left">
-            <h2>Why Choose ScholarTrack?</h2>
-            <p>Built for high-stakes environments where data precision and reliability are non-negotiable.</p>
-            <div className="st-features-img-box">
-              <div className="st-features-img-placeholder">
-                <svg viewBox="0 0 80 80" width="80" height="80" fill="none">
-                  <circle cx="40" cy="40" r="38" stroke="#2563eb" strokeWidth="2" opacity="0.4" />
-                  <path d="M40 14l20 8v12c0 10-8 18-20 22C28 52 20 44 20 34V22l20-8z" fill="#1e3a8a" stroke="#3b82f6" strokeWidth="1.5" />
-                  <path d="M30 40l7 7 13-14" stroke="#60a5fa" strokeWidth="2.5" strokeLinecap="round" />
-                </svg>
-                <span>ScholarTrack</span>
-              </div>
-            </div>
+      {/* ── About Us ────────────────────────────── */}
+      <section className="st-about" id="about">
+        <div className="st-section-inner">
+          <div className="st-section-header">
+            <div className="st-section-tag">WHO WE ARE</div>
+            <h2>About ScholarTrack</h2>
+            <p>We empower institutions globally with modern attendance automation, unmatched security, and data-driven insights.</p>
           </div>
-          <div className="st-features-right">
-            {FEATURES.map(({ icon, title, text }) => (
-              <div className="st-feature-item" key={title}>
-                <div className="st-feature-icon">{icon}</div>
-                <div>
-                  <h4>{title}</h4>
-                  <p>{text}</p>
-                </div>
+
+          <div className="st-about-grid">
+            {ABOUT_US.map((item) => (
+              <div className="st-about-card" key={item.title}>
+                <div className="st-about-icon">{item.icon}</div>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
               </div>
             ))}
+          </div>
+
+          <div className="st-about-banner">
+            <div className="st-about-banner-content">
+              <h3>Trusted by over 500+ Top Institutions</h3>
+              <p>From university campuses with 20,000+ students to global enterprises managing remote workforces, ScholarTrack provides seamless operational control.</p>
+            </div>
+            <div className="st-about-stats-mini">
+              <div className="st-mini-stat">
+                <span className="st-mini-num">100M+</span>
+                <span className="st-mini-lbl">Logs Synced</span>
+              </div>
+              <div className="st-mini-stat">
+                <span className="st-mini-num">99.99%</span>
+                <span className="st-mini-lbl">Accuracy Rate</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -198,7 +402,7 @@ function Landing({ setPage }) {
         <div className="st-footer-inner">
           <div className="st-footer-brand">
             <div className="st-logo">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
                 <rect x="8" y="2" width="8" height="4" rx="1" ry="1" fill="currentColor" />
                 <path d="M9 14l2 2 4-4" />
@@ -208,12 +412,16 @@ function Landing({ setPage }) {
             <p>Advanced management solutions for modern educational and corporate institutions.</p>
           </div>
           <div className="st-footer-links">
+            <a href="#solutions">Solutions</a>
+            <a href="#features">Features</a>
+            <a href="#portals">Portals</a>
+            <a href="#about">About Us</a>
             <a href="#">Privacy Policy</a>
             <a href="#">Terms of Service</a>
-            <a href="#">Security</a>
-            <a href="#">Contact Support</a>
           </div>
-          <p className="st-footer-copy">© 2026 ScholarTrack Management System. All rights reserved.</p>
+          <div className="st-footer-bottom">
+            <p className="st-footer-copy">© 2026 ScholarTrack Management System. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>
@@ -221,3 +429,4 @@ function Landing({ setPage }) {
 }
 
 export default Landing;
+
