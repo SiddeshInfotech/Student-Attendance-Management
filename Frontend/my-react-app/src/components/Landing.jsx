@@ -29,13 +29,13 @@ function Landing({ setPage }) {
               </svg>
             </div>
             <div className="brand-text">
-              <span className="brand-title">Student Attendance</span>
-              <span className="brand-subtitle">Management System</span>
+              <span className="brand-title">ScholarTrack</span>
+              <span className="brand-subtitle">Attendance System</span>
             </div>
           </div>
 
           <section className="hero-section">
-            <h1 className="hero-title">Student Attendance <br/> Management System</h1>
+            <h1 className="hero-title">ScholarTrack <br/> Management System</h1>
             <h2 className="hero-subtitle">Smart, Secure & Efficient Attendance Management</h2>
             <p className="hero-description">
               Experience the future of education management. Our platform provides digital attendance 
@@ -132,7 +132,7 @@ function Landing({ setPage }) {
       
       {/* Footer */}
       <footer className="landing-footer">
-        <p>&copy; 2026 Student Attendance Management System. All rights reserved.</p>
+        <p>&copy; 2026 ScholarTrack. All rights reserved.</p>
       </footer>
     </div>
   );
