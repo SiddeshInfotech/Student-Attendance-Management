@@ -1,79 +1,45 @@
-import React, { useState, useEffect } from "react";
-import { FaPen, FaEnvelope, FaPhoneAlt, FaBell, FaShieldAlt, FaQuestionCircle, FaSignOutAlt, FaChevronRight, FaChevronDown, FaExternalLinkAlt, FaIdBadge, FaUsers, FaCalendarAlt, FaSpinner } from "react-icons/fa";
-import { getMyStudentProfile } from "../../services/authService";
-import { getUser, removeToken, removeUser } from "../../services/apiClient";
+import React, { useState, useMemo } from "react";
+import { FaPen, FaEnvelope, FaPhoneAlt, FaBell, FaShieldAlt, FaQuestionCircle, FaSignOutAlt, FaChevronRight, FaChevronDown, FaExternalLinkAlt, FaIdBadge, FaUsers, FaCalendarAlt } from "react-icons/fa";
+import { useAttendanceStore, todayStr, nDaysAgo } from "../../store/useAttendanceStore";
+import { getUser } from "../../services/apiClient";
 
 export default function StudentProfileTab({ currentDate, currentTime }) {
+  const store = useAttendanceStore();
   const loggedInUser = getUser();
+  
+  // Find the student matching the logged-in user
+  const student = store.students.find(s => 
+    (loggedInUser && s.user === loggedInUser.user_id) || 
+    (loggedInUser && s.user_details?.user_id === loggedInUser.user_id) ||
+    (loggedInUser && s.name?.toLowerCase() === loggedInUser.full_name?.toLowerCase())
+  ) || store.students[0] || {
+    id: "s1", name: "Aarav Sharma", rollNo: "101", grade: "Grade 10", division: "A", phone: "9876543210"
+  };
 
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const summary = useMemo(() => {
+    return store.getStudentSummary(student.id, nDaysAgo(364), todayStr());
+  }, [store, student.id]);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({ phone: "" });
+  const [formData, setFormData] = useState({
+    phone: student.phone || "",
+  });
+
+  // Accordion State for settings
   const [activeSetting, setActiveSetting] = useState(null);
 
-  // Fetch real profile from API
-  useEffect(() => {
-    const fetchProfile = async () => {
-      setLoading(true);
-      try {
-        const data = await getMyStudentProfile();
-        setProfile(data);
-        setFormData({ phone: data.mobile || "" });
-      } catch (err) {
-        console.warn("Failed to fetch student profile:", err);
-        setError("Could not load profile. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProfile();
-  }, []);
-
   const toggleSetting = (settingName) => {
-    setActiveSetting(activeSetting === settingName ? null : settingName);
+    if (activeSetting === settingName) {
+      setActiveSetting(null);
+    } else {
+      setActiveSetting(settingName);
+    }
   };
 
   const handleSave = () => {
-    // TODO: API call to update profile
+    store.updateStudent(student.id, { phone: formData.phone });
     setIsEditing(false);
   };
-
-  const handleLogout = () => {
-    removeToken();
-    removeUser();
-    window.location.href = "/";
-  };
-
-  // Loading state
-  if (loading) {
-    return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "60vh", gap: "12px", color: "#3b82f6" }}>
-        <FaSpinner style={{ fontSize: "24px", animation: "spin 1s linear infinite" }} />
-        <span style={{ fontSize: "16px", fontWeight: 500 }}>Loading profile...</span>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={{ textAlign: "center", padding: "60px 20px", color: "#ef4444" }}>
-        <p style={{ fontSize: "16px", fontWeight: 500 }}>{error}</p>
-      </div>
-    );
-  }
-
-  const studentName = profile?.full_name || loggedInUser?.full_name || "Student";
-  const rollNumber = profile?.roll_number || "N/A";
-  const email = profile?.email || loggedInUser?.email || "N/A";
-  const mobile = profile?.mobile || "N/A";
-  const className = profile?.class_name || "Not Assigned";
-  const department = profile?.department || "Not Assigned";
-  const branch = profile?.branch || "Not Assigned";
-  const attendancePercentage = profile?.attendance?.percentage || 0;
 
   return (
     <div className="sd-profile-layout">
@@ -97,9 +63,9 @@ export default function StudentProfileTab({ currentDate, currentTime }) {
           </div>
         </div>
         
-        <div className="sd-profile-name-large">{studentName}</div>
-        <div className="sd-profile-id-large">ID: {rollNumber}</div>
-        <div className="sd-profile-dept-pill">{className}{department !== "Not Assigned" ? ` • ${department}` : ""}</div>
+        <div className="sd-profile-name-large">{student.name}</div>
+        <div className="sd-profile-id-large">ID: STU-{student.rollNo}</div>
+        <div className="sd-profile-dept-pill">{student.grade} - {student.division}</div>
       </div>
 
       {/* Stats Row */}
@@ -107,17 +73,17 @@ export default function StudentProfileTab({ currentDate, currentTime }) {
         <div className="sd-profile-stat-box">
           <div className="sd-profile-stat-label">ATTENDANCE</div>
           <div className="sd-profile-stat-circle attendance">
-             {attendancePercentage > 0 ? Math.round(attendancePercentage) : 0}%
+             {summary.percentage > 0 ? Math.round(summary.percentage) : 85}%
           </div>
           <div className="sd-profile-stat-sub">Overall Progress</div>
         </div>
         
         <div className="sd-profile-stat-box">
-          <div className="sd-profile-stat-label">PRESENT</div>
+          <div className="sd-profile-stat-label">GPA</div>
           <div className="sd-profile-stat-circle gpa">
-             {profile?.attendance?.present_days || 0}
+             3.8
           </div>
-          <div className="sd-profile-stat-sub">Total Present Days</div>
+          <div className="sd-profile-stat-sub">Academic Rating</div>
         </div>
       </div>
 
@@ -138,31 +104,23 @@ export default function StudentProfileTab({ currentDate, currentTime }) {
             <span className="sd-info-label">Full Name</span>
             <div className="sd-info-field">
                <FaIdBadge color="#94A3B8" />
-               <span style={{ color: "#475569" }}>{studentName}</span>
+               <span style={{ color: "#475569" }}>{student.name}</span>
             </div>
          </div>
 
          <div className="sd-info-group">
-            <span className="sd-info-label">Roll Number</span>
+            <span className="sd-info-label">Student ID</span>
             <div className="sd-info-field">
                <FaIdBadge color="#94A3B8" />
-               <span style={{ color: "#475569" }}>{rollNumber}</span>
+               <span style={{ color: "#475569" }}>STU-{student.rollNo}</span>
             </div>
          </div>
 
          <div className="sd-info-group">
-            <span className="sd-info-label">Class & Department</span>
+            <span className="sd-info-label">Class & Division</span>
             <div className="sd-info-field">
                <FaUsers color="#94A3B8" />
-               <span style={{ color: "#475569" }}>{className}{department !== "Not Assigned" ? ` — ${department}` : ""}</span>
-            </div>
-         </div>
-
-         <div className="sd-info-group">
-            <span className="sd-info-label">Branch</span>
-            <div className="sd-info-field">
-               <FaUsers color="#94A3B8" />
-               <span style={{ color: "#475569" }}>{branch}</span>
+               <span style={{ color: "#475569" }}>{student.grade} - {student.division}</span>
             </div>
          </div>
          
@@ -170,7 +128,7 @@ export default function StudentProfileTab({ currentDate, currentTime }) {
             <span className="sd-info-label">Email Address</span>
             <div className="sd-info-field">
                <FaEnvelope color="#94A3B8" />
-               <span style={{ color: "#475569" }}>{email}</span>
+               <span style={{ color: "#475569" }}>{student.name.split(" ")[0].toLowerCase()}@university.edu</span>
             </div>
          </div>
          
@@ -186,7 +144,7 @@ export default function StudentProfileTab({ currentDate, currentTime }) {
                    style={{ border: "none", background: "transparent", outline: "none", fontSize: "0.95rem", width: "100%" }}
                  />
                ) : (
-                 <span style={{ color: "#475569" }}>+91 {mobile}</span>
+                 <span style={{ color: "#475569" }}>+91 {student.phone || "Not set"}</span>
                )}
             </div>
          </div>
@@ -277,7 +235,7 @@ export default function StudentProfileTab({ currentDate, currentTime }) {
            )}
          </div>
          
-         <div className="sd-settings-item danger" onClick={handleLogout}>
+         <div className="sd-settings-item danger" onClick={() => window.location.href = "/"}>
             <div className="sd-settings-left">
                <FaSignOutAlt size={18} />
                <span>Logout</span>

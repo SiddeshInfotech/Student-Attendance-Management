@@ -50,16 +50,6 @@ export const resetPassword = async (data) => {
   return apiClient.post("/api/auth/reset-password/", data);
 };
 
-// ── Student Profile (real backend data) ───────────────────
-
-export const getMyStudentProfile = async () => {
-  return apiClient.get("/api/auth/me/student/");
-};
-
-export const getStudentAttendanceHistory = async (studentId) => {
-  return apiClient.get(`/api/attendance/history/?student_id=${studentId}`);
-};
-
 // ── Logout ────────────────────────────────────────────────
 
 export const logout = async () => {
