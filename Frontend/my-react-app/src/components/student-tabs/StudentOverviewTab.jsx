@@ -1,38 +1,81 @@
-import React, { useState, useMemo } from "react";
-import { FaDownload, FaCalendarDay, FaCalendarWeek, FaCalendarAlt, FaCalendar } from "react-icons/fa";
-import { useAttendanceStore, todayStr, nDaysAgo, dateRange, formatDate } from "../../store/useAttendanceStore";
+import React, { useState, useEffect, useMemo } from "react";
+import { FaDownload, FaCalendarDay, FaCalendarWeek, FaCalendarAlt, FaSpinner } from "react-icons/fa";
+import { getMyStudentProfile, getStudentAttendanceHistory } from "../../services/authService";
+import { getUser } from "../../services/apiClient";
 import { jsPDF } from "jspdf";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { getUser } from "../../services/apiClient";
+
+// ── Date Helpers ─────────────────────────────────────────
+const todayStr = () => new Date().toISOString().split("T")[0];
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return "";
+  const [y, m, day] = dateStr.split("-");
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${parseInt(day, 10)} ${months[parseInt(m, 10) - 1]} ${y}`;
+};
+
+const dateRange = (start, end) => {
+  const dates = [];
+  const cur = new Date(start + "T00:00:00");
+  const last = new Date(end + "T00:00:00");
+  while (cur <= last) {
+    dates.push(cur.toISOString().split("T")[0]);
+    cur.setDate(cur.getDate() + 1);
+  }
+  return dates;
+};
 
 export default function StudentOverviewTab({ currentDate, currentTime }) {
-  const store = useAttendanceStore();
   const loggedInUser = getUser();
-  
-  // Find the student matching the logged-in user
-  const student = store.students.find(s => 
-    (loggedInUser && s.user === loggedInUser.user_id) || 
-    (loggedInUser && s.user_details?.user_id === loggedInUser.user_id) ||
-    (loggedInUser && s.name?.toLowerCase() === loggedInUser.full_name?.toLowerCase())
-  ) || store.students[0] || {
-    id: "s1", name: "Aarav Sharma", rollNo: "101", grade: "Grade 10", division: "A", phone: "9876543210"
-  };
 
-  const [timeframe, setTimeframe] = useState("weekly"); // daily, weekly, monthly
-  
-  // Custom date selection state
+  // ── State ──────────────────────────────────────────────
+  const [profile, setProfile] = useState(null);
+  const [attendanceRecords, setAttendanceRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [timeframe, setTimeframe] = useState("weekly");
+
+  // Custom date selections
   const [selectedWeekDate, setSelectedWeekDate] = useState(todayStr());
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   });
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
 
-  // Calculate Date Ranges dynamically based on custom selections
+  // ── Fetch real data from API ───────────────────────────
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const profileData = await getMyStudentProfile();
+        setProfile(profileData);
+
+        // Fetch attendance history
+        const historyData = await getStudentAttendanceHistory(profileData.student_id);
+        // Backend returns array of attendance records
+        const records = (Array.isArray(historyData) ? historyData : historyData?.results || []).map(r => ({
+          id: r.attendance_id || r.id,
+          date: r.date,
+          status: r.status === "present" ? "Present" : r.status === "absent" ? "Absent" : r.status,
+          subject: r.subject_name || null,
+        }));
+        setAttendanceRecords(records);
+      } catch (err) {
+        console.warn("Failed to fetch student data from API:", err);
+        setError("Could not load your profile. Please try logging in again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // ── Date range calculations ────────────────────────────
   const dateRanges = useMemo(() => {
     const today = todayStr();
-    
-    // Weekly bounds
+
     const getMonday = (dateStr) => {
       const d = new Date(dateStr + "T00:00:00");
       const day = d.getDay();
@@ -49,85 +92,103 @@ export default function StudentOverviewTab({ currentDate, currentTime }) {
     const weekEndCandidate = getSunday(weekStart);
     const weekEnd = weekEndCandidate > today ? today : weekEndCandidate;
 
-    // Monthly bounds
     const [y, m] = selectedMonth.split("-");
     const monthStart = `${y}-${m}-01`;
     const lastDayOfMonth = new Date(y, m, 0).getDate();
     const monthEndCandidate = `${y}-${m}-${lastDayOfMonth}`;
     const monthEnd = monthEndCandidate > today ? today : monthEndCandidate;
-    
-    // Yearly bounds
-    const yearStart = `${selectedYear}-01-01`;
-    const yearEndCandidate = `${selectedYear}-12-31`;
-    const yearEnd = yearEndCandidate > today ? today : yearEndCandidate;
 
     return {
       daily: { start: today, end: today },
       weekly: { start: weekStart, end: weekEnd },
       monthly: { start: monthStart, end: monthEnd },
-      yearly: { start: yearStart, end: yearEnd }
     };
-  }, [selectedWeekDate, selectedMonth, selectedYear]);
+  }, [selectedWeekDate, selectedMonth]);
 
-  // Get data for the selected timeframe
+  // ── Filter records by timeframe ────────────────────────
   const currentRange = dateRanges[timeframe];
-  const summary = store.getStudentSummary(student.id, currentRange.start, currentRange.end);
-  const records = summary.records; // sorted DESC
+  const filteredRecords = useMemo(() => {
+    const dateSet = new Set(dateRange(currentRange.start, currentRange.end));
+    return attendanceRecords
+      .filter(r => dateSet.has(r.date))
+      .sort((a, b) => b.date.localeCompare(a.date));
+  }, [attendanceRecords, currentRange]);
 
-  // Prepare chart data (reverse to show chronological order)
+  const summary = useMemo(() => {
+    const presentDays = filteredRecords.filter(r => r.status === "Present").length;
+    const absentDays = filteredRecords.filter(r => r.status === "Absent").length;
+    const totalDays = filteredRecords.length;
+    const percentage = totalDays > 0 ? parseFloat(((presentDays / totalDays) * 100).toFixed(1)) : 0;
+    return { presentDays, absentDays, totalDays, percentage };
+  }, [filteredRecords]);
+
+  // ── Chart data ─────────────────────────────────────────
   const chartData = useMemo(() => {
-    return [...records].reverse().map(r => ({
-      date: formatDate(r.date).slice(0, 6), // e.g., "15 Jun"
+    return [...filteredRecords].reverse().map(r => ({
+      date: formatDate(r.date).slice(0, 6),
       fullDate: r.date,
       status: r.status,
-      value: r.status === "Present" ? 1 : 0
+      value: r.status === "Present" ? 1 : 0,
     }));
-  }, [records]);
+  }, [filteredRecords]);
 
-  // Download PDF
+  // ── PDF Download ───────────────────────────────────────
   const handleDownloadReport = () => {
+    if (!profile) return;
     const doc = new jsPDF();
-    
-    // Header
     doc.setFontSize(18);
     doc.text("Student Attendance Report", 105, 20, { align: "center" });
-    
-    // Student Info
     doc.setFontSize(12);
-    doc.text(`Name: ${student.name}`, 20, 40);
-    doc.text(`Roll No: ${student.rollNo}`, 20, 48);
-    doc.text(`Class: ${student.grade} - ${student.division}`, 20, 56);
-    
-    // Summary Stats
+    doc.text(`Name: ${profile.full_name}`, 20, 40);
+    doc.text(`Roll No: ${profile.roll_number}`, 20, 48);
+    doc.text(`Class: ${profile.class_name || "N/A"}`, 20, 56);
     doc.text(`Timeframe: ${timeframe.charAt(0).toUpperCase() + timeframe.slice(1)}`, 130, 40);
     doc.text(`Total Days: ${summary.totalDays}`, 130, 48);
     doc.text(`Present: ${summary.presentDays}`, 130, 56);
     doc.text(`Absent: ${summary.absentDays}`, 130, 64);
     doc.text(`Attendance Rate: ${summary.percentage}%`, 130, 72);
 
-    // Table Header
     doc.setLineWidth(0.5);
     doc.line(20, 85, 190, 85);
     doc.setFont(undefined, 'bold');
     doc.text("Date", 30, 92);
     doc.text("Status", 130, 92);
     doc.line(20, 95, 190, 95);
-    
-    // Table Body
     doc.setFont(undefined, 'normal');
     let yPos = 105;
-    records.forEach((record, idx) => {
-      if (yPos > 270) {
-        doc.addPage();
-        yPos = 20;
-      }
+    filteredRecords.forEach((record) => {
+      if (yPos > 270) { doc.addPage(); yPos = 20; }
       doc.text(formatDate(record.date), 30, yPos);
       doc.text(record.status, 130, yPos);
       yPos += 10;
     });
-
-    doc.save(`${student.name.replace(" ", "_")}_Attendance_Report.pdf`);
+    doc.save(`${profile.full_name.replace(/ /g, "_")}_Attendance_Report.pdf`);
   };
+
+  // ── Loading state ──────────────────────────────────────
+  if (loading) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "60vh", gap: "12px", color: "#3b82f6" }}>
+        <FaSpinner className="spin-animation" style={{ fontSize: "24px", animation: "spin 1s linear infinite" }} />
+        <span style={{ fontSize: "16px", fontWeight: 500 }}>Loading your dashboard...</span>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ textAlign: "center", padding: "60px 20px", color: "#ef4444" }}>
+        <p style={{ fontSize: "16px", fontWeight: 500 }}>{error}</p>
+      </div>
+    );
+  }
+
+  const studentName = profile?.full_name || loggedInUser?.full_name || "Student";
+  const rollNumber = profile?.roll_number || "N/A";
+  const className = profile?.class_name || "Not Assigned";
+  const department = profile?.department || "Not Assigned";
+  const mobile = profile?.mobile || "N/A";
 
   return (
     <div>
@@ -149,11 +210,12 @@ export default function StudentOverviewTab({ currentDate, currentTime }) {
       <div className="sd-profile-card">
         <img src="https://i.pravatar.cc/150?img=11" alt="Student Avatar" className="sd-avatar" />
         <div className="sd-profile-details">
-          <h2>{student.name}</h2>
+          <h2>{studentName}</h2>
           <div className="sd-profile-tags">
-            <span className="sd-tag">Roll No: {student.rollNo}</span>
-            <span className="sd-tag">{student.grade} - {student.division}</span>
-            <span className="sd-tag">{student.phone}</span>
+            <span className="sd-tag">Roll No: {rollNumber}</span>
+            <span className="sd-tag">{className}</span>
+            {department !== "Not Assigned" && <span className="sd-tag">{department}</span>}
+            <span className="sd-tag">{mobile}</span>
           </div>
         </div>
       </div>
@@ -174,7 +236,7 @@ export default function StudentOverviewTab({ currentDate, currentTime }) {
           </div>
         </div>
 
-        {/* Date Pickers for Custom Range */}
+        {/* Date Pickers */}
         {timeframe === "weekly" && (
           <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '1rem', alignItems: 'center', background: 'white', padding: '1rem', borderRadius: '8px', border: '1px solid #E2E8F0', minWidth: '420px' }}>
             <span style={{ fontSize: '1rem', color: '#475569', fontWeight: 500 }}>Select a date in the week:</span>
@@ -218,7 +280,7 @@ export default function StudentOverviewTab({ currentDate, currentTime }) {
               <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <XAxis dataKey="date" tick={{fontSize: 12, fill: "#64748B"}} axisLine={false} tickLine={false} />
                 <YAxis hide domain={[0, 1]} />
-                <Tooltip 
+                <Tooltip
                   cursor={{fill: "#F1F5F9"}}
                   content={({ payload }) => {
                     if (payload && payload.length) {
@@ -254,8 +316,8 @@ export default function StudentOverviewTab({ currentDate, currentTime }) {
             </tr>
           </thead>
           <tbody>
-            {records.length > 0 ? records.map(r => (
-              <tr key={r.id}>
+            {filteredRecords.length > 0 ? filteredRecords.map(r => (
+              <tr key={r.id || r.date}>
                 <td>{formatDate(r.date)}</td>
                 <td>
                   <span className={`sd-status-badge ${r.status.toLowerCase()}`}>

@@ -99,6 +99,22 @@ class StudentSignupView(APIView):
             created_at=timezone.now()
         )
 
+        # Auto-create Student record with generated roll number
+        from students.models import Student
+        roll_number = f"STU{user.user_id:04d}"
+        # Ensure roll number is unique
+        counter = 1
+        base_roll = roll_number
+        while Student.objects.filter(roll_number=roll_number).exists():
+            roll_number = f"{base_roll}_{counter}"
+            counter += 1
+
+        Student.objects.create(
+            user=user,
+            roll_number=roll_number,
+            status="active",
+        )
+
         refresh = RefreshToken.for_user(user)
         refresh["role"] = "student"
         refresh["email"] = user.email
@@ -183,6 +199,61 @@ class UserDetailView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         user_id = getattr(self.request.user, "user_id", getattr(self.request.user, "id", None))
         return User.objects.filter(user_id=user_id).first()
+
+
+class StudentProfileView(APIView):
+    """
+    GET /api/auth/me/student/
+    Returns the logged-in student's complete profile + attendance stats.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user_id = getattr(request.user, "user_id", getattr(request.user, "id", None))
+        user = User.objects.filter(user_id=user_id).first()
+        if not user:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        from students.models import Student
+        from attendance.models import Attendance
+
+        student = Student.objects.filter(user=user).select_related(
+            "department", "branch", "student_class"
+        ).first()
+
+        if not student:
+            return Response({"detail": "Student profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Attendance stats
+        total = Attendance.objects.filter(student=student).count()
+        present = Attendance.objects.filter(student=student, status="present").count()
+        absent = total - present
+        percentage = round((present / total * 100), 2) if total > 0 else 0.0
+
+        data = {
+            "student_id": student.student_id,
+            "user_id": user.user_id,
+            "full_name": user.full_name,
+            "email": user.email,
+            "mobile": user.mobile,
+            "profile_image": user.profile_image,
+            "roll_number": student.roll_number,
+            "department": student.department.department_name if student.department else None,
+            "department_id": student.department_id,
+            "branch": student.branch.branch_name if student.branch else None,
+            "branch_id": student.branch_id,
+            "class_name": student.student_class.class_name if student.student_class else None,
+            "class_id": student.student_class_id,
+            "student_status": student.status,
+            "created_at": str(user.created_at),
+            "attendance": {
+                "total_days": total,
+                "present_days": present,
+                "absent_days": absent,
+                "percentage": percentage,
+            }
+        }
+        return Response(data)
 
 
 class ChangePasswordView(APIView):

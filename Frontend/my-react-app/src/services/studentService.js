@@ -18,7 +18,7 @@ import apiClient from "./apiClient.js";
  * Fetch all students
  * @returns {Promise<Array>} students[]
  */
-export const getAllStudents = () => apiClient.get("/api/students");
+export const getAllStudents = () => apiClient.get("/api/students/");
 
 /**
  * Get total student count

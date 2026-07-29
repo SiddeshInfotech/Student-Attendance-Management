@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaChartPie, FaSignOutAlt, FaBookOpen, FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
+import { logout } from "../services/authService";
 import "../styles/StudentDashboard.css";
 import StudentOverviewTab from "./student-tabs/StudentOverviewTab";
 import StudentProfileTab from "./student-tabs/StudentProfileTab";
@@ -94,7 +95,7 @@ export default function StudentDashboard({ setPage }) {
 
         <div style={{ flex: 1 }}></div>
 
-        <button className="sd-logout-btn" onClick={() => setPage("landing")}>
+        <button className="sd-logout-btn" onClick={() => { logout(); setPage("landing"); }}>
           <FaSignOutAlt /> Log Out
         </button>
       </aside>
