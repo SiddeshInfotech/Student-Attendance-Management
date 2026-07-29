@@ -18,7 +18,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-9&zocylb^+typ(fo8)k@c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,student-attendance-management-itw9.onrender.com').split(',')
+ALLOWED_HOSTS = ['*']  # All hosts allow - Render ke liye
 
 
 # ==========================
@@ -148,7 +148,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # ==========================
