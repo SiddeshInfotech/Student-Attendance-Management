@@ -21,13 +21,13 @@ import apiClient from "./apiClient.js";
  * @returns {Promise<Object>}
  */
 export const markAttendance = (attendanceData) =>
-  apiClient.post("/api/attendance/bulk/", attendanceData);
+  apiClient.post("/api/attendance", attendanceData);
 
 /**
  * Fetch all attendance records
  * @returns {Promise<Array>}
  */
-export const getAllAttendance = () => apiClient.get("/api/attendance/");
+export const getAllAttendance = () => apiClient.get("/api/attendance");
 
 /**
  * Get today's attendance summary

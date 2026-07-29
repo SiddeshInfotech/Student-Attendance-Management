@@ -143,41 +143,16 @@ export function useAttendanceStore() {
     const initializeData = async () => {
       try {
         // Try fetching from API first
-        const rawStudents = await getAllStudents();
-        const rawAttendance = await getAllAttendance();
-
-        // Map backend student objects to local format
-        const apiStudentsRaw = Array.isArray(rawStudents) ? rawStudents : (rawStudents?.results || []);
-        const mappedStudents = apiStudentsRaw.map(s => ({
-          id: String(s.student_id),
-          backendId: s.student_id,
-          user: s.user,
-          user_details: s.user_details,
-          name: s.user_details?.full_name || `Student ${s.student_id}`,
-          rollNo: s.roll_number || "",
-          grade: s.class_name || "Not Assigned",
-          division: s.branch_name || "-",
-          phone: s.user_details?.mobile || "",
-          department: s.department_name || "",
-          createdAt: s.user_details?.created_at || "",
-        }));
-
-        // Map backend attendance objects to local format
-        const apiAttRaw = Array.isArray(rawAttendance) ? rawAttendance : (rawAttendance?.results || []);
-        const mappedAttendance = apiAttRaw.map(a => ({
-          id: String(a.attendance_id),
-          studentId: String(a.student),
-          date: a.date,
-          status: a.status === "present" ? "Present" : a.status === "absent" ? "Absent" : a.status,
-        }));
-
-        setStudents(mappedStudents);
-        setAttendanceRecords(mappedAttendance);
+        const apiStudents = await getAllStudents();
+        const apiAttendance = await getAllAttendance();
+        
+        setStudents(apiStudents || []);
+        setAttendanceRecords(apiAttendance || []);
         setIsLoaded(true);
-
-        // Update local storage
-        save(STUDENTS_KEY, mappedStudents);
-        save(ATTENDANCE_KEY, mappedAttendance);
+        
+        // Update local storage with fresh API data
+        save(STUDENTS_KEY, apiStudents);
+        save(ATTENDANCE_KEY, apiAttendance);
       } catch (err) {
         console.warn("API unavailable, falling back to local storage:", err);
         
@@ -318,35 +293,16 @@ export function useAttendanceStore() {
         date,
         status,
       }));
-
-      // Build API payload — use backend student IDs (integers)
-      const apiRecords = Object.entries(statusMap).map(([studentId, status]) => {
-        const student = students.find(s => s.id === studentId);
-        return {
-          student_id: student?.backendId || parseInt(studentId) || studentId,
-          status: status.toLowerCase(), // backend expects lowercase
-          remarks: "",
-        };
-      });
-
-      // Find class_id from first student (all students in same view usually share class)
-      const firstStudent = students.find(s => s.id === Object.keys(statusMap)[0]);
-      const classId = firstStudent?.classId || firstStudent?.backendClassId || null;
-
-      // Background API sync — POST to /api/attendance/bulk/
-      apiMarkAttendance({
-        date: date,
-        class_id: classId || 1,
-        subject_id: null,
-        records: apiRecords,
-      }).catch(err => {
+      
+      // Background API sync
+      apiMarkAttendance({ records: newRecords }).catch(err => {
         console.warn("Failed to sync attendance to API, saved locally:", err);
       });
-
+      
       return [...filtered, ...newRecords];
     });
     return null; // success
-  }, [attendanceRecords, students]);
+  }, [attendanceRecords]);
 
   // ── Query Utilities ─────────────────────────────────────
 
