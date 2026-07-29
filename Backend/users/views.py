@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import User, Role
+from .models import User, Role, PasswordResetToken
 from .serializers import (
     UserSerializer,
     LoginSerializer,
@@ -211,8 +211,17 @@ class ForgotPasswordView(APIView):
         email = serializer.validated_data["email"]
         user = User.objects.filter(email=email).first()
         if user:
+            # Delete all old tokens for this user
+            PasswordResetToken.objects.filter(user=user).delete()
+            # Create new token and save to DB
             token = generate_random_token()
-            send_password_reset_email(email, token)
+            PasswordResetToken.objects.create(user=user, token=token)
+            try:
+                send_password_reset_email(email, token, user.full_name)
+            except Exception as e:
+                # Log error but don't expose it to the user
+                import logging
+                logging.getLogger(__name__).error(f"Email send failed: {e}")
         return Response({"detail": "If the email exists, a password reset link has been sent."})
 
 
@@ -222,4 +231,31 @@ class ResetPasswordView(APIView):
     def post(self, request):
         serializer = ResetPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response({"detail": "Password reset successfully."})
+        token_str = serializer.validated_data["token"]
+        new_password = serializer.validated_data["new_password"]
+
+        reset_token = PasswordResetToken.objects.filter(token=token_str, is_used=False).first()
+
+        if not reset_token:
+            return Response(
+                {"detail": "Invalid or already used reset token."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if reset_token.is_expired():
+            reset_token.delete()
+            return Response(
+                {"detail": "Reset token has expired. Please request a new one."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Reset the password
+        user = reset_token.user
+        user.password = new_password
+        user.save()
+
+        # Mark token as used
+        reset_token.is_used = True
+        reset_token.save()
+
+        return Response({"detail": "Password reset successfully. You can now log in."})
