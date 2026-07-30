@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 
-import Login          from "./components/Login";
-import Signup         from "./components/Signup";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
 import ForgotPassword from "./components/ForgotPassword";
-import Dashboard      from "./components/Dashboard";
+import Dashboard from "./components/Dashboard";
 import StudentDashboard from "./components/StudentDashboard";
-import Landing        from "./components/Landing";
-import StudentLogin   from "./components/StudentLogin";
-import StudentSignup  from "./components/StudentSignup";
+import Landing from "./components/Landing";
+import StudentLogin from "./components/StudentLogin";
+import StudentSignup from "./components/StudentSignup";
 import StudentForgotPassword from "./components/StudentForgotPassword";
-import ResetPassword  from "./components/ResetPassword";
+import ResetPassword from "./components/ResetPassword";
 import StudentResetPassword from "./components/StudentResetPassword";
 
 function App() {

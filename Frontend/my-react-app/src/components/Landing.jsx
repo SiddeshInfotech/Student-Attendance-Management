@@ -215,8 +215,34 @@ function Landing({ setPage }) {
             <button className="btn-ghost" onClick={() => setPage("login")}>Login</button>
             <button className="btn-primary" onClick={() => setPage("login")}>Book a Demo</button>
           </div>
+
+          <button
+            className="st-mobile-menu-btn"
+            onClick={() => setMobileOpen((open) => !open)}
+            aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
+          >
+            <span aria-hidden="true">{mobileOpen ? "✕" : "☰"}</span>
+          </button>
         </div>
       </nav>
+
+      {mobileOpen && (
+        <>
+          <div className="st-mobile-menu-overlay" onClick={() => setMobileOpen(false)} />
+          <div className={`st-mobile-menu ${mobileOpen ? "open" : ""}`}>
+            <ul className="st-mobile-nav-links">
+              <li><a href="#solutions" onClick={() => setMobileOpen(false)}>Solutions</a></li>
+              <li><a href="#features" onClick={() => setMobileOpen(false)}>Features</a></li>
+              <li><a href="#portals" onClick={() => setMobileOpen(false)}>Portals</a></li>
+              <li><a href="#about" onClick={() => setMobileOpen(false)}>About Us</a></li>
+            </ul>
+            <div className="st-mobile-nav-actions">
+              <button className="btn-ghost" onClick={() => { setMobileOpen(false); setPage("login"); }}>Login</button>
+              <button className="btn-primary" onClick={() => { setMobileOpen(false); setPage("login"); }}>Book a Demo</button>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* ── Hero ───────────────────────────────── */}
       <section className="st-hero">

@@ -47,14 +47,14 @@ function Login({ setPage }) {
             </svg>
           </div>
           <div className="brand-text">
-            <span className="brand-title">Student Attendance</span>
+            <span className="brand-title">ScholarTrack</span>
             <span className="brand-subtitle">Management System</span>
           </div>
         </div>
 
         <div className="intro-section">
           <h1>
-            Student Attendance <br />
+            ScholarTrack <br />
             <span className="highlight">Management System</span>
           </h1>
           <p className="intro-text">
