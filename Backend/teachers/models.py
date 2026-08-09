@@ -11,7 +11,7 @@ class Teacher(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "teachers"
 
     def __str__(self):

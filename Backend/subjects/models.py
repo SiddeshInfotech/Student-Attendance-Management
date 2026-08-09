@@ -23,5 +23,5 @@ class TeacherSubject(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, db_column="subject_id")
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "teacher_subjects"
