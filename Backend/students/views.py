@@ -150,8 +150,8 @@ class StudentViewSet(viewsets.ModelViewSet):
         student = self.get_object()
         attendances = Attendance.objects.filter(student=student)
         total_days = attendances.count()
-        present_count = attendances.filter(status="present").count()
-        absent_count = attendances.filter(status="absent").count()
+        present_count = attendances.filter(status__iexact="present").count()
+        absent_count = attendances.filter(status__iexact="absent").count()
         percentage = (present_count / total_days * 100) if total_days > 0 else 0
 
         return Response({

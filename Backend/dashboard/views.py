@@ -15,8 +15,8 @@ class DashboardView(APIView):
     def get(self, request):
         today = date.today()
         today_att = Attendance.objects.filter(date=today)
-        present_count = today_att.filter(status="present").count()
-        absent_count = today_att.filter(status="absent").count()
+        present_count = today_att.filter(status__iexact="present").count()
+        absent_count = today_att.filter(status__iexact="absent").count()
 
         recent_students = Student.objects.select_related("user").order_by("-created_at")[:5]
         recent_list = [

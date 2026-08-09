@@ -63,7 +63,7 @@ def _seed_initial_attendance(student):
 def _get_student_profile_dict(student):
     user = student.user
     total_days = Attendance.objects.filter(student=student).count()
-    present_count = Attendance.objects.filter(student=student, status="present").count()
+    present_count = Attendance.objects.filter(student=student, status__iexact="present").count()
     percentage = round((present_count / total_days * 100), 2) if total_days > 0 else 0.0
 
     return {
@@ -336,8 +336,8 @@ class StudentDashboardView(APIView):
 
         attendances = Attendance.objects.filter(student=student).order_by("-date")
         total_days = attendances.count()
-        present_count = attendances.filter(status="present").count()
-        absent_count = attendances.filter(status="absent").count()
+        present_count = attendances.filter(status__iexact="present").count()
+        absent_count = attendances.filter(status__iexact="absent").count()
         percentage = round((present_count / total_days * 100), 2) if total_days > 0 else 0.0
 
         today_str = str(date.today())
@@ -348,13 +348,13 @@ class StudentDashboardView(APIView):
         seven_days_ago = date.today() - timedelta(days=7)
         weekly_qs = attendances.filter(date__gte=seven_days_ago)
         weekly_total = weekly_qs.count()
-        weekly_present = weekly_qs.filter(status="present").count()
+        weekly_present = weekly_qs.filter(status__iexact="present").count()
 
         # Past 30 days
         thirty_days_ago = date.today() - timedelta(days=30)
         monthly_qs = attendances.filter(date__gte=thirty_days_ago)
         monthly_total = monthly_qs.count()
-        monthly_present = monthly_qs.filter(status="present").count()
+        monthly_present = monthly_qs.filter(status__iexact="present").count()
 
         # History list
         history_list = []
