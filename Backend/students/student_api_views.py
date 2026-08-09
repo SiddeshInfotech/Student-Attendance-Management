@@ -79,7 +79,7 @@ def _get_student_profile_dict(student):
         "division_name": student.division_name or (student.division.division_name if student.division else "A"),
         "grade": student.class_name or (student.student_class.class_name if student.student_class else "10th"),
         "division": student.division_name or (student.division.division_name if student.division else "A"),
-        "profile_image": user.profile_image or "https://i.pravatar.cc/150?img=11",
+        "profile_image": user.profile_image or None,
         "attendance_percentage": percentage,
         "gpa": float(student.gpa) if student.gpa else 3.80,
         "status": student.status,

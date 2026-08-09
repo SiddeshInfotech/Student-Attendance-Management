@@ -28,6 +28,7 @@ import {
   getAllAttendance,
   markAttendance as apiMarkAttendance,
 } from "../services/attendanceService.js";
+import { adminRegisterStudent } from "../services/authService.js";
 
 // ── Storage Keys ─────────────────────────────────────────
 const STUDENTS_KEY    = "sam_students";
@@ -118,41 +119,7 @@ export const isSameStudent = (student, record) => {
 
 // ── Seed Data (loaded only when localStorage is empty) ───
 const generateSeedData = () => {
-  const today = new Date();
-
-  const seedStudents = [
-    { id: "1", name: "Ritesh Patil", rollNo: "1", grade: "Grade 10", division: "A", phone: "9876543210", createdAt: nDaysAgo(60) },
-    { id: "2", name: "Mayur Gangurde", rollNo: "2", grade: "Grade 10", division: "A", phone: "9876543211", createdAt: nDaysAgo(60) },
-    { id: "3", name: "Hemangi Suryawanshi", rollNo: "3", grade: "Grade 10", division: "B", phone: "9876543212", createdAt: nDaysAgo(60) },
-    { id: "4", name: "Hemangi Patil", rollNo: "4", grade: "Grade 10", division: "A", phone: "9876543213", createdAt: nDaysAgo(60) },
-    { id: "5", name: "Vidhi Vibhandik", rollNo: "5", grade: "Grade 11", division: "A", phone: "9876543214", createdAt: nDaysAgo(60) },
-    { id: "6", name: "Sahil Patil", rollNo: "6", grade: "Grade 12", division: "B", phone: "9876543215", createdAt: nDaysAgo(60) },
-  ];
-
-  // Seed 30 days of attendance for all students
-  const seedAttendance = [];
-  let attId = 1;
-  for (let d = 30; d >= 0; d--) {
-    const date = nDaysAgo(d);
-    seedStudents.forEach((student) => {
-      // Weighted random: 80% present, 20% absent
-      const status = Math.random() < 0.80 ? "Present" : "Absent";
-      seedAttendance.push({
-        id: `a${attId++}`,
-        studentId: student.id,
-        student_id: student.id,
-        date,
-        attendance_date: date,
-        roll_number: student.rollNo,
-        student_name: student.name,
-        class_name: student.grade,
-        status,
-        marked_by: "Admin",
-      });
-    });
-  }
-
-  return { seedStudents, seedAttendance };
+  return { seedStudents: [], seedAttendance: [] };
 };
 
 // ── Main Hook ─────────────────────────────────────────────
@@ -260,9 +227,9 @@ export function useAttendanceStore() {
 
   // ── Student CRUD ────────────────────────────────────────
 
-  /** Returns error string or null */
-  const addStudent = useCallback((studentData) => {
-    const { name, rollNo, grade, division, phone } = studentData;
+  /** Returns error string or null (async when email+password provided) */
+  const addStudent = useCallback(async (studentData) => {
+    const { name, rollNo, grade, division, phone, email, password } = studentData;
 
     if (!name?.trim() || !rollNo?.trim() || !grade?.trim()) {
       return "Name, Roll Number, and Grade are required.";
@@ -276,6 +243,36 @@ export function useAttendanceStore() {
       return `Roll Number "${rollNo}" is already registered (${dupRoll.name}).`;
     }
 
+    // If email + password provided, use the student register API (creates login account)
+    if (email && password) {
+      const res = await adminRegisterStudent({
+        fullName: name.trim(),
+        email: email.trim(),
+        password: password.trim(),
+        phone: phone || "",
+        roll_number: rollNo.trim(),
+        roll_no: rollNo.trim(),
+        class_name: grade.trim(),
+        division_name: (division || "A").trim(),
+      });
+      // Normalize the returned student for the local store
+      const created = res?.student || res?.profile || {};
+      const newStudent = {
+        id: String(created.student_id || created.id || `s${Date.now()}`),
+        student_id: created.student_id || created.id,
+        name: created.full_name || created.name || name.trim(),
+        rollNo: created.roll_number || rollNo.trim(),
+        grade: created.class_name || created.grade || grade.trim(),
+        division: created.division_name || created.division || (division || "A").trim(),
+        phone: created.phone_number || created.mobile || phone || "",
+        email: email.trim(),
+        createdAt: created.created_at || todayStr(),
+      };
+      setStudents((prev) => [...prev, newStudent]);
+      return null; // success
+    }
+
+    // Fallback: no email/password — local-only add (legacy path)
     const newStudent = {
       id: `s${Date.now()}`,
       name: name.trim(),
@@ -308,15 +305,32 @@ export function useAttendanceStore() {
     return null; // success
   }, [students]);
 
-  const updateStudent = useCallback((id, updates) => {
+  const updateStudent = useCallback(async (id, updates) => {
     setStudents((prev) =>
       prev.map((s) => (s.id === id ? { ...s, ...updates } : s))
     );
     
-    // Background API sync
-    apiUpdateStudent(id, updates).catch(err => {
+    try {
+      const res = await apiUpdateStudent(id, updates);
+      if (res) {
+        setStudents((prev) =>
+          prev.map((s) => {
+            if (s.id === id) {
+              return {
+                ...s,
+                ...updates,
+                email: res.user_details?.email || updates.email || s.email,
+                name: res.user_details?.full_name || updates.name || s.name,
+                phone: res.user_details?.mobile || updates.phone || s.phone,
+              };
+            }
+            return s;
+          })
+        );
+      }
+    } catch (err) {
       console.warn("Failed to sync student update to API:", err);
-    });
+    }
   }, []);
 
   const deleteStudent = useCallback((id) => {

@@ -20,6 +20,15 @@ import {
 } from "react-icons/fa";
 import { getStudentProfile, updateStudentProfile, changeStudentPassword, logout } from "../../services/authService";
 
+const getInitials = (name) => {
+  if (!name) return "ST";
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+  return parts[0].slice(0, 2).toUpperCase();
+};
+
 export default function StudentProfileTab({ currentDate, currentTime }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -178,8 +187,14 @@ export default function StudentProfileTab({ currentDate, currentTime }) {
       {/* Top Profile Card */}
       <div className="sd-main-profile-card">
         <div className="sd-profile-avatar-large">
-          <img src={profile?.profile_image || "https://i.pravatar.cc/150?img=11"} alt="Profile Avatar" />
-          <div className="sd-edit-avatar-btn" title="Change Avatar" onClick={() => setIsEditing(true)}>
+          {profile?.profile_image && !profile.profile_image.includes("pravatar") ? (
+            <img src={profile.profile_image} alt="Profile Avatar" />
+          ) : (
+            <div className="sd-avatar-initials-large">
+              {getInitials(studentName)}
+            </div>
+          )}
+          <div className="sd-edit-avatar-btn" title="Change Avatar / Image URL" onClick={() => setIsEditing(true)}>
             <FaPen size={12} />
           </div>
         </div>

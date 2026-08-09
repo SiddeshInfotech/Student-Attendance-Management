@@ -70,6 +70,64 @@ class StudentViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(student_obj)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data
+
+        from users.models import User, Role
+        from django.contrib.auth.hashers import make_password
+
+        email = (data.get("email") or "").strip()
+        password = (data.get("password") or "").strip()
+        name = (data.get("name") or data.get("full_name") or "").strip()
+        phone = (data.get("phone") or data.get("mobile") or "").strip()
+
+        user = instance.user
+        if not user:
+            if email:
+                if User.objects.filter(email=email).exists():
+                    user = User.objects.filter(email=email).first()
+                else:
+                    st_role, _ = Role.objects.get_or_create(role_name="student", defaults={"description": "Student"})
+                    user = User.objects.create(
+                        email=email,
+                        full_name=name or f"Student {instance.roll_number}",
+                        mobile=phone or "9999999999",
+                        password=make_password(password) if password else make_password("password123"),
+                        role=st_role,
+                        status="active"
+                    )
+                instance.user = user
+        else:
+            if name:
+                user.full_name = name
+            if email and email != user.email:
+                if User.objects.filter(email=email).exclude(user_id=user.user_id).exists():
+                    return Response({"detail": "An account with this email already exists."}, status=status.HTTP_400_BAD_REQUEST)
+                user.email = email
+            if password and len(password) >= 6:
+                user.password = make_password(password)
+            if phone:
+                user.mobile = phone
+            user.save()
+
+        roll_number = data.get("rollNo") or data.get("roll_number")
+        if roll_number:
+            instance.roll_number = roll_number
+        grade = data.get("grade") or data.get("class_name")
+        if grade:
+            from classes.models import Class as ClassModel
+            class_obj, _ = ClassModel.objects.get_or_create(class_name=grade)
+            instance.student_class = class_obj
+            instance.class_name = grade
+        division = data.get("division") or data.get("division_name")
+        if division:
+            instance.division_name = division
+
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
     @action(detail=True, methods=["get"])
     def profile(self, request, pk=None):
         student = self.get_object()

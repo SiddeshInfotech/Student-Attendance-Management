@@ -4,6 +4,15 @@ import { getStudentDashboard } from "../../services/authService";
 import { jsPDF } from "jspdf";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
+const getInitials = (name) => {
+  if (!name) return "ST";
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+  return parts[0].slice(0, 2).toUpperCase();
+};
+
 export default function StudentOverviewTab({ currentDate, currentTime }) {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -179,11 +188,17 @@ export default function StudentOverviewTab({ currentDate, currentTime }) {
 
       {/* Dynamic Profile Summary Header */}
       <div className="sd-profile-card">
-        <img
-          src={student.profile_image || "https://i.pravatar.cc/150?img=11"}
-          alt={student.name || "Student Avatar"}
-          className="sd-avatar"
-        />
+        {student.profile_image && !student.profile_image.includes("pravatar") ? (
+          <img
+            src={student.profile_image}
+            alt={student.name || "Student Avatar"}
+            className="sd-avatar"
+          />
+        ) : (
+          <div className="sd-avatar-initials">
+            {getInitials(student.name || student.full_name)}
+          </div>
+        )}
         <div className="sd-profile-details">
           <h2>{student.name || student.full_name}</h2>
           <div className="sd-profile-tags">

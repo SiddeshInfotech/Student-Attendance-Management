@@ -36,6 +36,16 @@ export const studentSignup = async (data) => {
   return res;
 };
 
+/**
+ * Register a student from the admin dashboard.
+ * Same API as studentSignup but does NOT overwrite the admin's session token.
+ */
+export const adminRegisterStudent = async (data) => {
+  const res = await apiClient.post("/api/student/register/", data);
+  // Do NOT call setToken / setUser — preserve the admin session
+  return res;
+};
+
 export const studentLogin = async (data) => {
   const res = await apiClient.post("/api/student/login/", data);
   if (res && res.token) {

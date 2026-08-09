@@ -15,6 +15,7 @@ import {
   FaSearch, FaUserPlus, FaGraduationCap, FaUser,
   FaIdCard, FaPhone, FaUniversity, FaTrash,
   FaExclamationTriangle, FaCheck, FaEdit, FaTimes, FaSave,
+  FaEnvelope, FaLock, FaEye, FaEyeSlash,
 } from "react-icons/fa";
 
 function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) {
@@ -36,29 +37,38 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
   }, [scrollToEnroll, onScrollHandled]);
 
   // ── Add-form state ──────────────────────────────────────
-  const [newName,     setNewName]     = useState("");
-  const [newRoll,     setNewRoll]     = useState("");
-  const [newGrade,    setNewGrade]    = useState("Grade 1");
-  const [newDivision, setNewDivision] = useState("A");
-  const [newPhone,    setNewPhone]    = useState("");
-  const [formError,   setFormError]   = useState("");
+  const [newName,        setNewName]        = useState("");
+  const [newRoll,        setNewRoll]        = useState("");
+  const [newGrade,       setNewGrade]       = useState("Grade 1");
+  const [newDivision,    setNewDivision]    = useState("A");
+  const [newPhone,       setNewPhone]       = useState("");
+  const [newEmail,       setNewEmail]       = useState("");
+  const [newPassword,    setNewPassword]    = useState("");
+  const [newConfirmPwd,  setNewConfirmPwd]  = useState("");
+  const [showNewPwd,     setShowNewPwd]     = useState(false);
+  const [showConfirmPwd, setShowConfirmPwd] = useState(false);
+  const [formError,      setFormError]      = useState("");
+  const [formLoading,    setFormLoading]    = useState(false);
 
   // ── Search / filter state ───────────────────────────────
-  const [searchQuery,  setSearchQuery]  = useState("");
-  const [gradeFilter,  setGradeFilter]  = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [gradeFilter, setGradeFilter] = useState("All");
 
   // ── Delete confirm ──────────────────────────────────────
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
   // ── Edit modal state ────────────────────────────────────
-  const [editStudent,    setEditStudent]    = useState(null); // the student being edited
-  const [editName,       setEditName]       = useState("");
-  const [editRoll,       setEditRoll]       = useState("");
-  const [editGrade,      setEditGrade]      = useState("");
-  const [editDivision,   setEditDivision]   = useState("");
-  const [editPhone,      setEditPhone]      = useState("");
-  const [editError,      setEditError]      = useState("");
-  const [editSaving,     setEditSaving]     = useState(false);
+  const [editStudent,  setEditStudent]  = useState(null); // the student being edited
+  const [editName,     setEditName]     = useState("");
+  const [editRoll,     setEditRoll]     = useState("");
+  const [editGrade,    setEditGrade]    = useState("");
+  const [editDivision, setEditDivision] = useState("");
+  const [editPhone,    setEditPhone]    = useState("");
+  const [editEmail,    setEditEmail]    = useState("");
+  const [editPassword, setEditPassword] = useState("");
+  const [showEditPwd,  setShowEditPwd]  = useState(false);
+  const [editError,    setEditError]    = useState("");
+  const [editSaving,   setEditSaving]   = useState(false);
 
   // ── Filtered students ───────────────────────────────────
   const filteredStudents = useMemo(() => {
@@ -84,22 +94,38 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
   // ── Stats ───────────────────────────────────────────────
   const totalEnrolled = students.length;
   const activeClasses = new Set(students.map((s) => s.grade)).size;
-  const divisions     = new Set(students.map((s) => s.division)).size;
+  const divisions = new Set(students.map((s) => s.division)).size;
 
   // ── Add handler ─────────────────────────────────────────
-  const handleAddStudent = (e) => {
+  const handleAddStudent = async (e) => {
     e.preventDefault();
     setFormError("");
 
-    const err = addStudent({
-      name: newName, rollNo: newRoll,
-      grade: newGrade, division: newDivision, phone: newPhone,
-    });
+    // Validate email & password
+    if (!newEmail.trim()) { setFormError("Email address is required."); return; }
+    if (!newPassword.trim()) { setFormError("Password is required."); return; }
+    if (newPassword.length < 6) { setFormError("Password must be at least 6 characters."); return; }
+    if (newPassword !== newConfirmPwd) { setFormError("Passwords do not match."); return; }
 
-    if (err) { setFormError(err); return; }
+    setFormLoading(true);
+    const savedName = newName.trim();
+    try {
+      const err = await addStudent({
+        name: newName, rollNo: newRoll,
+        grade: newGrade, division: newDivision, phone: newPhone,
+        email: newEmail.trim(), password: newPassword.trim(),
+      });
 
-    setNewName(""); setNewRoll(""); setNewPhone("");
-    triggerBanner(`Student "${newName.trim()}" enrolled successfully!`);
+      if (err) { setFormError(err); return; }
+
+      setNewName(""); setNewRoll(""); setNewPhone("");
+      setNewEmail(""); setNewPassword(""); setNewConfirmPwd("");
+      triggerBanner(`Student "${savedName}" enrolled successfully!`);
+    } catch (err) {
+      setFormError(err?.message || "Failed to register student. Please try again.");
+    } finally {
+      setFormLoading(false);
+    }
   };
 
   // ── Delete handler ──────────────────────────────────────
@@ -118,6 +144,9 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
     setEditGrade(student.grade || "Grade 1");
     setEditDivision(student.division || "A");
     setEditPhone(student.phone || "");
+    setEditEmail(student.email || "");
+    setEditPassword("");
+    setShowEditPwd(false);
     setEditError("");
     setDeleteConfirmId(null); // close any pending delete
   };
@@ -132,6 +161,10 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
     setEditError("");
     if (!editName.trim()) { setEditError("Name is required."); return; }
     if (!editRoll.trim()) { setEditError("Roll number is required."); return; }
+    if (editPassword && editPassword.trim().length < 6) {
+      setEditError("New password must be at least 6 characters.");
+      return;
+    }
 
     // Check duplicate roll (excluding current student)
     const duplicate = students.find(
@@ -141,13 +174,19 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
 
     setEditSaving(true);
     try {
-      await updateStudent(editStudent.id, {
+      const updates = {
         name: editName.trim(),
         rollNo: editRoll.trim(),
         grade: editGrade,
         division: editDivision,
         phone: editPhone.trim(),
-      });
+        email: editEmail.trim(),
+      };
+      if (editPassword.trim()) {
+        updates.password = editPassword.trim();
+      }
+
+      await updateStudent(editStudent.id, updates);
       triggerBanner(`Student "${editName.trim()}" updated successfully!`);
       closeEdit();
     } catch {
@@ -177,6 +216,7 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
               width: "100%", maxWidth: "480px",
               padding: "32px", position: "relative",
               animation: "slideDownIn 0.25s ease both",
+              maxHeight: "90vh", overflowY: "auto",
             }}
           >
             {/* Close */}
@@ -231,6 +271,21 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
                     placeholder="Full name"
                     value={editName}
                     onChange={(e) => { setEditName(e.target.value); setEditError(""); }}
+                    style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
+                  />
+                </div>
+              </div>
+
+              {/* Email Address */}
+              <div className="modal-input-group">
+                <label>Email Address</label>
+                <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
+                  <FaEnvelope className="input-icon" style={{ fontSize: "14px", left: "14px", color: "#64748b" }} />
+                  <input
+                    type="email"
+                    placeholder="student@example.com"
+                    value={editEmail}
+                    onChange={(e) => { setEditEmail(e.target.value); setEditError(""); }}
                     style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
                   />
                 </div>
@@ -291,6 +346,28 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
                     onChange={(e) => setEditPhone(e.target.value)}
                     style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
                   />
+                </div>
+              </div>
+
+              {/* New Password (Optional) */}
+              <div className="modal-input-group">
+                <label>New Password (leave blank to keep current)</label>
+                <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1", position: "relative" }}>
+                  <FaLock className="input-icon" style={{ fontSize: "14px", left: "14px", color: "#64748b" }} />
+                  <input
+                    type={showEditPwd ? "text" : "password"}
+                    placeholder="Enter new password (optional)"
+                    value={editPassword}
+                    onChange={(e) => { setEditPassword(e.target.value); setEditError(""); }}
+                    style={{ height: "46px", paddingLeft: "42px", paddingRight: "44px", fontSize: "15px" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowEditPwd(!showEditPwd)}
+                    style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: "15px", display: "flex", alignItems: "center" }}
+                  >
+                    {showEditPwd ? <FaEyeSlash /> : <FaEye />}
+                  </button>
                 </div>
               </div>
             </div>
@@ -369,235 +446,309 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
 
       {/* ── Registered Students Table (Full Width) ──────── */}
       <div className="table-card bg-glass">
-          <div className="table-card-header">
-            <div className="table-title">
-              <h3>Registered Students</h3>
-              <p>Search by name, roll number, class, or division</p>
+        <div className="table-card-header">
+          <div className="table-title">
+            <h3>Registered Students</h3>
+            <p>Search by name, roll number, class, or division</p>
+          </div>
+          <div className="table-filters">
+            <div className="search-bar">
+              <FaSearch className="search-icon" />
+              <input
+                type="text"
+                placeholder="Search students..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
-            <div className="table-filters">
-              <div className="search-bar">
-                <FaSearch className="search-icon" />
-                <input
-                  type="text"
-                  placeholder="Search students..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <div className="filter-badge-row" style={{ flexWrap: "wrap" }}>
-                {allGrades.map((grade) => (
-                  <button
-                    key={grade}
-                    className={`filter-badge-btn ${gradeFilter === grade ? "active" : ""}`}
-                    onClick={() => setGradeFilter(grade)}
-                  >
-                    {grade === "All" ? "All" : grade.replace("Grade ", "Gr.")}
-                  </button>
-                ))}
-              </div>
+            <div className="filter-badge-row" style={{ flexWrap: "wrap" }}>
+              {allGrades.map((grade) => (
+                <button
+                  key={grade}
+                  className={`filter-badge-btn ${gradeFilter === grade ? "active" : ""}`}
+                  onClick={() => setGradeFilter(grade)}
+                >
+                  {grade === "All" ? "All" : grade.replace("Grade ", "Gr.")}
+                </button>
+              ))}
             </div>
           </div>
+        </div>
 
-          <div className="table-wrapper">
-            <table className="student-table" style={{ tableLayout: "fixed", width: "100%" }}>
-              <colgroup>
-                <col style={{ width: "10%" }} />
-                <col style={{ width: "30%" }} />
-                <col style={{ width: "18%" }} />
-                <col style={{ width: "14%" }} />
-                <col style={{ width: "28%" }} />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th style={{ textAlign: "center" }}>Roll No</th>
-                  <th>Student Name</th>
-                  <th>Class</th>
-                  <th style={{ textAlign: "center" }}>Division</th>
-                  <th style={{ textAlign: "center" }}>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredStudents.length > 0 ? (
-                  filteredStudents.map((student) => (
-                    <tr key={student.id}>
-                      <td style={{ textAlign: "center" }}><strong>{student.rollNo}</strong></td>
-                      <td>
-                        <div className="student-profile">
-                          <div className="avatar-badge">
-                            {student.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
-                          </div>
-                          <span className="student-name">{student.name}</span>
+        <div className="table-wrapper">
+          <table className="student-table" style={{ tableLayout: "fixed", width: "100%" }}>
+            <colgroup>
+              <col style={{ width: "10%" }} />
+              <col style={{ width: "30%" }} />
+              <col style={{ width: "18%" }} />
+              <col style={{ width: "14%" }} />
+              <col style={{ width: "28%" }} />
+            </colgroup>
+            <thead>
+              <tr>
+                <th style={{ textAlign: "center" }}>Roll No</th>
+                <th>Student Name</th>
+                <th>Class</th>
+                <th style={{ textAlign: "center" }}>Division</th>
+                <th style={{ textAlign: "center" }}>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredStudents.length > 0 ? (
+                filteredStudents.map((student) => (
+                  <tr key={student.id}>
+                    <td style={{ textAlign: "center" }}><strong>{student.rollNo}</strong></td>
+                    <td>
+                      <div className="student-profile">
+                        <div className="avatar-badge">
+                          {student.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
                         </div>
-                      </td>
-                      <td>{student.grade}</td>
-                      <td style={{ textAlign: "center" }}>
-                        <span className="division-badge">{student.division}</span>
-                      </td>
-                      <td>
-                        {deleteConfirmId === student.id ? (
-                          /* ── Delete confirmation row ── */
-                          <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
-                            <button
-                              className="table-action-btn"
-                              style={{ borderColor: "#ef4444", color: "#ef4444" }}
-                              onClick={() => handleDeleteConfirm(student.id)}
-                            >
-                              <FaCheck /> Confirm
-                            </button>
-                            <button
-                              className="table-action-btn"
-                              onClick={() => setDeleteConfirmId(null)}
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        ) : (
-                          /* ── Normal action buttons ── */
-                          <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
-                            {/* Edit */}
-                            <button
-                              className="table-action-btn"
-                              style={{ borderColor: "#3b82f6", color: "#3b82f6" }}
-                              onClick={() => openEdit(student)}
-                              title="Edit student"
-                            >
-                              <FaEdit />
-                              <span>Edit</span>
-                            </button>
-                            {/* Delete */}
-                            <button
-                              className="table-action-btn"
-                              style={{ borderColor: "#ef4444", color: "#ef4444" }}
-                              onClick={() => setDeleteConfirmId(student.id)}
-                              title="Delete student"
-                            >
-                              <FaTrash />
-                              <span>Delete</span>
-                            </button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="5" className="table-empty-state">
-                      {searchQuery
-                        ? `No students match "${searchQuery}".`
-                        : "No students registered yet."}
+                        <span className="student-name">{student.name}</span>
+                      </div>
+                    </td>
+                    <td>{student.grade}</td>
+                    <td style={{ textAlign: "center" }}>
+                      <span className="division-badge">{student.division}</span>
+                    </td>
+                    <td>
+                      {deleteConfirmId === student.id ? (
+                        /* ── Delete confirmation row ── */
+                        <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
+                          <button
+                            className="table-action-btn"
+                            style={{ borderColor: "#ef4444", color: "#ef4444" }}
+                            onClick={() => handleDeleteConfirm(student.id)}
+                          >
+                            <FaCheck /> Confirm
+                          </button>
+                          <button
+                            className="table-action-btn"
+                            onClick={() => setDeleteConfirmId(null)}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        /* ── Normal action buttons ── */
+                        <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
+                          {/* Edit */}
+                          <button
+                            className="table-action-btn"
+                            style={{ borderColor: "#3b82f6", color: "#3b82f6" }}
+                            onClick={() => openEdit(student)}
+                            title="Edit student"
+                          >
+                            <FaEdit />
+                            <span>Edit</span>
+                          </button>
+                          {/* Delete */}
+                          <button
+                            className="table-action-btn"
+                            style={{ borderColor: "#ef4444", color: "#ef4444" }}
+                            onClick={() => setDeleteConfirmId(student.id)}
+                            title="Delete student"
+                          >
+                            <FaTrash />
+                            <span>Delete</span>
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="table-empty-state">
+                    {searchQuery
+                      ? `No students match "${searchQuery}".`
+                      : "No students registered yet."}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
-          {filteredStudents.length > 0 && (
-            <div style={{ padding: "12px 16px", fontSize: "13px", color: "#64748b", borderTop: "1px solid #f1f5f9" }}>
-              Showing {filteredStudents.length} of {students.length} students
-            </div>
-          )}
+        {filteredStudents.length > 0 && (
+          <div style={{ padding: "12px 16px", fontSize: "13px", color: "#64748b", borderTop: "1px solid #f1f5f9" }}>
+            Showing {filteredStudents.length} of {students.length} students
+          </div>
+        )}
       </div>
 
       {/* ── Enroll New Student Form (Below Table) ───────── */}
       <div ref={enrollFormRef} className="add-student-inline-card bg-glass" style={{ marginTop: "1.5rem", maxWidth: "600px", marginLeft: "auto", marginRight: "auto" }}>
-          <div className="inline-card-header">
-            <div
-              className="brand-logo-icon"
-              style={{ backgroundColor: "#eff6ff", color: "#3b82f6", width: "44px", height: "44px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}
-            >
-              <FaUserPlus style={{ fontSize: "18px" }} />
-            </div>
-            <div>
-              <h3>Enroll New Student</h3>
-              <p>Students are added once — attend daily via Attendance tab</p>
+        <div className="inline-card-header">
+          <div
+            className="brand-logo-icon"
+            style={{ backgroundColor: "#eff6ff", color: "#3b82f6", width: "44px", height: "44px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}
+          >
+            <FaUserPlus style={{ fontSize: "18px" }} />
+          </div>
+          <div>
+            <h3>Enroll New Student</h3>
+            <p>Students are added once — attend daily via Attendance tab</p>
+          </div>
+        </div>
+
+        {formError && (
+          <div className="form-error-box">
+            <FaExclamationTriangle className="form-error-icon" />
+            <span>{formError}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleAddStudent} className="inline-form-form">
+          {/* 1. Student Name */}
+          <div className="modal-input-group">
+            <label>Student Name *</label>
+            <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
+              <FaUser className="input-icon" style={{ fontSize: "15px", left: "14px", color: "#64748b" }} />
+              <input
+                type="text"
+                placeholder="Enter full name"
+                value={newName}
+                onChange={(e) => { setNewName(e.target.value); setFormError(""); }}
+                style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
+                required
+              />
             </div>
           </div>
 
-          {formError && (
-            <div className="form-error-box">
-              <FaExclamationTriangle className="form-error-icon" />
-              <span>{formError}</span>
+          {/* 2. Email Address */}
+          <div className="modal-input-group">
+            <label>Email Address *</label>
+            <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
+              <FaEnvelope className="input-icon" style={{ fontSize: "14px", left: "14px", color: "#64748b" }} />
+              <input
+                type="email"
+                placeholder="student@example.com"
+                value={newEmail}
+                onChange={(e) => { setNewEmail(e.target.value); setFormError(""); }}
+                style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
+                required
+              />
             </div>
-          )}
+          </div>
 
-          <form onSubmit={handleAddStudent} className="inline-form-form">
-            <div className="modal-input-group">
-              <label>Student Name *</label>
-              <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
-                <FaUser className="input-icon" style={{ fontSize: "15px", left: "14px", color: "#64748b" }} />
-                <input
-                  type="text"
-                  placeholder="Enter full name"
-                  value={newName}
-                  onChange={(e) => { setNewName(e.target.value); setFormError(""); }}
-                  style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
-                  required
-                />
-              </div>
+          {/* 3. Phone Number */}
+          <div className="modal-input-group">
+            <label>Phone Number (optional)</label>
+            <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
+              <FaPhone className="input-icon" style={{ fontSize: "14px", left: "14px", color: "#64748b" }} />
+              <input
+                type="tel"
+                placeholder="Parent contact"
+                value={newPhone}
+                onChange={(e) => setNewPhone(e.target.value)}
+                style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
+              />
             </div>
+          </div>
 
-            <div className="modal-input-group">
-              <label>Roll Number *</label>
-              <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
-                <FaIdCard className="input-icon" style={{ fontSize: "15px", left: "14px", color: "#64748b" }} />
-                <input
-                  type="text"
-                  placeholder="e.g. 101"
-                  value={newRoll}
-                  onChange={(e) => { setNewRoll(e.target.value); setFormError(""); }}
-                  style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
-                  required
-                />
-              </div>
+          {/* 4. Roll Number */}
+          <div className="modal-input-group">
+            <label>Roll Number *</label>
+            <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
+              <FaIdCard className="input-icon" style={{ fontSize: "15px", left: "14px", color: "#64748b" }} />
+              <input
+                type="text"
+                placeholder="e.g. 101"
+                value={newRoll}
+                onChange={(e) => { setNewRoll(e.target.value); setFormError(""); }}
+                style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
+                required
+              />
             </div>
+          </div>
 
-            <div className="modal-input-group">
-              <label>Class / Grade *</label>
-              <select
-                value={newGrade}
-                onChange={(e) => setNewGrade(e.target.value)}
-                style={{ height: "46px", fontSize: "15px" }}
+          {/* 5. Class / Grade */}
+          <div className="modal-input-group">
+            <label>Class / Grade *</label>
+            <select
+              value={newGrade}
+              onChange={(e) => setNewGrade(e.target.value)}
+              style={{ height: "46px", fontSize: "15px" }}
+            >
+              {Array.from({ length: 12 }, (_, i) => `Grade ${i + 1}`).map((g) => (
+                <option key={g} value={g}>{g}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* 6. Division */}
+          <div className="modal-input-group">
+            <label>Division</label>
+            <select
+              value={newDivision}
+              onChange={(e) => setNewDivision(e.target.value)}
+              style={{ height: "46px", fontSize: "15px" }}
+            >
+              {["A", "B", "C", "D"].map((d) => (
+                <option key={d} value={d}>Division {d}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* 7. Create Password */}
+          <div className="modal-input-group">
+            <label>Create Password *</label>
+            <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1", position: "relative" }}>
+              <FaLock className="input-icon" style={{ fontSize: "14px", left: "14px", color: "#64748b" }} />
+              <input
+                type={showNewPwd ? "text" : "password"}
+                placeholder="Create password (min 6 chars)"
+                value={newPassword}
+                onChange={(e) => { setNewPassword(e.target.value); setFormError(""); }}
+                style={{ height: "46px", paddingLeft: "42px", paddingRight: "44px", fontSize: "15px" }}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowNewPwd(!showNewPwd)}
+                style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: "15px", display: "flex", alignItems: "center" }}
               >
-                {Array.from({ length: 12 }, (_, i) => `Grade ${i + 1}`).map((g) => (
-                  <option key={g} value={g}>{g}</option>
-                ))}
-              </select>
+                {showNewPwd ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
+          </div>
 
-            <div className="modal-input-group">
-              <label>Division</label>
-              <select
-                value={newDivision}
-                onChange={(e) => setNewDivision(e.target.value)}
-                style={{ height: "46px", fontSize: "15px" }}
+          {/* 8. Confirm Password */}
+          <div className="modal-input-group">
+            <label>Confirm Password *</label>
+            <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1", position: "relative" }}>
+              <FaLock className="input-icon" style={{ fontSize: "14px", left: "14px", color: "#64748b" }} />
+              <input
+                type={showConfirmPwd ? "text" : "password"}
+                placeholder="Repeat password"
+                value={newConfirmPwd}
+                onChange={(e) => { setNewConfirmPwd(e.target.value); setFormError(""); }}
+                style={{ height: "46px", paddingLeft: "42px", paddingRight: "44px", fontSize: "15px" }}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPwd(!showConfirmPwd)}
+                style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: "15px", display: "flex", alignItems: "center" }}
               >
-                {["A", "B", "C", "D"].map((d) => (
-                  <option key={d} value={d}>Division {d}</option>
-                ))}
-              </select>
+                {showConfirmPwd ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
+          </div>
 
-            <div className="modal-input-group">
-              <label>Phone (optional)</label>
-              <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
-                <FaPhone className="input-icon" style={{ fontSize: "14px", left: "14px", color: "#64748b" }} />
-                <input
-                  type="tel"
-                  placeholder="Parent contact"
-                  value={newPhone}
-                  onChange={(e) => setNewPhone(e.target.value)}
-                  style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
-                />
-              </div>
-            </div>
-
-
-            <button type="submit" className="primary-action-btn inline-submit-btn" style={{ marginTop: "4px" }}>
-              <FaUserPlus />
-              <span>Register Student</span>
-            </button>
-          </form>
+          <button
+            type="submit"
+            className="primary-action-btn inline-submit-btn"
+            style={{ marginTop: "4px" }}
+            disabled={formLoading}
+          >
+            {formLoading
+              ? <div className="loading-spinner" style={{ width: "15px", height: "15px", borderTopColor: "#fff", borderColor: "rgba(255,255,255,0.3)" }} />
+              : <FaUserPlus />
+            }
+            <span>{formLoading ? "Registering..." : "Register Student"}</span>
+          </button>
+        </form>
       </div>
     </>
   );
