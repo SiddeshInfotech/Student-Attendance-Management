@@ -68,86 +68,174 @@ const getDateRange = (period, customStart, customEnd) => {
   return { start: today, end: today };
 };
 
-// ── Get Monday of any date's week ─────────────────────────
-const getMondayOfWeek = (dateStr) => {
-  const d = new Date(dateStr + "T00:00:00");
-  const day = d.getDay(); // 0=Sun,1=Mon...
-  const diff = day === 0 ? -6 : 1 - day;
-  d.setDate(d.getDate() + diff);
-  return d.toISOString().split("T")[0];
+// ── Helper: Get week dates starting Monday ─────────
+const getMondayOfWeek = (dStr) => {
+  const d = new Date(dStr + "T00:00:00");
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(d.setDate(diff));
+  const y = monday.getFullYear();
+  const m = String(monday.getMonth() + 1).padStart(2, "0");
+  const dayNum = String(monday.getDate()).padStart(2, "0");
+  return `${y}-${m}-${dayNum}`;
 };
 
 const getSundayOfWeek = (mondayStr) => {
   const d = new Date(mondayStr + "T00:00:00");
   d.setDate(d.getDate() + 6);
-  return d.toISOString().split("T")[0];
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const dayNum = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${dayNum}`;
 };
 
 // ── PDF: Individual Student Report ────────────────────────
 const downloadIndividualPDF = (student, records, schoolName, academicYear) => {
   const doc = new jsPDF();
-  const present = records.filter((r) => r.status === "Present").length;
-  const absent  = records.filter((r) => r.status === "Absent").length;
-  const total   = records.length;
+  
+  // Sort records chronologically ascending (oldest to newest)
+  const sortedRecords = [...records].sort((a, b) => {
+    const dA = a.date || a.attendance_date || "";
+    const dB = b.date || b.attendance_date || "";
+    return dA.localeCompare(dB);
+  });
+
+  const present = sortedRecords.filter((r) => r.status === "Present").length;
+  const absent  = sortedRecords.filter((r) => r.status === "Absent").length;
+  const total   = sortedRecords.length;
   const pct     = total > 0 ? ((present / total) * 100).toFixed(1) : "0.0";
 
+  // Banner Header
   doc.setFillColor(9, 13, 31);
-  doc.rect(0, 0, 210, 40, "F");
+  doc.rect(0, 0, 210, 38, "F");
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(20); doc.setFont("helvetica", "bold");
+  doc.setFontSize(18); doc.setFont("helvetica", "bold");
   doc.text("SCHOLARTRACK — INDIVIDUAL ATTENDANCE REPORT", 15, 18);
   doc.setFontSize(10); doc.setFont("helvetica", "normal");
-  doc.text(`${schoolName} | Academic Year: ${academicYear}`, 15, 30);
+  doc.text(`${schoolName} | Academic Year: ${academicYear} | Generated: ${formatDate(todayStr())}`, 15, 29);
 
+  // Student Info Box
   doc.setTextColor(15, 23, 42);
   doc.setFillColor(240, 249, 255);
-  doc.rect(15, 48, 180, 32, "F");
-  doc.setFontSize(14); doc.setFont("helvetica", "bold");
-  doc.text(student.name, 20, 60);
-  doc.setFontSize(11); doc.setFont("helvetica", "normal");
-  doc.text(`Roll No: ${student.rollNo}`, 20, 70);
-  doc.text(`Class: ${student.grade}  |  Division: ${student.division}`, 20, 76);
+  doc.rect(15, 45, 180, 30, "F");
+  doc.setDrawColor(186, 230, 253);
+  doc.rect(15, 45, 180, 30, "S");
 
-  doc.setFillColor(236, 253, 245); doc.rect(15, 88, 54, 20, "F");
-  doc.setFillColor(254, 242, 242); doc.rect(77, 88, 54, 20, "F");
-  doc.setFillColor(239, 246, 255); doc.rect(139, 88, 56, 20, "F");
+  doc.setFontSize(13); doc.setFont("helvetica", "bold");
+  doc.text(`Student Name: ${student.name}`, 20, 56);
+  doc.setFontSize(10); doc.setFont("helvetica", "normal");
+  doc.text(`Roll Number: ${student.rollNo}    |    Class: ${student.grade}    |    Division: ${student.division}`, 20, 66);
 
-  doc.setFontSize(18); doc.setFont("helvetica", "bold");
-  doc.setTextColor(6, 95, 70);   doc.text(`${present}`, 32, 101);
-  doc.setTextColor(153, 27, 27); doc.text(`${absent}`,  95, 101);
-  doc.setTextColor(37, 99, 235); doc.text(`${pct}%`,   155, 101);
+  // Summary Metrics Badges
+  doc.setFillColor(236, 253, 245); doc.rect(15, 82, 54, 20, "F");
+  doc.setFillColor(254, 242, 242); doc.rect(77, 82, 54, 20, "F");
+  doc.setFillColor(239, 246, 255); doc.rect(139, 82, 56, 20, "F");
+
+  doc.setFontSize(16); doc.setFont("helvetica", "bold");
+  doc.setTextColor(6, 95, 70);   doc.text(`${present}`, 32, 94);
+  doc.setTextColor(153, 27, 27); doc.text(`${absent}`,  95, 94);
+  doc.setTextColor(37, 99, 235); doc.text(`${pct}%`,   153, 94);
 
   doc.setFontSize(9); doc.setFont("helvetica", "normal");
   doc.setTextColor(100, 116, 139);
-  doc.text("Present Days", 20, 107);
-  doc.text("Absent Days",  82, 107);
-  doc.text("Attendance %", 144, 107);
+  doc.text("Present Days", 20, 99);
+  doc.text("Absent Days",  82, 99);
+  doc.text("Attendance Rate", 144, 99);
 
-  doc.setFillColor(248, 250, 252);
-  doc.rect(15, 116, 180, 8, "F");
-  doc.setFontSize(10); doc.setFont("helvetica", "bold");
+  // Table Header
+  doc.setFillColor(241, 245, 249);
+  doc.rect(15, 108, 180, 8, "F");
+  doc.setFontSize(9); doc.setFont("helvetica", "bold");
   doc.setTextColor(71, 85, 105);
-  doc.text("Date", 20, 122);
-  doc.text("Day", 80, 122);
-  doc.text("Status", 130, 122);
+  doc.text("S.No", 20, 113.5);
+  doc.text("Date", 45, 113.5);
+  doc.text("Day", 100, 113.5);
+  doc.text("Status", 155, 113.5);
 
-  doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(9.5);
   const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  let y = 130;
-  records.forEach((record) => {
-    if (y > 270) { doc.addPage(); y = 20; }
-    const dayName = DAYS[new Date(record.date + "T00:00:00").getDay()];
+  let y = 122;
+
+  sortedRecords.forEach((record, index) => {
+    if (y > 265) { 
+      doc.addPage(); 
+      // Re-draw table header on new page
+      doc.setFillColor(241, 245, 249);
+      doc.rect(15, 15, 180, 8, "F");
+      doc.setFontSize(9); doc.setFont("helvetica", "bold");
+      doc.setTextColor(71, 85, 105);
+      doc.text("S.No", 20, 20.5);
+      doc.text("Date", 45, 20.5);
+      doc.text("Day", 100, 20.5);
+      doc.text("Status", 155, 20.5);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(9.5);
+      y = 29; 
+    }
+
+    const recDate = record.date || record.attendance_date;
+    const dayName = recDate ? DAYS[new Date(recDate + "T00:00:00").getDay()] : "-";
+    const statusStr = record.status || "Absent";
+
     doc.setTextColor(51, 65, 85);
-    doc.text(formatDate(record.date), 20, y);
-    doc.text(dayName, 80, y);
-    doc.setTextColor(record.status === "Present" ? 16 : 239, record.status === "Present" ? 185 : 68, record.status === "Present" ? 129 : 68);
-    doc.text(record.status, 130, y);
-    doc.setTextColor(226, 232, 240);
-    doc.line(15, y + 3, 195, y + 3);
-    y += 10;
+    doc.text(`${index + 1}`, 20, y);
+    doc.text(formatDate(recDate), 45, y);
+    doc.text(dayName, 100, y);
+
+    if (statusStr === "Present") {
+      doc.setTextColor(16, 185, 129);
+      doc.text("● Present", 155, y);
+    } else {
+      doc.setTextColor(239, 68, 68);
+      doc.text("● Absent", 155, y);
+    }
+
+    doc.setDrawColor(241, 245, 249);
+    doc.line(15, y + 2.5, 195, y + 2.5);
+    y += 8.5;
   });
 
-  doc.save(`${student.name.replace(/\s+/g, "_")}_attendance_report.pdf`);
+  // Footer Signature Block
+  if (y > 250) { doc.addPage(); y = 40; }
+  y = Math.max(y + 15, 245);
+  doc.setDrawColor(148, 163, 184);
+  doc.line(140, y, 190, y);
+  doc.setFontSize(9); doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 116, 139);
+  doc.text("Authorized Signatory & Stamp", 140, y + 5);
+
+  doc.save(`${student.name.replace(/\s+/g, "_")}_Attendance_Report.pdf`);
+};
+
+// ── Fast Lookup Map for O(1) Attendance Retrieval ─────────
+const buildAttendanceMap = (records) => {
+  const map = new Map();
+  if (!records) return map;
+  records.forEach((a) => {
+    if (!a) return;
+    const d = a.date || a.attendance_date;
+    if (!d) return;
+
+    const sId1 = String(a.studentId || a.student_id || a.student || "");
+    const sRoll = String(a.roll_number || a.rollNo || "").trim().toLowerCase();
+
+    if (sId1) map.set(`${sId1}_${d}`, a);
+    if (sRoll) map.set(`roll_${sRoll}_${d}`, a);
+  });
+  return map;
+};
+
+const getRecFromMap = (map, student, date) => {
+  if (!student || !date) return null;
+  const sId1 = String(student.id || "");
+  const sId2 = String(student.student_id || "");
+  const sRoll = String(student.rollNo || student.roll_number || "").trim().toLowerCase();
+
+  return (
+    (sId1 && map.get(`${sId1}_${date}`)) ||
+    (sId2 && map.get(`${sId2}_${date}`)) ||
+    (sRoll && map.get(`roll_${sRoll}_${date}`)) ||
+    null
+  );
 };
 
 // ── PDF: Weekly Report ────────────────────────────────────
@@ -156,24 +244,30 @@ const downloadWeeklyPDF = (weekStart, weekEnd, students, attendanceRecords, scho
   const dates   = dateRange(weekStart, weekEnd);
   const DAYS    = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   const wLabel  = `${formatDate(weekStart)} – ${formatDate(weekEnd)}`;
+  const attMap  = buildAttendanceMap(attendanceRecords);
+
+  // Sort students by Roll Number ascending
+  const sortedStudents = [...students].sort((a, b) =>
+    a.rollNo.localeCompare(b.rollNo, undefined, { numeric: true })
+  );
 
   doc.setFillColor(9, 13, 31);
   doc.rect(0, 0, 297, 30, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(16); doc.setFont("helvetica", "bold");
-  doc.text(`Weekly Attendance Report — ${wLabel}`, 15, 14);
+  doc.text(`Weekly Attendance Summary — ${wLabel}`, 15, 14);
   doc.setFontSize(9); doc.setFont("helvetica", "normal");
   doc.text(`${schoolName} | Academic Year: ${academicYear} | Generated: ${formatDate(todayStr())}`, 15, 24);
 
   const colX   = 15;
   const nameW  = 55;
   const rollW  = 18;
-  const cellW  = 28;
+  const cellW  = 24;
   let rowY     = 42;
 
   // Header row
-  doc.setFillColor(248, 250, 252);
-  doc.rect(colX, rowY - 6, 297 - 2 * colX, 8, "F");
+  doc.setFillColor(241, 245, 249);
+  doc.rect(colX, rowY - 6, 297 - 2 * colX, 10, "F");
   doc.setFontSize(8); doc.setFont("helvetica", "bold");
   doc.setTextColor(71, 85, 105);
   doc.text("Student Name", colX + 2, rowY);
@@ -181,32 +275,56 @@ const downloadWeeklyPDF = (weekStart, weekEnd, students, attendanceRecords, scho
 
   dates.forEach((d, i) => {
     const dayName = DAYS[new Date(d + "T00:00:00").getDay()];
-    const day     = d.split("-")[2];
+    const dayNum  = d.split("-")[2];
     const x       = colX + nameW + rollW + 2 + i * cellW;
-    doc.text(`${dayName}`, x, rowY - 3);
-    doc.text(`${day}`, x + 4, rowY + 3);
+    doc.text(`${dayName}`, x, rowY - 2);
+    doc.text(`${dayNum}`, x + 2, rowY + 3);
   });
-  doc.text("Pres", colX + nameW + rollW + 2 + dates.length * cellW + 2, rowY);
-  doc.text("Abs",  colX + nameW + rollW + 2 + dates.length * cellW + 16, rowY);
-  doc.text("%",    colX + nameW + rollW + 2 + dates.length * cellW + 28, rowY);
 
-  rowY += 6;
+  const endHeaderX = colX + nameW + rollW + 2 + dates.length * cellW;
+  doc.text("Present", endHeaderX + 2, rowY);
+  doc.text("Absent",  endHeaderX + 16, rowY);
+  doc.text("Rate %",   endHeaderX + 30, rowY);
 
-  students.forEach((student, si) => {
-    if (rowY > 195) { doc.addPage(); rowY = 20; }
+  rowY += 8;
+
+  sortedStudents.forEach((student, si) => {
+    if (rowY > 185) { 
+      doc.addPage(); 
+      rowY = 25; 
+      // Re-draw header on new page
+      doc.setFillColor(241, 245, 249);
+      doc.rect(colX, rowY - 6, 297 - 2 * colX, 10, "F");
+      doc.setFontSize(8); doc.setFont("helvetica", "bold");
+      doc.setTextColor(71, 85, 105);
+      doc.text("Student Name", colX + 2, rowY);
+      doc.text("Roll", colX + nameW + 2, rowY);
+      dates.forEach((d, i) => {
+        const dayName = DAYS[new Date(d + "T00:00:00").getDay()];
+        const dayNum  = d.split("-")[2];
+        const x       = colX + nameW + rollW + 2 + i * cellW;
+        doc.text(`${dayName}`, x, rowY - 2);
+        doc.text(`${dayNum}`, x + 2, rowY + 3);
+      });
+      doc.text("Present", endHeaderX + 2, rowY);
+      doc.text("Absent",  endHeaderX + 16, rowY);
+      doc.text("Rate %",   endHeaderX + 30, rowY);
+      rowY += 8;
+    }
+
     const bg = si % 2 === 0 ? [255, 255, 255] : [248, 250, 252];
     doc.setFillColor(...bg);
     doc.rect(colX, rowY - 4, 297 - 2 * colX, 9, "F");
 
-    doc.setFont("helvetica", "normal"); doc.setFontSize(8);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
     doc.setTextColor(15, 23, 42);
     doc.text(student.name.slice(0, 22), colX + 2, rowY);
     doc.text(student.rollNo, colX + nameW + 2, rowY);
 
     let pres = 0, abs = 0;
     dates.forEach((d, i) => {
-      const rec = attendanceRecords.find((a) => a.studentId === student.id && a.date === d);
-      const x   = colX + nameW + rollW + 2 + i * cellW + 4;
+      const rec = getRecFromMap(attMap, student, d);
+      const x   = colX + nameW + rollW + 2 + i * cellW + 3;
       if (rec) {
         if (rec.status === "Present") {
           doc.setTextColor(16, 185, 129); pres++;
@@ -217,22 +335,22 @@ const downloadWeeklyPDF = (weekStart, weekEnd, students, attendanceRecords, scho
         }
       } else {
         doc.setTextColor(148, 163, 184);
-        doc.text("—", x, rowY);
+        doc.text("-", x, rowY);
       }
     });
 
     const total = pres + abs;
     const pct   = total > 0 ? ((pres / total) * 100).toFixed(0) : "0";
-    const endX  = colX + nameW + rollW + 2 + dates.length * cellW;
-    doc.setTextColor(16, 185, 129);  doc.text(`${pres}`, endX + 2, rowY);
-    doc.setTextColor(239, 68, 68);   doc.text(`${abs}`,  endX + 16, rowY);
-    doc.setTextColor(pres / (total || 1) >= 0.75 ? 16 : 239, pres / (total || 1) >= 0.75 ? 185 : 68, pres / (total || 1) >= 0.75 ? 129 : 68);
-    doc.text(`${pct}%`, endX + 28, rowY);
+    doc.setTextColor(16, 185, 129);  doc.text(`${pres}`, endHeaderX + 4, rowY);
+    doc.setTextColor(239, 68, 68);   doc.text(`${abs}`,  endHeaderX + 18, rowY);
+    doc.setTextColor(pct >= 75 ? 16 : 239, pct >= 75 ? 185 : 68, pct >= 75 ? 129 : 68);
+    doc.setFont("helvetica", "bold");
+    doc.text(`${pct}%`, endHeaderX + 30, rowY);
 
     rowY += 9;
   });
 
-  doc.save(`weekly_attendance_${weekStart}_to_${weekEnd}.pdf`);
+  doc.save(`Weekly_Attendance_${weekStart}_to_${weekEnd}.pdf`);
 };
 
 // ── PDF: Monthly Report ───────────────────────────────────
@@ -242,6 +360,12 @@ const downloadMonthlyPDF = (month, year, students, attendanceRecords, schoolName
   const lastDay  = new Date(year, month, 0).getDate();
   const mo       = String(month).padStart(2, "0");
   const dates    = dateRange(`${year}-${mo}-01`, `${year}-${mo}-${lastDay}`);
+  const attMap   = buildAttendanceMap(attendanceRecords);
+
+  // Sort students by Roll Number ascending
+  const sortedStudents = [...students].sort((a, b) =>
+    a.rollNo.localeCompare(b.rollNo, undefined, { numeric: true })
+  );
 
   doc.setFillColor(9, 13, 31);
   doc.rect(0, 0, 297, 30, "F");
@@ -251,48 +375,90 @@ const downloadMonthlyPDF = (month, year, students, attendanceRecords, schoolName
   doc.setFontSize(9); doc.setFont("helvetica", "normal");
   doc.text(`${schoolName} | Academic Year: ${academicYear} | Generated: ${formatDate(todayStr())}`, 15, 24);
 
-  const colX  = 15;
-  const nameW = 50;
-  const cellW = Math.min(6, (297 - colX - nameW - 30) / dates.length);
+  const colX  = 12;
+  const nameW = 46;
+  const rollW = 12;
+  const cellW = Math.max(5.5, (297 - colX * 2 - nameW - rollW - 32) / dates.length);
   let rowY    = 42;
 
-  doc.setFillColor(248, 250, 252);
+  // Header row
+  doc.setFillColor(241, 245, 249);
   doc.rect(colX, rowY - 6, 297 - 2 * colX, 8, "F");
   doc.setFontSize(7); doc.setFont("helvetica", "bold");
   doc.setTextColor(71, 85, 105);
   doc.text("Student Name", colX + 2, rowY);
-  doc.text("Roll", colX + nameW + 2, rowY);
-  dates.forEach((d, i) => {
-    doc.text(d.split("-")[2], colX + nameW + 16 + i * cellW, rowY);
-  });
-  doc.text("Pres", colX + nameW + 16 + dates.length * cellW + 2, rowY);
-  doc.text("Abs",  colX + nameW + 16 + dates.length * cellW + 14, rowY);
-  rowY += 4;
+  doc.text("Roll", colX + nameW + 1, rowY);
 
-  students.forEach((student, si) => {
-    if (rowY > 195) { doc.addPage(); rowY = 20; }
+  dates.forEach((d, i) => {
+    const dayNum = parseInt(d.split("-")[2], 10);
+    doc.text(`${dayNum}`, colX + nameW + rollW + 1 + i * cellW, rowY);
+  });
+
+  const endHeaderX = colX + nameW + rollW + dates.length * cellW;
+  doc.text("Pres", endHeaderX + 2, rowY);
+  doc.text("Abs",  endHeaderX + 12, rowY);
+  doc.text("%",    colX + 297 - colX - 10, rowY);
+  rowY += 6;
+
+  sortedStudents.forEach((student, si) => {
+    if (rowY > 185) { 
+      doc.addPage(); 
+      rowY = 22; 
+      // Re-draw header on new page
+      doc.setFillColor(241, 245, 249);
+      doc.rect(colX, rowY - 6, 297 - 2 * colX, 8, "F");
+      doc.setFontSize(7); doc.setFont("helvetica", "bold");
+      doc.setTextColor(71, 85, 105);
+      doc.text("Student Name", colX + 2, rowY);
+      doc.text("Roll", colX + nameW + 1, rowY);
+      dates.forEach((d, i) => {
+        const dayNum = parseInt(d.split("-")[2], 10);
+        doc.text(`${dayNum}`, colX + nameW + rollW + 1 + i * cellW, rowY);
+      });
+      doc.text("Pres", endHeaderX + 2, rowY);
+      doc.text("Abs",  endHeaderX + 12, rowY);
+      doc.text("%",    colX + 297 - colX - 10, rowY);
+      rowY += 6;
+    }
+
     const bg = si % 2 === 0 ? [255, 255, 255] : [248, 250, 252];
     doc.setFillColor(...bg);
-    doc.rect(colX, rowY - 4, 297 - 2 * colX, 8, "F");
+    doc.rect(colX, rowY - 4, 297 - 2 * colX, 7.5, "F");
     doc.setFont("helvetica", "normal"); doc.setFontSize(7);
     doc.setTextColor(15, 23, 42);
-    doc.text(student.name.slice(0, 20), colX + 2, rowY);
-    doc.text(student.rollNo, colX + nameW + 2, rowY);
+    doc.text(student.name.slice(0, 18), colX + 2, rowY);
+    doc.text(student.rollNo, colX + nameW + 1, rowY);
 
     let pres = 0, abs = 0;
     dates.forEach((d, i) => {
-      const rec = attendanceRecords.find((a) => a.studentId === student.id && a.date === d);
+      const rec = getRecFromMap(attMap, student, d);
+      const x = colX + nameW + rollW + 1 + i * cellW;
       if (rec) {
-        if (rec.status === "Present") { doc.setTextColor(16, 185, 129); pres++; doc.text("P", colX + nameW + 16 + i * cellW, rowY); }
-        else { doc.setTextColor(239, 68, 68); abs++; doc.text("A", colX + nameW + 16 + i * cellW, rowY); }
-      } else { doc.setTextColor(148, 163, 184); doc.text("-", colX + nameW + 16 + i * cellW, rowY); }
+        if (rec.status === "Present") {
+          doc.setTextColor(16, 185, 129); pres++;
+          doc.text("P", x, rowY);
+        } else {
+          doc.setTextColor(239, 68, 68); abs++;
+          doc.text("A", x, rowY);
+        }
+      } else {
+        doc.setTextColor(148, 163, 184);
+        doc.text("-", x, rowY);
+      }
     });
-    doc.setTextColor(16, 185, 129);  doc.text(`${pres}`, colX + nameW + 16 + dates.length * cellW + 4, rowY);
-    doc.setTextColor(239, 68, 68);   doc.text(`${abs}`,  colX + nameW + 16 + dates.length * cellW + 14, rowY);
-    rowY += 8;
+
+    const total = pres + abs;
+    const pct   = total > 0 ? ((pres / total) * 100).toFixed(0) : "0";
+    doc.setTextColor(16, 185, 129);  doc.text(`${pres}`, endHeaderX + 2, rowY);
+    doc.setTextColor(239, 68, 68);   doc.text(`${abs}`,  endHeaderX + 12, rowY);
+    doc.setTextColor(pct >= 75 ? 16 : 239, pct >= 75 ? 185 : 68, pct >= 75 ? 129 : 68);
+    doc.setFont("helvetica", "bold");
+    doc.text(`${pct}%`, colX + 297 - colX - 10, rowY);
+
+    rowY += 7.5;
   });
 
-  doc.save(`attendance_${monthStr}_${year}.pdf`);
+  doc.save(`Monthly_Attendance_${monthStr}_${year}.pdf`);
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -356,14 +522,24 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
 
   // ── Student search ───────────────────────────────────
   const matchedStudents = useMemo(() => {
-    if (!studentSearch.trim()) return students.slice(0, 8);
-    const q = studentSearch.trim().toLowerCase();
-    return students.filter(
-      (s) =>
-        s.name.toLowerCase().includes(q) ||
-        s.rollNo.toLowerCase().includes(q) ||
-        s.grade.toLowerCase().includes(q)
-    ).slice(0, 8);
+    let list = students;
+    if (studentSearch.trim()) {
+      const q = studentSearch.trim().toLowerCase();
+      list = students.filter(
+        (s) =>
+          s.name.toLowerCase().includes(q) ||
+          s.rollNo.toLowerCase().includes(q) ||
+          s.grade.toLowerCase().includes(q)
+      );
+    }
+    return [...list]
+      .sort((a, b) => {
+        const numA = parseInt(a.rollNo, 10);
+        const numB = parseInt(b.rollNo, 10);
+        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+        return String(a.rollNo || "").localeCompare(String(b.rollNo || ""), undefined, { numeric: true, sensitivity: "base" });
+      })
+      .slice(0, 8);
   }, [students, studentSearch]);
 
   const handleSelectStudent = (s) => {
@@ -394,7 +570,7 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
       downloadIndividualPDF(selectedStudent, records, schoolName, academicYear);
       setDownloading(false);
       triggerBanner(`PDF report for ${selectedStudent.name} downloaded!`);
-    }, 500);
+    }, 20);
   };
 
   const handleWeeklyDownload = () => {
@@ -403,7 +579,7 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
       downloadWeeklyPDF(weekStart, weekEnd, students, attendanceRecords, schoolName, academicYear);
       setDlWeekly(false);
       triggerBanner(`Weekly report (${formatDate(weekStart)} – ${formatDate(weekEnd)}) downloaded!`);
-    }, 500);
+    }, 20);
   };
 
   const handleMonthlyDownload = () => {
@@ -413,7 +589,7 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
       downloadMonthlyPDF(m, y, students, attendanceRecords, schoolName, academicYear);
       setDlMonthly(false);
       triggerBanner(`Monthly report for ${MONTHS_FULL[m - 1]} ${y} downloaded!`);
-    }, 500);
+    }, 20);
   };
 
   return (
@@ -522,309 +698,314 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
         </div>
       </section>
 
-      <div className="reports-panel-grid">
-        {/* ── Per-Student Summary Table ─────────────────── */}
-        <div className="table-card bg-glass">
-          <div className="table-card-header">
-            <div className="table-title">
-              <h3>Student-wise Summary</h3>
-              <p>{formatDate(start)} to {formatDate(end)}</p>
-            </div>
+      {/* ── Per-Student Summary Table (Full Width) ─────────────────── */}
+      <div className="table-card bg-glass" style={{ marginBottom: "1.75rem" }}>
+        <div className="table-card-header">
+          <div className="table-title">
+            <h3>Student-wise Summary</h3>
+            <p>{formatDate(start)} to {formatDate(end)}</p>
           </div>
-          <div className="table-wrapper">
-            <table className="student-table">
-              <thead>
-                <tr>
-                  <th style={{ textAlign: "center", width: "90px" }}>Roll No</th>
-                  <th>Student Name</th>
-                  <th style={{ whiteSpace: "nowrap", width: "110px" }}>Class</th>
-                  <th style={{ textAlign: "center", width: "100px" }}>Present</th>
-                  <th style={{ textAlign: "center", width: "100px" }}>Absent</th>
-                  <th style={{ width: "160px" }}>Percentage</th>
-                </tr>
-              </thead>
-              <tbody>
-                {summaries.length > 0 ? (
-                  summaries.map(({ student, presentDays, absentDays, percentage }) => (
-                    <tr key={student.id}>
-                      <td style={{ textAlign: "center" }}><strong>{student.rollNo}</strong></td>
-                      <td>
-                        <div className="student-profile">
-                          <div className="avatar-badge">
-                            {student.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
-                          </div>
-                          <span className="student-name">{student.name}</span>
+        </div>
+        <div className="table-wrapper">
+          <table className="student-table" style={{ tableLayout: "fixed", width: "100%" }}>
+            <colgroup>
+              <col style={{ width: "8%" }} />
+              <col style={{ width: "30%" }} />
+              <col style={{ width: "17%" }} />
+              <col style={{ width: "15%" }} />
+              <col style={{ width: "15%" }} />
+              <col style={{ width: "15%" }} />
+            </colgroup>
+            <thead>
+              <tr>
+                <th style={{ textAlign: "center" }}>Roll No</th>
+                <th>Student Name</th>
+                <th>Class</th>
+                <th style={{ textAlign: "center" }}>Present</th>
+                <th style={{ textAlign: "center" }}>Absent</th>
+                <th>Percentage</th>
+              </tr>
+            </thead>
+            <tbody>
+              {summaries.length > 0 ? (
+                summaries.map(({ student, presentDays, absentDays, percentage }) => (
+                  <tr key={student.id}>
+                    <td style={{ textAlign: "center" }}><strong>{student.rollNo}</strong></td>
+                    <td>
+                      <div className="student-profile">
+                        <div className="avatar-badge">
+                          {student.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
                         </div>
-                      </td>
-                      <td style={{ whiteSpace: "nowrap" }}>{student.grade}</td>
-                      <td style={{ textAlign: "center" }}>
-                        <span className="count-badge present">
-                          {presentDays}
-                        </span>
-                      </td>
-                      <td style={{ textAlign: "center" }}>
-                        <span className="count-badge absent">
-                          {absentDays}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="pct-cell">
-                          <div className="pct-bar-wrap">
-                            <div
-                              className="pct-bar-fill"
-                              style={{
-                                width: `${percentage}%`,
-                                background: percentage >= 75 ? "#10b981" : "#ef4444",
-                              }}
-                            />
-                          </div>
-                          <span
-                            className="pct-label"
-                            style={{ color: percentage >= 75 ? "#065f46" : "#991b1b" }}
-                          >
-                            {percentage}%
-                          </span>
+                        <span className="student-name">{student.name}</span>
+                      </div>
+                    </td>
+                    <td style={{ whiteSpace: "nowrap" }}>{student.grade}</td>
+                    <td style={{ textAlign: "center" }}>
+                      <span className="count-badge present">
+                        {presentDays}
+                      </span>
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      <span className="count-badge absent">
+                        {absentDays}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="pct-cell">
+                        <div className="pct-bar-wrap">
+                          <div
+                            className="pct-bar-fill"
+                            style={{
+                              width: `${percentage}%`,
+                              background: percentage >= 75 ? "#10b981" : "#ef4444",
+                            }}
+                          />
                         </div>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="6" className="table-empty-state">
-                      No records found for the selected period.
+                        <span
+                          className="pct-label"
+                          style={{ color: percentage >= 75 ? "#065f46" : "#991b1b" }}
+                        >
+                          {percentage}%
+                        </span>
+                      </div>
                     </td>
                   </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="table-empty-state">
+                    No records found for the selected period.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ── Download Reports Row (Three Cards Side-by-Side at Bottom) ─────────── */}
+      <div className="reports-download-row" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.25rem", alignItems: "stretch", marginBottom: "2rem" }}>
+
+        {/* ── 1. Individual Student Report ────────────── */}
+        <div className="add-student-inline-card bg-glass" style={{ flex: "none", margin: 0 }}>
+          <div className="inline-card-header">
+            <div className="report-card-icon" style={{ background: "#fef2f2", color: "#ef4444" }}>
+              <FaUser style={{ fontSize: "18px" }} />
+            </div>
+            <div>
+              <h3>Individual Student Report</h3>
+              <p>Search a student and download their PDF</p>
+            </div>
+          </div>
+
+          <div className="inline-form-form">
+            {/* ── Improved student search ────────────── */}
+            <div className="modal-input-group" ref={searchRef} style={{ position: "relative" }}>
+              <label className="reports-date-label">
+                <FaSearch style={{ marginRight: "10px", color: "#3b82f6" }} />
+                Search Student
+              </label>
+
+              {/* Search input */}
+              <div className="indiv-search-wrapper">
+                <FaSearch className="indiv-search-icon" />
+                <input
+                  type="text"
+                  className="indiv-search-input"
+                  placeholder="Type name, roll number or class..."
+                  value={studentSearch}
+                  autoComplete="off"
+                  onChange={(e) => {
+                    setStudentSearch(e.target.value);
+                    setSelectedStudent(null);
+                    setShowDropdown(true);
+                  }}
+                  onFocus={() => setShowDropdown(true)}
+                />
+                {studentSearch && (
+                  <button
+                    type="button"
+                    className="indiv-search-clear"
+                    onClick={clearStudent}
+                    title="Clear"
+                  >
+                    <FaTimes />
+                  </button>
                 )}
-              </tbody>
-            </table>
+              </div>
+
+              {/* Dropdown */}
+              {showDropdown && matchedStudents.length > 0 && (
+                <div className="student-dropdown">
+                  {matchedStudents.map((s) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      className="student-dropdown-item"
+                      onMouseDown={() => handleSelectStudent(s)}
+                    >
+                      <div className="dropdown-item-inner">
+                        <div className="dropdown-avatar">
+                          {s.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                        </div>
+                        <div className="dropdown-info">
+                          <span className="dropdown-name">{s.name}</span>
+                          <span className="dropdown-meta">Roll {s.rollNo} · {s.grade} · Div {s.division}</span>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Selected pill */}
+              {selectedStudent && (
+                <div className="selected-student-pill">
+                  <FaUserCheck style={{ color: "#10b981", marginRight: "6px" }} />
+                  {selectedStudent.name} &nbsp;·&nbsp; Roll {selectedStudent.rollNo} &nbsp;·&nbsp; {selectedStudent.grade}
+                  <button type="button" onClick={clearStudent} className="pill-clear-btn">
+                    <FaTimes />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Date range — bigger */}
+            <div className="settings-form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              <div className="modal-input-group">
+                <label className="reports-date-label">
+                  <FaCalendarAlt style={{ marginRight: "5px", color: "#3b82f6" }} /> From
+                </label>
+                <DatePicker
+                  value={indivStart}
+                  max={indivEnd}
+                  onChange={(dateStr) => setIndivStart(dateStr)}
+                  style={dateInputStyle}
+                  placeholder="From Date"
+                />
+              </div>
+              <div className="modal-input-group">
+                <label className="reports-date-label">
+                  <FaCalendarAlt style={{ marginRight: "5px", color: "#10b981" }} /> To
+                </label>
+                <DatePicker
+                  value={indivEnd}
+                  min={indivStart}
+                  max={todayStr()}
+                  onChange={(dateStr) => setIndivEnd(dateStr)}
+                  style={dateInputStyle}
+                  placeholder="To Date"
+                />
+              </div>
+            </div>
+
+            <button
+              className="primary-action-btn inline-submit-btn"
+              style={{ background: "#ef4444", boxShadow: "0 4px 12px rgba(239,68,68,0.15)" }}
+              disabled={!selectedStudent || downloading}
+              onClick={handleIndividualDownload}
+            >
+              {downloading
+                ? <div className="loading-spinner" style={{ width: "16px", height: "16px", borderTopColor: "#fff", borderColor: "rgba(255,255,255,0.3)" }} />
+                : <FaCloudDownloadAlt />
+              }
+              <span>{downloading ? "Generating..." : "Download PDF"}</span>
+            </button>
           </div>
         </div>
 
-        {/* ── Right Panel: Download Cards ───────────────── */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-
-          {/* ── 1. Individual Student Report ────────────── */}
-          <div className="add-student-inline-card bg-glass" style={{ flex: "none" }}>
-            <div className="inline-card-header">
-              <div className="report-card-icon" style={{ background: "#fef2f2", color: "#ef4444" }}>
-                <FaUser style={{ fontSize: "18px" }} />
-              </div>
-              <div>
-                <h3>Individual Student Report</h3>
-                <p>Search a student and download their PDF</p>
-              </div>
+        {/* ── 2. Weekly Report ─────────────────────────── */}
+        <div className="add-student-inline-card bg-glass" style={{ flex: "none", margin: 0 }}>
+          <div className="inline-card-header">
+            <div className="report-card-icon" style={{ background: "#f5f3ff", color: "#7c3aed" }}>
+              <FaCalendarAlt style={{ fontSize: "18px" }} />
             </div>
-
-            <div className="inline-form-form">
-              {/* ── Improved student search ────────────── */}
-              <div className="modal-input-group" ref={searchRef} style={{ position: "relative" }}>
-                <label className="reports-date-label">
-                  <FaSearch style={{ marginRight: "10px", color: "#3b82f6" }} />
-                  Search Student
-                </label>
-
-                {/* Search input */}
-                <div className="indiv-search-wrapper">
-                  <FaSearch className="indiv-search-icon" />
-                  <input
-                    type="text"
-                    className="indiv-search-input"
-                    placeholder="Type name, roll number or class..."
-                    value={studentSearch}
-                    autoComplete="off"
-                    onChange={(e) => {
-                      setStudentSearch(e.target.value);
-                      setSelectedStudent(null);
-                      setShowDropdown(true);
-                    }}
-                    onFocus={() => setShowDropdown(true)}
-                  />
-                  {studentSearch && (
-                    <button
-                      type="button"
-                      className="indiv-search-clear"
-                      onClick={clearStudent}
-                      title="Clear"
-                    >
-                      <FaTimes />
-                    </button>
-                  )}
-                </div>
-
-                {/* Dropdown */}
-                {showDropdown && matchedStudents.length > 0 && (
-                  <div className="student-dropdown">
-                    {matchedStudents.map((s) => (
-                      <button
-                        key={s.id}
-                        type="button"
-                        className="student-dropdown-item"
-                        onMouseDown={() => handleSelectStudent(s)}
-                      >
-                        <div className="dropdown-item-inner">
-                          <div className="dropdown-avatar">
-                            {s.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
-                          </div>
-                          <div className="dropdown-info">
-                            <span className="dropdown-name">{s.name}</span>
-                            <span className="dropdown-meta">Roll {s.rollNo} · {s.grade} · Div {s.division}</span>
-                          </div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {/* Selected pill */}
-                {selectedStudent && (
-                  <div className="selected-student-pill">
-                    <FaUserCheck style={{ color: "#10b981", marginRight: "6px" }} />
-                    {selectedStudent.name} &nbsp;·&nbsp; Roll {selectedStudent.rollNo} &nbsp;·&nbsp; {selectedStudent.grade}
-                    <button type="button" onClick={clearStudent} className="pill-clear-btn">
-                      <FaTimes />
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Date range — bigger */}
-              <div className="settings-form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                <div className="modal-input-group">
-                  <label className="reports-date-label">
-                    <FaCalendarAlt style={{ marginRight: "5px", color: "#3b82f6" }} /> From
-                  </label>
-                  <DatePicker
-                    value={indivStart}
-                    max={indivEnd}
-                    onChange={(dateStr) => setIndivStart(dateStr)}
-                    style={dateInputStyle}
-                    placeholder="From Date"
-                  />
-                </div>
-                <div className="modal-input-group">
-                  <label className="reports-date-label">
-                    <FaCalendarAlt style={{ marginRight: "5px", color: "#10b981" }} /> To
-                  </label>
-                  <DatePicker
-                    value={indivEnd}
-                    min={indivStart}
-                    max={todayStr()}
-                    onChange={(dateStr) => setIndivEnd(dateStr)}
-                    style={dateInputStyle}
-                    placeholder="To Date"
-                  />
-                </div>
-              </div>
-
-              <button
-                className="primary-action-btn inline-submit-btn"
-                style={{ background: "#ef4444", boxShadow: "0 4px 12px rgba(239,68,68,0.15)" }}
-                disabled={!selectedStudent || downloading}
-                onClick={handleIndividualDownload}
-              >
-                {downloading
-                  ? <div className="loading-spinner" style={{ width: "16px", height: "16px", borderTopColor: "#fff", borderColor: "rgba(255,255,255,0.3)" }} />
-                  : <FaCloudDownloadAlt />
-                }
-                <span>{downloading ? "Generating..." : "Download PDF"}</span>
-              </button>
+            <div>
+              <h3>Weekly Report</h3>
+              <p>Pick any date — full week (Mon–Sun) downloaded</p>
             </div>
           </div>
 
-          {/* ── 2. Weekly Report ─────────────────────────── */}
-          <div className="add-student-inline-card bg-glass" style={{ flex: "none" }}>
-            <div className="inline-card-header">
-              <div className="report-card-icon" style={{ background: "#f5f3ff", color: "#7c3aed" }}>
-                <FaCalendarAlt style={{ fontSize: "18px" }} />
-              </div>
-              <div>
-                <h3>Weekly Report</h3>
-                <p>Pick any date — full week (Mon–Sun) downloaded</p>
-              </div>
+          <div className="inline-form-form">
+            <div className="modal-input-group">
+              <label className="reports-date-label">
+                <FaCalendarAlt style={{ marginRight: "6px", color: "#7c3aed" }} />
+                Any Date in the Week
+              </label>
+              <DatePicker
+                value={weekDate}
+                max={todayStr()}
+                onChange={(dateStr) => setWeekDate(dateStr)}
+                style={dateInputStyle}
+                placeholder="Select Date"
+              />
             </div>
 
-            <div className="inline-form-form">
-              <div className="modal-input-group">
-                <label className="reports-date-label">
-                  <FaCalendarAlt style={{ marginRight: "6px", color: "#7c3aed" }} />
-                  Any Date in the Week
-                </label>
-                <DatePicker
-                  value={weekDate}
-                  max={todayStr()}
-                  onChange={(dateStr) => setWeekDate(dateStr)}
-                  style={dateInputStyle}
-                  placeholder="Select Date"
-                />
-              </div>
+            <div className="week-range-preview">
+              <span className="week-label">Selected Week:</span>
+              <span className="week-dates">
+                {formatDate(weekStart)} – {formatDate(weekEnd)}
+              </span>
+            </div>
 
-              {/* Week range preview */}
-              <div className="week-range-preview">
-                <span className="week-label">Selected Week:</span>
-                <span className="week-dates">
-                  {formatDate(weekStart)} – {formatDate(weekEnd)}
-                </span>
-              </div>
+            <button
+              className="primary-action-btn inline-submit-btn"
+              style={{ background: "#7c3aed", boxShadow: "0 4px 12px rgba(124,58,237,0.2)" }}
+              disabled={dlWeekly}
+              onClick={handleWeeklyDownload}
+            >
+              {dlWeekly
+                ? <div className="loading-spinner" style={{ width: "16px", height: "16px", borderTopColor: "#fff", borderColor: "rgba(255,255,255,0.3)" }} />
+                : <FaCloudDownloadAlt />
+              }
+              <span>{dlWeekly ? "Generating..." : "Download Weekly PDF"}</span>
+            </button>
+          </div>
+        </div>
 
-              <button
-                className="primary-action-btn inline-submit-btn"
-                style={{ background: "#7c3aed", boxShadow: "0 4px 12px rgba(124,58,237,0.2)" }}
-                disabled={dlWeekly}
-                onClick={handleWeeklyDownload}
-              >
-                {dlWeekly
-                  ? <div className="loading-spinner" style={{ width: "16px", height: "16px", borderTopColor: "#fff", borderColor: "rgba(255,255,255,0.3)" }} />
-                  : <FaCloudDownloadAlt />
-                }
-                <span>{dlWeekly ? "Generating..." : "Download Weekly PDF"}</span>
-              </button>
+        {/* ── 3. Monthly Report ─────────────────────────── */}
+        <div className="add-student-inline-card bg-glass" style={{ flex: "none", margin: 0 }}>
+          <div className="inline-card-header">
+            <div className="report-card-icon" style={{ background: "#eff6ff", color: "#3b82f6" }}>
+              <FaFilePdf style={{ fontSize: "18px" }} />
+            </div>
+            <div>
+              <h3>Monthly Report</h3>
+              <p>Full month attendance for all students</p>
             </div>
           </div>
 
-          {/* ── 3. Monthly Report ─────────────────────────── */}
-          <div className="add-student-inline-card bg-glass" style={{ flex: "none" }}>
-            <div className="inline-card-header">
-              <div className="report-card-icon" style={{ background: "#eff6ff", color: "#3b82f6" }}>
-                <FaFilePdf style={{ fontSize: "18px" }} />
-              </div>
-              <div>
-                <h3>Monthly Report</h3>
-                <p>Full month attendance for all students</p>
-              </div>
+          <div className="inline-form-form">
+            <div className="modal-input-group">
+              <label className="reports-date-label">
+                <FaCalendarAlt style={{ marginRight: "6px", color: "#3b82f6" }} />
+                Select Month
+              </label>
+              <input
+                type="month"
+                value={monthYear}
+                max={`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`}
+                onChange={(e) => setMonthYear(e.target.value)}
+                style={{ ...dateInputStyle, height: "52px" }}
+              />
             </div>
 
-            <div className="inline-form-form">
-              <div className="modal-input-group">
-                <label className="reports-date-label">
-                  <FaCalendarAlt style={{ marginRight: "6px", color: "#3b82f6" }} />
-                  Select Month
-                </label>
-                <input
-                  type="month"
-                  value={monthYear}
-                  max={`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`}
-                  onChange={(e) => setMonthYear(e.target.value)}
-                  style={{ ...dateInputStyle, height: "52px" }}
-                />
-              </div>
-
-              <button
-                className="primary-action-btn inline-submit-btn"
-                style={{ background: "#3b82f6", boxShadow: "0 4px 12px rgba(59,130,246,0.15)" }}
-                disabled={dlMonthly}
-                onClick={handleMonthlyDownload}
-              >
-                {dlMonthly
-                  ? <div className="loading-spinner" style={{ width: "16px", height: "16px", borderTopColor: "#fff", borderColor: "rgba(255,255,255,0.3)" }} />
-                  : <FaCloudDownloadAlt />
-                }
-                <span>{dlMonthly ? "Generating..." : "Download Monthly PDF"}</span>
-              </button>
-            </div>
+            <button
+              className="primary-action-btn inline-submit-btn"
+              style={{ background: "#3b82f6", boxShadow: "0 4px 12px rgba(59,130,246,0.15)" }}
+              disabled={dlMonthly}
+              onClick={handleMonthlyDownload}
+            >
+              {dlMonthly
+                ? <div className="loading-spinner" style={{ width: "16px", height: "16px", borderTopColor: "#fff", borderColor: "rgba(255,255,255,0.3)" }} />
+                : <FaCloudDownloadAlt />
+              }
+              <span>{dlMonthly ? "Generating..." : "Download Monthly PDF"}</span>
+            </button>
           </div>
+        </div>
 
-        </div>{/* end right panel */}
-      </div>{/* end reports-panel-grid */}
+      </div>{/* end reports-download-row */}
     </>
   );
 }

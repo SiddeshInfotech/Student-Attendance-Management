@@ -50,8 +50,10 @@ class AttendanceSerializer(serializers.ModelSerializer):
         return ""
 
     def get_class_name(self, obj):
+        # First try: the attendance record's own class
         if obj.student_class and obj.student_class.class_name:
             return obj.student_class.class_name
+        # Second try: student's enrolled class
         if obj.student and obj.student.student_class:
             return obj.student.student_class.class_name
         return ""
@@ -70,7 +72,13 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     def get_attendance_time(self, obj):
         if obj.created_at:
-            return obj.created_at.strftime("%I:%M %p")
+            try:
+                from zoneinfo import ZoneInfo
+                ist = ZoneInfo("Asia/Kolkata")
+                local_time = obj.created_at.astimezone(ist)
+            except Exception:
+                local_time = obj.created_at
+            return local_time.strftime("%I:%M %p")
         return ""
 
     def get_marked_by(self, obj):

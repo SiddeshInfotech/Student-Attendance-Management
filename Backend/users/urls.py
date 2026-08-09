@@ -12,6 +12,8 @@ from .views import (
     ResetPasswordView,
 )
 
+from students.student_api_views import StudentRegisterView, StudentLoginView
+
 urlpatterns = [
     path("admin/login", AdminLoginView.as_view(), name="admin-login-noslash"),
     path("admin/login/", AdminLoginView.as_view(), name="admin-login"),
@@ -19,8 +21,8 @@ urlpatterns = [
     path("admin/signup/", AdminSignupView.as_view(), name="admin-signup"),
     path("student/login", StudentLoginView.as_view(), name="student-login-noslash"),
     path("student/login/", StudentLoginView.as_view(), name="student-login"),
-    path("student/signup", StudentSignupView.as_view(), name="student-signup-noslash"),
-    path("student/signup/", StudentSignupView.as_view(), name="student-signup"),
+    path("student/signup", StudentRegisterView.as_view(), name="student-signup-noslash"),
+    path("student/signup/", StudentRegisterView.as_view(), name="student-signup"),
     path("logout", LogoutView.as_view(), name="logout-noslash"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("token/refresh/", CustomTokenRefreshView.as_view(), name="token-refresh"),

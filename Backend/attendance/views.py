@@ -13,6 +13,7 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     queryset = Attendance.objects.all().select_related("student", "student__user", "student__department", "student_class", "student_class__semester", "subject")
     serializer_class = AttendanceSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = None
 
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["student__roll_number", "student__user__full_name", "date", "status"]
@@ -21,7 +22,8 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Attendance.objects.all().select_related(
             "student", "student__user", "student__department",
-            "student_class", "subject"
+            "student__student_class", "student__student_class__semester",
+            "student_class", "student_class__semester", "subject"
         ).order_by("-created_at", "-attendance_id")
 
     def _determine_marked_by(self, request):
@@ -146,6 +148,9 @@ class AttendanceViewSet(viewsets.ModelViewSet):
                 }
 
                 # Verify class exists before assigning
+                if not r_class_id and student_obj and student_obj.student_class_id:
+                    r_class_id = student_obj.student_class_id
+
                 if r_class_id:
                     try:
                         from classes.models import Class as ClassModel

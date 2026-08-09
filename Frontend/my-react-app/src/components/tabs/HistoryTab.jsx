@@ -61,6 +61,8 @@ function HistoryTab({ store }) {
     const storeRaw = storeRef.current?.attendanceRecords || [];
     const storeFiltered = storeRaw.filter((r) => {
       const d = r.date || r.attendance_date;
+      const roll = String(r.roll_number || r.rollNo || "").trim();
+      if (roll === "255" || roll.startsWith("255")) return false;
       return d >= startDate && d <= endDate;
     });
 
@@ -72,12 +74,12 @@ function HistoryTab({ store }) {
         attendance_id: r.id || r.attendance_id || `local_${r.studentId || r.student_id}_${r.date || r.attendance_date}`,
         roll_number: r.roll_number || st?.rollNo || st?.roll_number || "—",
         student_name: r.student_name || st?.name || st?.full_name || "Unknown",
-        department_name: r.department_name || st?.department || "Computer Science",
-        class_name: r.class_name || st?.grade || st?.student_class?.class_name || "Grade 10",
-        semester_name: r.semester_name || "Semester 1",
-        subject_name: r.subject_name || "General",
+        department_name: r.department_name || st?.department || "",
+        class_name: r.class_name || st?.grade || st?.className || st?.student_class?.class_name || "",
+        semester_name: r.semester_name || "",
+        subject_name: r.subject_name || "",
         attendance_date: r.date || r.attendance_date,
-        attendance_time: r.attendance_time || "Just now",
+        attendance_time: r.attendance_time || "",
         status: r.status || "Present",
         marked_by: r.marked_by || "Admin",
       };
@@ -113,23 +115,43 @@ function HistoryTab({ store }) {
     apiRecords.forEach((rec) => {
       const rDate = rec.attendance_date || rec.date;
       const rRoll = rec.roll_number || rec.student?.roll_number || rec.student?.rollNo || "—";
+      const rStudentId = rec.student?.student_id || rec.student?.id || rec.student_id || rec.student;
+
+      const st = storeRef.current?.students?.find(
+        (s) => (rStudentId && (String(s.id) === String(rStudentId) || String(s.student_id) === String(rStudentId))) ||
+               (rRoll !== "—" && (String(s.rollNo) === String(rRoll) || String(s.roll_number) === String(rRoll)))
+      );
+
       const key = `${rRoll}_${rDate}`;
       combinedMap.set(key, {
         attendance_id: rec.attendance_id || rec.id,
-        roll_number: rRoll,
-        student_name: rec.student_name || rec.student?.user_details?.full_name || rec.student?.name || "Unknown",
-        department_name: rec.department_name || rec.student?.department?.department_name || "Computer Science",
-        class_name: rec.class_name || rec.student?.student_class?.class_name || "Grade 10",
-        semester_name: rec.semester_name || "Semester 1",
-        subject_name: rec.subject_name || "General",
+        roll_number: rRoll !== "—" ? rRoll : (st?.rollNo || st?.roll_number || "—"),
+        student_name: rec.student_name || rec.student?.user_details?.full_name || rec.student?.name || st?.name || st?.full_name || "Unknown",
+        department_name: rec.department_name || rec.student?.department?.department_name || st?.department || "",
+        class_name: rec.class_name || rec.student?.student_class?.class_name || st?.grade || st?.className || "",
+        semester_name: rec.semester_name || "",
+        subject_name: rec.subject_name || "",
         attendance_date: rDate,
-        attendance_time: rec.attendance_time || "10:00 AM",
+        attendance_time: rec.attendance_time || "",
         status: rec.status || "Present",
         marked_by: rec.marked_by || "Admin",
       });
     });
 
-    setDbRecords(Array.from(combinedMap.values()));
+    const validStudentRolls = new Set(
+      (storeRef.current?.students || []).map((s) => String(s.rollNo || s.roll_number).trim())
+    );
+
+    const validRecords = Array.from(combinedMap.values()).filter((rec) => {
+      const roll = String(rec.roll_number || "").trim();
+      if (roll === "255" || roll.startsWith("255")) return false;
+      if (validStudentRolls.size > 0 && roll && roll !== "—" && !validStudentRolls.has(roll)) {
+        return false;
+      }
+      return true;
+    });
+
+    setDbRecords(validRecords);
     setLoading(false);
   }, [period, customStart, customEnd]);
 
@@ -148,9 +170,9 @@ function HistoryTab({ store }) {
     return { startDateLabel: today, endDateLabel: today };
   }, [period, customStart, customEnd]);
 
-  // ── Filter by search + status ─────────────────────────
+  // ── Filter by search + status & Sort by Roll Number ─────────────────────────
   const filteredRecords = useMemo(() => {
-    let result = dbRecords;
+    let result = [...dbRecords];
 
     if (statusFilter !== "All") {
       result = result.filter((r) =>
@@ -169,6 +191,23 @@ function HistoryTab({ store }) {
           (r.subject_name && r.subject_name.toLowerCase().includes(q))
       );
     }
+
+    // Sort: Date DESCENDING (latest date first), then Roll Number ASCENDING (1, 2, 3...)
+    result.sort((a, b) => {
+      const dateA = a.attendance_date || a.date || "";
+      const dateB = b.attendance_date || b.date || "";
+      if (dateA !== dateB) {
+        return dateB.localeCompare(dateA); // Date DESC
+      }
+
+      const numA = parseInt(a.roll_number, 10);
+      const numB = parseInt(b.roll_number, 10);
+      if (!isNaN(numA) && !isNaN(numB)) {
+        return numA - numB;
+      }
+      return String(a.roll_number || "").localeCompare(String(b.roll_number || ""), undefined, { numeric: true, sensitivity: "base" });
+    });
+
     return result;
   }, [dbRecords, statusFilter, searchQuery]);
 

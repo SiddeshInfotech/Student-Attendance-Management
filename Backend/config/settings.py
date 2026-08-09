@@ -165,7 +165,7 @@ from datetime import timedelta
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'custom_auth.CustomJWTAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': 'pagination.StandardResultsSetPagination',
     'PAGE_SIZE': 20,

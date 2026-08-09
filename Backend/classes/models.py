@@ -2,6 +2,19 @@ from django.db import models
 from semesters.models import Semester
 from branches.models import Branch
 
+class Division(models.Model):
+    division_id = models.AutoField(primary_key=True)
+    division_name = models.CharField(max_length=20, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        managed = True
+        db_table = "divisions"
+
+    def __str__(self):
+        return self.division_name
+
+
 class Class(models.Model):
     class_id = models.AutoField(primary_key=True)
     class_name = models.CharField(max_length=50)
@@ -15,3 +28,4 @@ class Class(models.Model):
 
     def __str__(self):
         return self.class_name
+

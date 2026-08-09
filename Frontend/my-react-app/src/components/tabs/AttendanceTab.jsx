@@ -87,14 +87,22 @@ function AttendanceTab({ store, triggerBanner }) {
     }
   };
 
-  // Filtered students for display
+  // Filtered & sorted students for display (1, 2, 3...)
   const visibleStudents = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return students;
-    return students.filter((s) =>
-      s.name.toLowerCase().includes(q) ||
-      s.rollNo.toLowerCase().includes(q)
-    );
+    let list = students;
+    if (q) {
+      list = students.filter((s) =>
+        s.name.toLowerCase().includes(q) ||
+        s.rollNo.toLowerCase().includes(q)
+      );
+    }
+    return [...list].sort((a, b) => {
+      const numA = parseInt(a.rollNo, 10);
+      const numB = parseInt(b.rollNo, 10);
+      if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+      return String(a.rollNo || "").localeCompare(String(b.rollNo || ""), undefined, { numeric: true, sensitivity: "base" });
+    });
   }, [students, searchQuery]);
 
   const canEdit = alreadySaved && !editMode;

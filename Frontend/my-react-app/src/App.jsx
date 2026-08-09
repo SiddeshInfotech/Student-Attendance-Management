@@ -22,6 +22,19 @@ function App() {
     setPage(newPage);
   };
 
+  // Initialize theme on app startup
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("sam_admin_settings");
+      if (saved) {
+        const s = JSON.parse(saved);
+        if (s.themeMode === "dark") {
+          document.body.classList.add("dark-mode");
+        }
+      }
+    } catch (e) {}
+  }, []);
+
   // Handle browser back/forward buttons + reset-password link from email
   useEffect(() => {
     // Parse hash to support: #reset-password?token=abc123

@@ -55,6 +55,7 @@ const NAV_ITEMS = [
 
 function Dashboard({ setPage }) {
   const [activeTab, setActiveTab]       = useState("dashboard");
+  const [scrollToEnroll, setScrollToEnroll] = useState(false);
   const [banner, setBanner]             = useState({ msg: "", type: "success" });
   const [currentTime, setCurrentTime]   = useState("");
   const [currentDate, setCurrentDate]   = useState("");
@@ -198,6 +199,7 @@ function Dashboard({ setPage }) {
             currentDate={currentDate}
             currentTime={currentTime}
             setActiveTab={setActiveTab}
+            setScrollToEnroll={setScrollToEnroll}
           />
         )}
 
@@ -205,6 +207,8 @@ function Dashboard({ setPage }) {
           <StudentsTab
             store={store}
             triggerBanner={triggerBanner}
+            scrollToEnroll={scrollToEnroll}
+            onScrollHandled={() => setScrollToEnroll(false)}
           />
         )}
 

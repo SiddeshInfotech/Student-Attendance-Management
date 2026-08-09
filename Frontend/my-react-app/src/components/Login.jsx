@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FaEnvelope,
   FaLock,
@@ -8,6 +8,7 @@ import {
 } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { adminLogin } from "../services/authService.js";
+import { removeToken, removeUser } from "../services/apiClient.js";
 import "../styles/Login.css";
 import studentAttendanceImg from "../assets/images/student_attendance_illustration.png";
 
@@ -19,6 +20,12 @@ function Login({ setPage }) {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState("");
   const [error, setError] = useState("");
+
+  // Clear any stale/expired token on public pages
+  useEffect(() => {
+    removeToken();
+    removeUser();
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -57,7 +64,7 @@ function Login({ setPage }) {
           </div>
           <div className="brand-text">
             <span className="brand-title">ScholarTrack</span>
-            <span className="brand-subtitle">Management System</span>
+
           </div>
         </div>
 

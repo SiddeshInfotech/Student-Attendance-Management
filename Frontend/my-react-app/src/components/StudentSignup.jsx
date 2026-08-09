@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FaUser,
   FaEnvelope,
@@ -8,12 +8,17 @@ import {
   FaSignInAlt,
 } from "react-icons/fa";
 import { studentSignup } from "../services/authService.js";
+import { removeToken, removeUser } from "../services/apiClient.js";
 import "../styles/Signup.css";
 import studentAttendanceImg from "../assets/images/student_attendance_illustration.png";
 
 function StudentSignup({ setPage }) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [rollNo, setRollNo] = useState("");
+  const [className, setClassName] = useState("Grade 10");
+  const [divisionName, setDivisionName] = useState("A");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -22,6 +27,12 @@ function StudentSignup({ setPage }) {
   const [agreeToTerms, setAgreeToTerms] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  // Clear any stale/expired token on public pages
+  useEffect(() => {
+    removeToken();
+    removeUser();
+  }, []);
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -41,12 +52,21 @@ function StudentSignup({ setPage }) {
     setIsLoading(true);
 
     try {
-      await studentSignup({ fullName, email, password });
+      await studentSignup({
+        fullName,
+        email,
+        password,
+        phone,
+        roll_number: rollNo,
+        roll_no: rollNo,
+        class_name: className,
+        division_name: divisionName
+      });
       setIsLoading(false);
       setSuccess("Account created successfully! Redirecting to dashboard...");
       setTimeout(() => {
         setPage("student-dashboard");
-      }, 1200);
+      }, 1000);
     } catch (err) {
       setIsLoading(false);
       setError(err.message || "Signup failed. Please try again.");
@@ -67,7 +87,7 @@ function StudentSignup({ setPage }) {
           </div>
           <div className="brand-text">
             <span className="brand-title">ScholarTrack</span>
-            <span className="brand-subtitle">Management System</span>
+
           </div>
         </div>
 
@@ -157,6 +177,65 @@ function StudentSignup({ setPage }) {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
+              </div>
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="phone">Phone Number</label>
+              <div className="input-field-wrapper">
+                <input
+                  id="phone"
+                  type="tel"
+                  placeholder="Enter phone number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  style={{ paddingLeft: "14px" }}
+                />
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
+              <div className="input-group">
+                <label htmlFor="rollNo">Roll Number</label>
+                <div className="input-field-wrapper">
+                  <input
+                    id="rollNo"
+                    type="text"
+                    placeholder="e.g. 101"
+                    value={rollNo}
+                    onChange={(e) => setRollNo(e.target.value)}
+                    style={{ paddingLeft: "12px" }}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="input-group">
+                <label htmlFor="className">Class / Grade</label>
+                <div className="input-field-wrapper">
+                  <input
+                    id="className"
+                    type="text"
+                    placeholder="e.g. Grade 10"
+                    value={className}
+                    onChange={(e) => setClassName(e.target.value)}
+                    style={{ paddingLeft: "12px" }}
+                  />
+                </div>
+              </div>
+
+              <div className="input-group">
+                <label htmlFor="divisionName">Division</label>
+                <div className="input-field-wrapper">
+                  <input
+                    id="divisionName"
+                    type="text"
+                    placeholder="e.g. A"
+                    value={divisionName}
+                    onChange={(e) => setDivisionName(e.target.value)}
+                    style={{ paddingLeft: "12px" }}
+                  />
+                </div>
               </div>
             </div>
 

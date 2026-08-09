@@ -42,6 +42,14 @@ class User(models.Model):
         """SimpleJWT requires user.id — map it to user_id."""
         return self.user_id
 
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
     def __str__(self):
         return self.full_name
 

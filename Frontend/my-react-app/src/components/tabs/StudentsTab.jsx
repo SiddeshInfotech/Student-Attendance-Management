@@ -5,21 +5,37 @@
  * - Student roster with advanced search (name, partial,
  *   roll no, class, division)
  * - Add student form with duplicate prevention
+ * - Edit student inline modal
  * - Students are registered once — attendance is separate
  * ─────────────────────────────────────────────────────────
  */
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import {
   FaSearch, FaUserPlus, FaGraduationCap, FaUser,
   FaIdCard, FaPhone, FaUniversity, FaTrash,
-  FaExclamationTriangle, FaCheck,
+  FaExclamationTriangle, FaCheck, FaEdit, FaTimes, FaSave,
 } from "react-icons/fa";
 
-function StudentsTab({ store, triggerBanner }) {
-  const { students, addStudent, deleteStudent, searchStudents } = store;
+function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) {
+  const { students, addStudent, deleteStudent, updateStudent, searchStudents } = store;
 
-  // Form state
+  // ── Ref for scroll-to-enroll ─────────────────────────────
+  const enrollFormRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollToEnroll && enrollFormRef.current) {
+      enrollFormRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      // Briefly highlight the form
+      enrollFormRef.current.style.boxShadow = "0 0 0 3px rgba(59,130,246,0.4)";
+      setTimeout(() => {
+        if (enrollFormRef.current) enrollFormRef.current.style.boxShadow = "";
+      }, 2000);
+      if (onScrollHandled) onScrollHandled();
+    }
+  }, [scrollToEnroll, onScrollHandled]);
+
+  // ── Add-form state ──────────────────────────────────────
   const [newName,     setNewName]     = useState("");
   const [newRoll,     setNewRoll]     = useState("");
   const [newGrade,    setNewGrade]    = useState("Grade 1");
@@ -27,14 +43,24 @@ function StudentsTab({ store, triggerBanner }) {
   const [newPhone,    setNewPhone]    = useState("");
   const [formError,   setFormError]   = useState("");
 
-  // Search state
+  // ── Search / filter state ───────────────────────────────
   const [searchQuery,  setSearchQuery]  = useState("");
   const [gradeFilter,  setGradeFilter]  = useState("All");
 
-  // Delete confirm
+  // ── Delete confirm ──────────────────────────────────────
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
-  // ── Filtered students ─────────────────────────────────
+  // ── Edit modal state ────────────────────────────────────
+  const [editStudent,    setEditStudent]    = useState(null); // the student being edited
+  const [editName,       setEditName]       = useState("");
+  const [editRoll,       setEditRoll]       = useState("");
+  const [editGrade,      setEditGrade]      = useState("");
+  const [editDivision,   setEditDivision]   = useState("");
+  const [editPhone,      setEditPhone]      = useState("");
+  const [editError,      setEditError]      = useState("");
+  const [editSaving,     setEditSaving]     = useState(false);
+
+  // ── Filtered students ───────────────────────────────────
   const filteredStudents = useMemo(() => {
     let result = searchQuery.trim()
       ? searchStudents(searchQuery)
@@ -55,12 +81,12 @@ function StudentsTab({ store, triggerBanner }) {
     });
   }, [students]);
 
-  // ── Stats ─────────────────────────────────────────────
+  // ── Stats ───────────────────────────────────────────────
   const totalEnrolled = students.length;
   const activeClasses = new Set(students.map((s) => s.grade)).size;
   const divisions     = new Set(students.map((s) => s.division)).size;
 
-  // ── Handlers ─────────────────────────────────────────
+  // ── Add handler ─────────────────────────────────────────
   const handleAddStudent = (e) => {
     e.preventDefault();
     setFormError("");
@@ -70,15 +96,13 @@ function StudentsTab({ store, triggerBanner }) {
       grade: newGrade, division: newDivision, phone: newPhone,
     });
 
-    if (err) {
-      setFormError(err);
-      return;
-    }
+    if (err) { setFormError(err); return; }
 
     setNewName(""); setNewRoll(""); setNewPhone("");
     triggerBanner(`Student "${newName.trim()}" enrolled successfully!`);
   };
 
+  // ── Delete handler ──────────────────────────────────────
   const handleDeleteConfirm = (id) => {
     const student = students.find((s) => s.id === id);
     deleteStudent(id);
@@ -86,8 +110,222 @@ function StudentsTab({ store, triggerBanner }) {
     triggerBanner(`Student "${student?.name}" removed from system.`);
   };
 
+  // ── Edit handlers ────────────────────────────────────────
+  const openEdit = (student) => {
+    setEditStudent(student);
+    setEditName(student.name);
+    setEditRoll(student.rollNo);
+    setEditGrade(student.grade || "Grade 1");
+    setEditDivision(student.division || "A");
+    setEditPhone(student.phone || "");
+    setEditError("");
+    setDeleteConfirmId(null); // close any pending delete
+  };
+
+  const closeEdit = () => {
+    setEditStudent(null);
+    setEditError("");
+    setEditSaving(false);
+  };
+
+  const handleEditSave = async () => {
+    setEditError("");
+    if (!editName.trim()) { setEditError("Name is required."); return; }
+    if (!editRoll.trim()) { setEditError("Roll number is required."); return; }
+
+    // Check duplicate roll (excluding current student)
+    const duplicate = students.find(
+      (s) => s.rollNo === editRoll.trim() && s.id !== editStudent.id
+    );
+    if (duplicate) { setEditError(`Roll No "${editRoll}" is already taken by ${duplicate.name}.`); return; }
+
+    setEditSaving(true);
+    try {
+      await updateStudent(editStudent.id, {
+        name: editName.trim(),
+        rollNo: editRoll.trim(),
+        grade: editGrade,
+        division: editDivision,
+        phone: editPhone.trim(),
+      });
+      triggerBanner(`Student "${editName.trim()}" updated successfully!`);
+      closeEdit();
+    } catch {
+      setEditError("Failed to save. Please try again.");
+    } finally {
+      setEditSaving(false);
+    }
+  };
+
   return (
     <>
+      {/* ── Edit Modal Overlay ──────────────────────────── */}
+      {editStudent && (
+        <div
+          style={{
+            position: "fixed", inset: 0, zIndex: 1000,
+            background: "rgba(15,23,42,0.55)", backdropFilter: "blur(4px)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "16px",
+          }}
+          onClick={(e) => { if (e.target === e.currentTarget) closeEdit(); }}
+        >
+          <div
+            style={{
+              background: "#fff", borderRadius: "18px",
+              boxShadow: "0 24px 64px rgba(0,0,0,0.22)",
+              width: "100%", maxWidth: "480px",
+              padding: "32px", position: "relative",
+              animation: "slideDownIn 0.25s ease both",
+            }}
+          >
+            {/* Close */}
+            <button
+              onClick={closeEdit}
+              style={{
+                position: "absolute", top: "16px", right: "16px",
+                background: "#f1f5f9", border: "none", borderRadius: "8px",
+                width: "32px", height: "32px", cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: "#64748b", fontSize: "14px",
+              }}
+            >
+              <FaTimes />
+            </button>
+
+            {/* Header */}
+            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "24px" }}>
+              <div
+                style={{
+                  width: "46px", height: "46px", borderRadius: "12px",
+                  background: "#eff6ff", color: "#3b82f6",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: "20px", flexShrink: 0,
+                }}
+              >
+                <FaEdit />
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: "18px", fontWeight: 700, color: "#0f172a" }}>Edit Student</h3>
+                <p style={{ margin: 0, fontSize: "13px", color: "#64748b" }}>Update student information</p>
+              </div>
+            </div>
+
+            {/* Error */}
+            {editError && (
+              <div className="form-error-box" style={{ marginBottom: "16px" }}>
+                <FaExclamationTriangle className="form-error-icon" />
+                <span>{editError}</span>
+              </div>
+            )}
+
+            {/* Fields */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              {/* Name */}
+              <div className="modal-input-group">
+                <label>Student Name *</label>
+                <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
+                  <FaUser className="input-icon" style={{ fontSize: "15px", left: "14px", color: "#64748b" }} />
+                  <input
+                    type="text"
+                    placeholder="Full name"
+                    value={editName}
+                    onChange={(e) => { setEditName(e.target.value); setEditError(""); }}
+                    style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
+                  />
+                </div>
+              </div>
+
+              {/* Roll No */}
+              <div className="modal-input-group">
+                <label>Roll Number *</label>
+                <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
+                  <FaIdCard className="input-icon" style={{ fontSize: "15px", left: "14px", color: "#64748b" }} />
+                  <input
+                    type="text"
+                    placeholder="e.g. 7"
+                    value={editRoll}
+                    onChange={(e) => { setEditRoll(e.target.value); setEditError(""); }}
+                    style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
+                  />
+                </div>
+              </div>
+
+              {/* Grade & Division row */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <div className="modal-input-group">
+                  <label>Class / Grade *</label>
+                  <select
+                    value={editGrade}
+                    onChange={(e) => setEditGrade(e.target.value)}
+                    style={{ height: "46px", fontSize: "15px" }}
+                  >
+                    {Array.from({ length: 12 }, (_, i) => `Grade ${i + 1}`).map((g) => (
+                      <option key={g} value={g}>{g}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="modal-input-group">
+                  <label>Division</label>
+                  <select
+                    value={editDivision}
+                    onChange={(e) => setEditDivision(e.target.value)}
+                    style={{ height: "46px", fontSize: "15px" }}
+                  >
+                    {["A", "B", "C", "D"].map((d) => (
+                      <option key={d} value={d}>Division {d}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div className="modal-input-group">
+                <label>Phone (optional)</label>
+                <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
+                  <FaPhone className="input-icon" style={{ fontSize: "14px", left: "14px", color: "#64748b" }} />
+                  <input
+                    type="tel"
+                    placeholder="Parent contact"
+                    value={editPhone}
+                    onChange={(e) => setEditPhone(e.target.value)}
+                    style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div style={{ display: "flex", gap: "10px", marginTop: "24px" }}>
+              <button
+                onClick={handleEditSave}
+                disabled={editSaving}
+                className="primary-action-btn inline-submit-btn"
+                style={{ flex: 1, background: "#3b82f6", boxShadow: "0 4px 14px rgba(59,130,246,0.25)" }}
+              >
+                {editSaving
+                  ? <div className="loading-spinner" style={{ width: "15px", height: "15px", borderTopColor: "#fff", borderColor: "rgba(255,255,255,0.3)" }} />
+                  : <FaSave />
+                }
+                <span>{editSaving ? "Saving..." : "Save Changes"}</span>
+              </button>
+              <button
+                onClick={closeEdit}
+                style={{
+                  padding: "0 20px", height: "46px", borderRadius: "10px",
+                  border: "1.5px solid #e2e8f0", background: "#f8fafc",
+                  cursor: "pointer", fontWeight: 600, color: "#64748b",
+                  display: "flex", alignItems: "center", gap: "6px",
+                  fontSize: "14px",
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Header ─────────────────────────────────────────── */}
       <header className="content-header">
         <div className="header-welcome">
@@ -129,16 +367,14 @@ function StudentsTab({ store, triggerBanner }) {
         </div>
       </section>
 
-      <div className="students-tab-grid">
-        {/* ── Left: Student List ─────────────────────────── */}
-        <div className="table-card bg-glass">
+      {/* ── Registered Students Table (Full Width) ──────── */}
+      <div className="table-card bg-glass">
           <div className="table-card-header">
             <div className="table-title">
               <h3>Registered Students</h3>
               <p>Search by name, roll number, class, or division</p>
             </div>
             <div className="table-filters">
-              {/* Search bar */}
               <div className="search-bar">
                 <FaSearch className="search-icon" />
                 <input
@@ -148,7 +384,6 @@ function StudentsTab({ store, triggerBanner }) {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              {/* Grade filter */}
               <div className="filter-badge-row" style={{ flexWrap: "wrap" }}>
                 {allGrades.map((grade) => (
                   <button
@@ -164,21 +399,28 @@ function StudentsTab({ store, triggerBanner }) {
           </div>
 
           <div className="table-wrapper">
-            <table className="student-table">
+            <table className="student-table" style={{ tableLayout: "fixed", width: "100%" }}>
+              <colgroup>
+                <col style={{ width: "10%" }} />
+                <col style={{ width: "30%" }} />
+                <col style={{ width: "18%" }} />
+                <col style={{ width: "14%" }} />
+                <col style={{ width: "28%" }} />
+              </colgroup>
               <thead>
                 <tr>
-                  <th>Roll No</th>
+                  <th style={{ textAlign: "center" }}>Roll No</th>
                   <th>Student Name</th>
                   <th>Class</th>
-                  <th>Division</th>
-                  <th>Action</th>
+                  <th style={{ textAlign: "center" }}>Division</th>
+                  <th style={{ textAlign: "center" }}>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredStudents.length > 0 ? (
                   filteredStudents.map((student) => (
                     <tr key={student.id}>
-                      <td><strong>{student.rollNo}</strong></td>
+                      <td style={{ textAlign: "center" }}><strong>{student.rollNo}</strong></td>
                       <td>
                         <div className="student-profile">
                           <div className="avatar-badge">
@@ -188,12 +430,13 @@ function StudentsTab({ store, triggerBanner }) {
                         </div>
                       </td>
                       <td>{student.grade}</td>
-                      <td>
+                      <td style={{ textAlign: "center" }}>
                         <span className="division-badge">{student.division}</span>
                       </td>
                       <td>
                         {deleteConfirmId === student.id ? (
-                          <div style={{ display: "flex", gap: "6px" }}>
+                          /* ── Delete confirmation row ── */
+                          <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
                             <button
                               className="table-action-btn"
                               style={{ borderColor: "#ef4444", color: "#ef4444" }}
@@ -209,15 +452,29 @@ function StudentsTab({ store, triggerBanner }) {
                             </button>
                           </div>
                         ) : (
-                          <button
-                            className="table-action-btn"
-                            style={{ borderColor: "#ef4444", color: "#ef4444" }}
-                            onClick={() => setDeleteConfirmId(student.id)}
-                            title="Delete student"
-                          >
-                            <FaTrash />
-                            <span>Delete</span>
-                          </button>
+                          /* ── Normal action buttons ── */
+                          <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
+                            {/* Edit */}
+                            <button
+                              className="table-action-btn"
+                              style={{ borderColor: "#3b82f6", color: "#3b82f6" }}
+                              onClick={() => openEdit(student)}
+                              title="Edit student"
+                            >
+                              <FaEdit />
+                              <span>Edit</span>
+                            </button>
+                            {/* Delete */}
+                            <button
+                              className="table-action-btn"
+                              style={{ borderColor: "#ef4444", color: "#ef4444" }}
+                              onClick={() => setDeleteConfirmId(student.id)}
+                              title="Delete student"
+                            >
+                              <FaTrash />
+                              <span>Delete</span>
+                            </button>
+                          </div>
                         )}
                       </td>
                     </tr>
@@ -240,10 +497,10 @@ function StudentsTab({ store, triggerBanner }) {
               Showing {filteredStudents.length} of {students.length} students
             </div>
           )}
-        </div>
+      </div>
 
-        {/* ── Right: Add Student Form ───────────────────── */}
-        <div className="add-student-inline-card bg-glass">
+      {/* ── Enroll New Student Form (Below Table) ───────── */}
+      <div ref={enrollFormRef} className="add-student-inline-card bg-glass" style={{ marginTop: "1.5rem", maxWidth: "600px", marginLeft: "auto", marginRight: "auto" }}>
           <div className="inline-card-header">
             <div
               className="brand-logo-icon"
@@ -335,12 +592,12 @@ function StudentsTab({ store, triggerBanner }) {
               </div>
             </div>
 
-            <button type="submit" className="primary-action-btn inline-submit-btn">
+
+            <button type="submit" className="primary-action-btn inline-submit-btn" style={{ marginTop: "4px" }}>
               <FaUserPlus />
               <span>Register Student</span>
             </button>
           </form>
-        </div>
       </div>
     </>
   );

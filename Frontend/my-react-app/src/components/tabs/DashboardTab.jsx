@@ -25,7 +25,7 @@ const GRADE_COLORS = {
   "Grade 12": "#10b981",
 };
 
-function DashboardTab({ store, currentDate, currentTime, setActiveTab }) {
+function DashboardTab({ store, currentDate, currentTime, setActiveTab, setScrollToEnroll }) {
   const { students, attendanceRecords, getTodayStats, getRecentAttendance } = store;
 
   const todayStats = getTodayStats();
@@ -84,7 +84,7 @@ function DashboardTab({ store, currentDate, currentTime, setActiveTab }) {
           </p>
         </div>
         <div className="header-actions">
-          <button className="primary-action-btn" onClick={() => setActiveTab("students")}>
+          <button className="primary-action-btn" onClick={() => { setScrollToEnroll(true); setActiveTab("students"); }}>
             <FaUserPlus />
             <span>Add Student</span>
           </button>

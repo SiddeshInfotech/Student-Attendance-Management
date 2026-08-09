@@ -41,7 +41,7 @@ function ForgotPassword({ setPage }) {
           </div>
           <div className="brand-text">
             <span className="brand-title">ScholarTrack</span>
-            <span className="brand-subtitle">Management System</span>
+
           </div>
         </div>
 

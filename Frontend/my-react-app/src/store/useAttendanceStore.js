@@ -54,13 +54,19 @@ const save = (key, data) => {
 // ── Date Utilities ────────────────────────────────────────
 export const todayStr = () => {
   const d = new Date();
-  return d.toISOString().split("T")[0]; // "YYYY-MM-DD"
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 };
 
 export const nDaysAgo = (n) => {
   const d = new Date();
   d.setDate(d.getDate() - n);
-  return d.toISOString().split("T")[0];
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 };
 
 export const formatDate = (dateStr) => {
@@ -78,13 +84,16 @@ export const formatDateFull = (dateStr) => {
   });
 };
 
-// Return all dates in [start, end] inclusive as "YYYY-MM-DD" strings
+// Return all dates in [start, end] inclusive as "YYYY-MM-DD" strings in local time
 export const dateRange = (start, end) => {
   const dates = [];
   const cur = new Date(start + "T00:00:00");
   const last = new Date(end + "T00:00:00");
   while (cur <= last) {
-    dates.push(cur.toISOString().split("T")[0]);
+    const y = cur.getFullYear();
+    const m = String(cur.getMonth() + 1).padStart(2, "0");
+    const d = String(cur.getDate()).padStart(2, "0");
+    dates.push(`${y}-${m}-${d}`);
     cur.setDate(cur.getDate() + 1);
   }
   return dates;
@@ -112,21 +121,12 @@ const generateSeedData = () => {
   const today = new Date();
 
   const seedStudents = [
-    { id: "s1",  name: "Aarav Sharma",   rollNo: "101", grade: "Grade 10", division: "A", phone: "9876543210", createdAt: nDaysAgo(60) },
-    { id: "s2",  name: "Diya Patel",     rollNo: "102", grade: "Grade 10", division: "A", phone: "9876543211", createdAt: nDaysAgo(60) },
-    { id: "s3",  name: "Kabir Mehta",    rollNo: "103", grade: "Grade 11", division: "B", phone: "9876543212", createdAt: nDaysAgo(60) },
-    { id: "s4",  name: "Isha Iyer",      rollNo: "104", grade: "Grade 12", division: "A", phone: "9876543213", createdAt: nDaysAgo(60) },
-    { id: "s5",  name: "Rohan Das",      rollNo: "105", grade: "Grade 9",  division: "C", phone: "9876543214", createdAt: nDaysAgo(60) },
-    { id: "s6",  name: "Ananya Sen",     rollNo: "106", grade: "Grade 3",  division: "B", phone: "9876543215", createdAt: nDaysAgo(60) },
-    { id: "s7",  name: "Dev Shah",       rollNo: "107", grade: "Grade 4",  division: "A", phone: "9876543216", createdAt: nDaysAgo(60) },
-    { id: "s8",  name: "Meera Nair",     rollNo: "108", grade: "Grade 9",  division: "C", phone: "9876543217", createdAt: nDaysAgo(60) },
-    { id: "s9",  name: "Vivaan Kapoor",  rollNo: "109", grade: "Grade 5",  division: "B", phone: "9876543218", createdAt: nDaysAgo(60) },
-    { id: "s10", name: "Aditi Rao",      rollNo: "110", grade: "Grade 10", division: "A", phone: "9876543219", createdAt: nDaysAgo(60) },
-    { id: "s11", name: "Ritesh Patel",   rollNo: "111", grade: "Grade 6",  division: "B", phone: "9876543220", createdAt: nDaysAgo(45) },
-    { id: "s12", name: "Ritesh Kumar",   rollNo: "112", grade: "Grade 7",  division: "A", phone: "9876543221", createdAt: nDaysAgo(45) },
-    { id: "s13", name: "Ritesh Sharma",  rollNo: "113", grade: "Grade 8",  division: "C", phone: "9876543222", createdAt: nDaysAgo(45) },
-    { id: "s14", name: "Ritesh Yadav",   rollNo: "114", grade: "Grade 11", division: "B", phone: "9876543223", createdAt: nDaysAgo(45) },
-    { id: "s15", name: "Priya Gupta",    rollNo: "115", grade: "Grade 12", division: "A", phone: "9876543224", createdAt: nDaysAgo(30) },
+    { id: "1", name: "Ritesh Patil", rollNo: "1", grade: "Grade 10", division: "A", phone: "9876543210", createdAt: nDaysAgo(60) },
+    { id: "2", name: "Mayur Gangurde", rollNo: "2", grade: "Grade 10", division: "A", phone: "9876543211", createdAt: nDaysAgo(60) },
+    { id: "3", name: "Hemangi Suryawanshi", rollNo: "3", grade: "Grade 10", division: "B", phone: "9876543212", createdAt: nDaysAgo(60) },
+    { id: "4", name: "Hemangi Patil", rollNo: "4", grade: "Grade 10", division: "A", phone: "9876543213", createdAt: nDaysAgo(60) },
+    { id: "5", name: "Vidhi Vibhandik", rollNo: "5", grade: "Grade 11", division: "A", phone: "9876543214", createdAt: nDaysAgo(60) },
+    { id: "6", name: "Sahil Patil", rollNo: "6", grade: "Grade 12", division: "B", phone: "9876543215", createdAt: nDaysAgo(60) },
   ];
 
   // Seed 30 days of attendance for all students
@@ -140,8 +140,14 @@ const generateSeedData = () => {
       seedAttendance.push({
         id: `a${attId++}`,
         studentId: student.id,
+        student_id: student.id,
         date,
+        attendance_date: date,
+        roll_number: student.rollNo,
+        student_name: student.name,
+        class_name: student.grade,
         status,
+        marked_by: "Admin",
       });
     });
   }
@@ -176,7 +182,8 @@ export function useAttendanceStore() {
           name: s.user_details?.full_name || s.name || s.full_name || "Unknown",
           rollNo: s.roll_number || s.rollNo || "",
           grade: s.class_name || s.student_class?.class_name || s.grade || "",
-          division: s.branch_name || s.branch?.branch_name || s.division || "",
+          class_id: s.student_class?.class_id || s.student_class?.id || s.class_id || null,
+          division: s.division_name || s.division?.division_name || s.branch_name || s.division || "",
           phone: s.user_details?.mobile || s.phone || "",
           department: s.department_name || s.department?.department_name || "",
           createdAt: s.created_at || s.createdAt || todayStr(),
@@ -201,12 +208,20 @@ export function useAttendanceStore() {
         }));
 
         setStudents(normalizedStudents);
-        setAttendanceRecords(normalizedAttendance);
+
+        // Filter attendance records to only keep records for valid active students (Roll No 1-6 or newly registered)
+        const validRolls = new Set(normalizedStudents.map((s) => String(s.rollNo)));
+        const filteredAttendance = normalizedAttendance.filter((a) => {
+          const roll = String(a.roll_number || "").trim();
+          return !roll || validRolls.has(roll);
+        });
+
+        setAttendanceRecords(filteredAttendance);
         setIsLoaded(true);
 
         // Update local storage with fresh normalized data
         save(STUDENTS_KEY, normalizedStudents);
-        save(ATTENDANCE_KEY, normalizedAttendance);
+        save(ATTENDANCE_KEY, filteredAttendance);
       } catch (err) {
         console.warn("API unavailable, falling back to local storage:", err);
 
@@ -272,12 +287,24 @@ export function useAttendanceStore() {
     };
 
     setStudents((prev) => [...prev, newStudent]);
-    
+
     // Background API sync
-    apiAddStudent(newStudent).catch(err => {
+    apiAddStudent(newStudent).then((created) => {
+      if (created && (created.student_id || created.id)) {
+        const realId = String(created.student_id || created.id);
+        const realClassId = created.student_class?.class_id || created.student_class?.id || created.class_id || null;
+        setStudents((prev) =>
+          prev.map((s) =>
+            s.id === newStudent.id || s.rollNo === newStudent.rollNo
+              ? { ...s, id: realId, student_id: created.student_id || created.id, class_id: realClassId }
+              : s
+          )
+        );
+      }
+    }).catch((err) => {
       console.warn("Failed to sync new student to API, saved locally:", err);
     });
-    
+
     return null; // success
   }, [students]);
 
@@ -383,12 +410,15 @@ export function useAttendanceStore() {
     const payloadRecords = Object.entries(statusMap).map(([studentId, status]) => {
       const st = students.find((s) => s && (String(s.id) === String(studentId) || String(s.student_id) === String(studentId)));
       const realStudentId = st?.student_id || st?.id || studentId;
-      return {
+      const rec = {
         student_id: realStudentId,
         roll_number: st?.rollNo || st?.roll_number || "",
         student_name: st?.name || st?.full_name || "",
         status,
       };
+      // Send class_id so backend sets student_class on the Attendance record
+      if (st?.class_id) rec.class_id = st.class_id;
+      return rec;
     });
 
     const userObj = load("user");
@@ -514,19 +544,35 @@ export function useAttendanceStore() {
   }, [students, attendanceRecords]);
 
   /**
-   * Get recent attendance records (last N records, sorted by date DESC).
+   * Get recent attendance records (last N records, sorted by date DESC, then rollNo ASC).
    */
   const getRecentAttendance = useCallback((limit = 20) => {
-    const sorted = [...attendanceRecords].sort((a, b) => {
-      const dA = a ? (a.date || a.attendance_date || "") : "";
-      const dB = b ? (b.date || b.attendance_date || "") : "";
-      return dB.localeCompare(dA);
+    const recordsWithStudent = attendanceRecords
+      .map((a) => {
+        const st = students.find((s) => isSameStudent(s, a));
+        return {
+          ...a,
+          date: a ? (a.date || a.attendance_date || "") : "",
+          student: st || null,
+          rollNo: st?.rollNo || a?.roll_number || a?.rollNo || "",
+        };
+      })
+      .filter((a) => a && a.student);
+
+    recordsWithStudent.sort((a, b) => {
+      const dA = a.date;
+      const dB = b.date;
+      if (dA !== dB) return dB.localeCompare(dA);
+
+      const numA = parseInt(a.rollNo, 10);
+      const numB = parseInt(b.rollNo, 10);
+      if (!isNaN(numA) && !isNaN(numB)) {
+        return numA - numB;
+      }
+      return String(a.rollNo).localeCompare(String(b.rollNo), undefined, { numeric: true, sensitivity: "base" });
     });
-    return sorted.slice(0, limit).map((a) => ({
-      ...a,
-      date: a ? (a.date || a.attendance_date) : "",
-      student: students.find((s) => isSameStudent(s, a)) || null,
-    })).filter((a) => a && a.student);
+
+    return recordsWithStudent.slice(0, limit);
   }, [attendanceRecords, students]);
 
   /**
@@ -560,10 +606,18 @@ export function useAttendanceStore() {
    * Returns array sorted by student name.
    */
   const getRangeSummaryPerStudent = useCallback((startDate, endDate) => {
-    return students.map((student) => {
+    const list = students.map((student) => {
       const summary = getStudentSummary(student.id, startDate, endDate);
       return { student, ...summary };
-    }).sort((a, b) => a.student.name.localeCompare(b.student.name));
+    });
+    return list.sort((a, b) => {
+      const numA = parseInt(a.student?.rollNo, 10);
+      const numB = parseInt(b.student?.rollNo, 10);
+      if (!isNaN(numA) && !isNaN(numB)) {
+        return numA - numB;
+      }
+      return String(a.student?.rollNo || "").localeCompare(String(b.student?.rollNo || ""), undefined, { numeric: true, sensitivity: "base" });
+    });
   }, [students, getStudentSummary]);
 
   // ── Class / Division Lists ──────────────────────────────

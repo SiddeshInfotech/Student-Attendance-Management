@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FaUser,
   FaEnvelope,
@@ -8,6 +8,7 @@ import {
   FaSignInAlt,
 } from "react-icons/fa";
 import { adminSignup } from "../services/authService.js";
+import { removeToken, removeUser } from "../services/apiClient.js";
 import "../styles/Signup.css";
 import studentAttendanceImg from "../assets/images/student_attendance_illustration.png";
 
@@ -22,6 +23,12 @@ function Signup({ setPage }) {
   const [agreeToTerms, setAgreeToTerms] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  // Clear any stale/expired token so it never pollutes public pages
+  useEffect(() => {
+    removeToken();
+    removeUser();
+  }, []);
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -67,7 +74,7 @@ function Signup({ setPage }) {
           </div>
           <div className="brand-text">
             <span className="brand-title">ScholarTrack</span>
-            <span className="brand-subtitle">Management System</span>
+
           </div>
         </div>
 
