@@ -340,19 +340,6 @@ function SettingsTab({ onSettingsChange, triggerBanner }) {
     }
   };
 
-  // Sub-sidebar items list
-  const sidebarItems = [
-    { id: "all", label: "All Settings", icon: Settings },
-    { id: "general", label: "General", icon: Sliders },
-    { id: "appearance", label: "Appearance", icon: Palette },
-    { id: "notifications", label: "Notifications", icon: Bell },
-    { id: "email", label: "Email Settings", icon: Mail },
-    { id: "backup", label: "Backup & Restore", icon: CloudLightning },
-    { id: "security", label: "Security", icon: Shield },
-    { id: "roles", label: "Roles & Permissions", icon: Users },
-    { id: "attendance", label: "Attendance Rules", icon: Calendar }
-  ];
-
   const shouldShow = (section) => activeTab === "all" || activeTab === section;
 
   return (
@@ -368,44 +355,16 @@ function SettingsTab({ onSettingsChange, triggerBanner }) {
             Reset Defaults
           </button>
           <button type="button" onClick={handleSaveAll} className="btn-save-all">
-            <Save size={18} />
+            <Save size={16} />
             <span>Save All Changes</span>
           </button>
         </div>
       </div>
 
-      {/* Horizontal Tab Bar */}
-      <nav className={`settings-tabbar ${showMobileSidebar ? "show-mobile" : ""}`}>
-        {sidebarItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.id}
-              onClick={() => {
-                setActiveTab(item.id);
-                setShowMobileSidebar(false);
-              }}
-              className={`settings-tab-item ${activeTab === item.id ? "active" : ""}`}
-            >
-              <Icon />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-      </nav>
-
-      <button
-        onClick={() => setShowMobileSidebar(!showMobileSidebar)}
-        className="settings-sidebar-toggle"
-      >
-        <SlidersHorizontal size={16} />
-        {showMobileSidebar ? "Hide Sections Menu" : "Show Sections Menu"}
-      </button>
-
       {/* Main Settings Content */}
       <div className="settings-container">
         <main className="settings-main-content">
-          <div className={activeTab === "all" ? "settings-grid-layout" : "settings-single-layout"}>
+          <div className="settings-grid-layout">
             
             {/* 1. GENERAL SETTINGS */}
             {shouldShow("general") && (

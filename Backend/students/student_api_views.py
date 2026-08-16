@@ -75,10 +75,12 @@ def _get_student_profile_dict(student):
         "email": user.email,
         "phone_number": user.mobile,
         "mobile": user.mobile,
-        "class_name": student.class_name or (student.student_class.class_name if student.student_class else "10th"),
+        "class_name": student.class_name or (student.student_class.class_name if student.student_class else "1st Year"),
         "division_name": student.division_name or (student.division.division_name if student.division else "A"),
-        "grade": student.class_name or (student.student_class.class_name if student.student_class else "10th"),
+        "grade": student.class_name or (student.student_class.class_name if student.student_class else "1st Year"),
         "division": student.division_name or (student.division.division_name if student.division else "A"),
+        "department": student.department.department_name if student.department else "",
+        "department_name": student.department.department_name if student.department else "",
         "profile_image": user.profile_image or None,
         "attendance_percentage": percentage,
         "gpa": float(student.gpa) if student.gpa else 3.80,
@@ -97,8 +99,9 @@ class StudentRegisterView(APIView):
         full_name = request.data.get("full_name", request.data.get("fullName", "")).strip()
         phone_number = request.data.get("phone_number", request.data.get("phone", request.data.get("mobile", ""))).strip()
         roll_number = request.data.get("roll_number", request.data.get("rollNo", request.data.get("student_id", ""))).strip()
-        class_name = request.data.get("class_name", request.data.get("class", request.data.get("grade", "Grade 10"))).strip() or "Grade 10"
+        class_name = request.data.get("class_name", request.data.get("class", request.data.get("grade", "1st Year"))).strip() or "1st Year"
         division_name = request.data.get("division_name", request.data.get("division", "A")).strip() or "A"
+        department_name = request.data.get("department_name", request.data.get("department", "Computer Engineering")).strip() or "Computer Engineering"
         profile_image = request.data.get("profile_image", "").strip()
 
         if not email or not password:
@@ -137,7 +140,13 @@ class StudentRegisterView(APIView):
             created_at=timezone.now()
         )
 
-        # Class & Division objects
+        # Class, Division & Department objects
+        from departments.models import Department
+        dept_code = department_name[:10].upper().replace(" ", "_")
+        dept_obj, _ = Department.objects.get_or_create(
+            department_name=department_name,
+            defaults={"department_code": dept_code}
+        )
         class_obj, _ = Class.objects.get_or_create(class_name=class_name)
         division_obj, _ = Division.objects.get_or_create(division_name=division_name)
 
@@ -145,12 +154,15 @@ class StudentRegisterView(APIView):
         student = Student.objects.create(
             user=user,
             roll_number=roll_number,
+            department=dept_obj,
             student_class=class_obj,
             division=division_obj,
             class_name=class_name,
             division_name=division_name,
             gpa=3.80,
-            status="active"
+            status="active",
+            face_enrolled=False,
+            face_encoding=None
         )
 
         # Seed past 30 days of attendance for newly registered student

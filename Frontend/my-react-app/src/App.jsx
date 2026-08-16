@@ -7,7 +7,6 @@ import Dashboard from "./components/Dashboard";
 import StudentDashboard from "./components/StudentDashboard";
 import Landing from "./components/Landing";
 import StudentLogin from "./components/StudentLogin";
-import StudentSignup from "./components/StudentSignup";
 import StudentForgotPassword from "./components/StudentForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import StudentResetPassword from "./components/StudentResetPassword";
@@ -32,7 +31,7 @@ function App() {
           document.body.classList.add("dark-mode");
         }
       }
-    } catch (e) {}
+    } catch (e) { }
   }, []);
 
   // Handle browser back/forward buttons + reset-password link from email
@@ -71,16 +70,16 @@ function App() {
 
   return (
     <>
-      {page === "landing"               && <Landing              setPage={navigate} />}
-      {page === "login"                 && <Login                setPage={navigate} />}
-      {page === "signup"                && <Signup               setPage={navigate} />}
-      {page === "forgot"                && <ForgotPassword       setPage={navigate} />}
-      {page === "reset-password"        && <ResetPassword        setPage={navigate} token={resetToken} />}
-      {page === "dashboard"             && <Dashboard            setPage={navigate} />}
-      {page === "student-dashboard"     && <StudentDashboard     setPage={navigate} />}
-      {page === "student-login"         && <StudentLogin         setPage={navigate} />}
-      {page === "student-signup"        && <StudentSignup        setPage={navigate} />}
-      {page === "student-forgot"        && <StudentForgotPassword setPage={navigate} />}
+      {page === "landing" && <Landing setPage={navigate} />}
+      {page === "login" && <Login setPage={navigate} />}
+      {page === "signup" && <Signup setPage={navigate} />}
+      {page === "forgot" && <ForgotPassword setPage={navigate} />}
+      {page === "reset-password" && <ResetPassword setPage={navigate} token={resetToken} />}
+      {page === "dashboard" && <Dashboard setPage={navigate} />}
+      {page === "student-dashboard" && <StudentDashboard setPage={navigate} />}
+      {page === "student-login" && <StudentLogin setPage={navigate} />}
+      {page === "student-signup" && <Signup setPage={navigate} />}
+      {page === "student-forgot" && <StudentForgotPassword setPage={navigate} />}
       {page === "student-reset-password" && <StudentResetPassword setPage={navigate} token={resetToken} />}
     </>
   );

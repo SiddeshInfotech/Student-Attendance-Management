@@ -57,12 +57,12 @@ export default function StudentDashboard({ setPage }) {
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
-      
+
       {/* Sidebar */}
       <aside className={`sd-sidebar ${isSidebarOpen ? "open" : ""}`}>
         <div className="sd-brand">
           <div className="sd-brand-icon">
-             <FaBookOpen size={18} />
+            <FaBookOpen size={18} />
           </div>
           <div className="sd-brand-text">
             <h3>ScholarTrack</h3>
@@ -102,7 +102,7 @@ export default function StudentDashboard({ setPage }) {
       {/* Main Content Area */}
       <main className="sd-main">
         {activeTab === "overview" && <StudentOverviewTab currentDate={currentDate} currentTime={currentTime} />}
-        {activeTab === "profile"  && <StudentProfileTab currentDate={currentDate} currentTime={currentTime} />}
+        {activeTab === "profile" && <StudentProfileTab currentDate={currentDate} currentTime={currentTime} />}
       </main>
 
     </div>

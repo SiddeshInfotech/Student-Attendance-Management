@@ -26,11 +26,11 @@ function HistoryTab({ store }) {
   // Period selection (default: today)
   const [period, setPeriod] = useState("today");
   const [customStart, setCustomStart] = useState(nDaysAgo(30));
-  const [customEnd,   setCustomEnd]   = useState(todayStr());
+  const [customEnd, setCustomEnd] = useState(todayStr());
 
   // Backend state
-  const [dbRecords, setDbRecords]     = useState([]);
-  const [loading, setLoading]         = useState(true);
+  const [dbRecords, setDbRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState("");
@@ -119,7 +119,7 @@ function HistoryTab({ store }) {
 
       const st = storeRef.current?.students?.find(
         (s) => (rStudentId && (String(s.id) === String(rStudentId) || String(s.student_id) === String(rStudentId))) ||
-               (rRoll !== "—" && (String(s.rollNo) === String(rRoll) || String(s.roll_number) === String(rRoll)))
+          (rRoll !== "—" && (String(s.rollNo) === String(rRoll) || String(s.roll_number) === String(rRoll)))
       );
 
       const key = `${rRoll}_${rDate}`;
@@ -162,11 +162,11 @@ function HistoryTab({ store }) {
   // ── Date range label for summary ──────────────────────────
   const { startDateLabel, endDateLabel } = useMemo(() => {
     const today = todayStr();
-    if (period === "today")    return { startDateLabel: today,       endDateLabel: today };
-    if (period === "7days")    return { startDateLabel: nDaysAgo(6),  endDateLabel: today };
-    if (period === "10days")   return { startDateLabel: nDaysAgo(9),  endDateLabel: today };
-    if (period === "30days")   return { startDateLabel: nDaysAgo(29), endDateLabel: today };
-    if (period === "custom")   return { startDateLabel: customStart,  endDateLabel: customEnd };
+    if (period === "today") return { startDateLabel: today, endDateLabel: today };
+    if (period === "7days") return { startDateLabel: nDaysAgo(6), endDateLabel: today };
+    if (period === "10days") return { startDateLabel: nDaysAgo(9), endDateLabel: today };
+    if (period === "30days") return { startDateLabel: nDaysAgo(29), endDateLabel: today };
+    if (period === "custom") return { startDateLabel: customStart, endDateLabel: customEnd };
     return { startDateLabel: today, endDateLabel: today };
   }, [period, customStart, customEnd]);
 
@@ -213,7 +213,7 @@ function HistoryTab({ store }) {
 
   // ── Pagination ────────────────────────────────────────
   const totalPages = Math.max(1, Math.ceil(filteredRecords.length / ROWS_PER_PAGE));
-  const safePage   = Math.min(page, totalPages);
+  const safePage = Math.min(page, totalPages);
   const pagedRecords = filteredRecords.slice(
     (safePage - 1) * ROWS_PER_PAGE,
     safePage * ROWS_PER_PAGE
@@ -224,7 +224,7 @@ function HistoryTab({ store }) {
   const handleStatusChange = (s) => { setStatusFilter(s); setPage(1); };
 
   const presentCount = filteredRecords.filter((r) => String(r.status).toLowerCase() === "present").length;
-  const absentCount  = filteredRecords.filter((r) => String(r.status).toLowerCase() === "absent").length;
+  const absentCount = filteredRecords.filter((r) => String(r.status).toLowerCase() === "absent").length;
 
   return (
     <>
@@ -256,8 +256,8 @@ function HistoryTab({ store }) {
           </span>
           <div className="filter-badge-row" style={{ flexWrap: "wrap" }}>
             {[
-              { key: "today",  label: "Today History" },
-              { key: "7days",  label: "Last 7 Days" },
+              { key: "today", label: "Today History" },
+              { key: "7days", label: "Last 7 Days" },
               { key: "10days", label: "Last 10 Days" },
               { key: "30days", label: "Last 30 Days" },
               { key: "custom", label: "Custom Range" },
@@ -349,7 +349,8 @@ function HistoryTab({ store }) {
               <tr>
                 <th>Roll No</th>
                 <th>Student Name</th>
-                <th>Class</th>
+                <th>Department</th>
+                <th>Year</th>
                 <th>Date</th>
                 <th>Time</th>
                 <th>Status</th>
@@ -358,7 +359,7 @@ function HistoryTab({ store }) {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="6" className="table-empty-state" style={{ padding: "40px 0" }}>
+                  <td colSpan="7" className="table-empty-state" style={{ padding: "40px 0" }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
                       <div className="loading-spinner" style={{ width: "20px", height: "20px", borderTopColor: "#3b82f6" }} />
                       <span>Fetching latest attendance records from database...</span>
@@ -380,6 +381,7 @@ function HistoryTab({ store }) {
                           <span className="student-name">{sName}</span>
                         </div>
                       </td>
+                      <td>{record.department_name || record.student?.department || "—"}</td>
                       <td>{record.class_name || record.student?.grade || "—"}</td>
                       <td>
                         <span className="arrival-time">{formatDate(record.attendance_date || record.date)}</span>
@@ -397,12 +399,12 @@ function HistoryTab({ store }) {
                 })
               ) : (
                 <tr>
-                  <td colSpan="6" className="table-empty-state">
+                  <td colSpan="7" className="table-empty-state">
                     {period === "today"
                       ? "No attendance found for today"
                       : dbRecords.length === 0
-                      ? "No attendance records found for the selected period."
-                      : "No records match your search."}
+                        ? "No attendance records found for the selected period."
+                        : "No records match your search."}
                   </td>
                 </tr>
               )}

@@ -19,10 +19,10 @@ import { todayStr, formatDate, isSameStudent } from "../../store/useAttendanceSt
 
 // ── Helpers ───────────────────────────────────────────────
 const GRADE_COLORS = {
-  "Grade 9": "#f97316",
-  "Grade 10": "#3b82f6",
-  "Grade 11": "#8b5cf6",
-  "Grade 12": "#10b981",
+  "Class 9": "#f97316",
+  "Class 10": "#3b82f6",
+  "Class 11": "#8b5cf6",
+  "Class 12": "#10b981",
 };
 
 function DashboardTab({ store, currentDate, currentTime, setActiveTab, setScrollToEnroll }) {
@@ -63,7 +63,7 @@ function DashboardTab({ store, currentDate, currentTime, setActiveTab, setScroll
       );
       const present = todayClassRecords.filter((a) => a && a.status && String(a.status).toLowerCase() === "present").length;
       const absent = todayClassRecords.filter((a) => a && a.status && String(a.status).toLowerCase() === "absent").length;
-      const classNameStr = grade && typeof grade === "string" ? grade.replace("Grade ", "Gr.") : "Unknown";
+      const classNameStr = grade && typeof grade === "string" ? grade.replace("Class ", "Gr.") : "Unknown";
       return { className: classNameStr, Present: present, Absent: absent };
     });
   };
@@ -240,7 +240,8 @@ function DashboardTab({ store, currentDate, currentTime, setActiveTab, setScroll
               <tr>
                 <th>Roll No</th>
                 <th>Student Name</th>
-                <th>Class</th>
+                <th>Department</th>
+                <th>Year</th>
                 <th>Division</th>
                 <th>Date</th>
                 <th>Status</th>
@@ -252,7 +253,7 @@ function DashboardTab({ store, currentDate, currentTime, setActiveTab, setScroll
                   const statusStr = record.status || "Present";
                   return (
                     <tr key={record.id}>
-                      <td><strong>{record.student?.rollNo}</strong></td>
+                      <td><strong>{record.student?.rollNo || record.roll_number}</strong></td>
                       <td>
                         <div className="student-profile">
                           <div className="avatar-badge">
@@ -261,8 +262,9 @@ function DashboardTab({ store, currentDate, currentTime, setActiveTab, setScroll
                           <span className="student-name">{record.student?.name}</span>
                         </div>
                       </td>
-                      <td>{record.student?.grade}</td>
-                      <td><span className="division-badge">{record.student?.division}</span></td>
+                      <td>{record.student?.department || record.department_name || "—"}</td>
+                      <td>{record.student?.grade || record.class_name || "—"}</td>
+                      <td><span className="division-badge">{record.student?.division || "A"}</span></td>
                       <td><span className="arrival-time">{formatDate(record.date)}</span></td>
                       <td>
                         <span className={`status-badge ${statusStr.toLowerCase()}`}>
@@ -274,7 +276,7 @@ function DashboardTab({ store, currentDate, currentTime, setActiveTab, setScroll
                 })
               ) : (
                 <tr>
-                  <td colSpan="6" className="table-empty-state">
+                  <td colSpan="7" className="table-empty-state">
                     No attendance records found. Mark attendance to get started.
                   </td>
                 </tr>

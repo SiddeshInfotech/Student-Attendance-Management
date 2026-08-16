@@ -123,8 +123,12 @@ function DatePicker({ value, onChange, max, min, placeholder = "Select date", cl
   const today = new Date().toISOString().split("T")[0];
 
   return (
-    <div className="dp-wrapper" ref={wrapRef}>
-      {/* Trigger input */}
+    <div
+      className={`dp-wrapper ${open ? "dp-open" : ""}`}
+      ref={wrapRef}
+      style={{ zIndex: open ? 99999 : 1, position: "relative" }}
+    >
+      {/* Trigger button */}
       <button
         type="button"
         className={`dp-trigger ${className}`}

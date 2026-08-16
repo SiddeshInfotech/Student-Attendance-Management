@@ -115,7 +115,9 @@ class AttendanceViewSet(viewsets.ModelViewSet):
                         student_obj = Student.objects.create(
                             user=user_obj,
                             roll_number=r_num,
-                            status="Active"
+                            status="Active",
+                            face_enrolled=False,
+                            face_encoding=None
                         )
                     except Exception as e:
                         print("Failed to auto-create student:", e)

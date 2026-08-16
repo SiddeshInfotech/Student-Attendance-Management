@@ -1,143 +1,550 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
+/* ==========================================================================
+   STUDENT DASHBOARD - MASTER BRANDED LAYOUT
+   Fully Responsive & Perfectly Synchronized with Admin Core Layout
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
 .sd-container {
   display: flex;
   height: 100vh;
+  height: 100dvh;
+  width: 100%;
   background-color: #F8FAFC;
   font-family: 'Roboto', sans-serif;
   color: #1E293B;
+  overflow: hidden;
 }
 
-/* Sidebar */
+
+/* ==========================================================================
+   SIDEBAR (100% MATCHED WITH ADMIN HIGH-FIDELITY INTERFACE)
+   ========================================================================== */
+
 .sd-sidebar {
-  width: clamp(17rem, 20vw, 23.5rem);
-  background: linear-gradient(180deg, #090d1f 0%, #0d122b 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  color: #ffffff;
-  flex-shrink: 0;
-  z-index: 10;
-  position: relative;
-  height: 100%;
-  transition: width 0.25s ease;
+  width: 260px !important;
+  /* Admin layout specifications match ratio */
+  min-width: 260px !important;
+  max-width: 260px !important;
+  background-color: #2563eb !important;
+  /* Branded professional blueprint blue */
+  background: #2563eb !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0 !important;
+  color: #ffffff !important;
+  flex-shrink: 0 !important;
+  z-index: 99 !important;
+  position: relative !important;
+  height: 100% !important;
+  box-shadow: 4px 0 24px rgba(15, 23, 42, 0.05) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  /* Premium responsive timing */
 }
+
+
+/* ==========================================================================
+   BRAND / LOGO
+   ========================================================================== */
 
 .sd-brand {
-  display: flex;
-  align-items: center;
-  gap: clamp(0.625rem, 1.2vw, 0.875rem);
-  padding: clamp(1.25rem, 2vw, 2rem) clamp(1rem, 1.8vw, 1.5rem);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  margin-bottom: 0;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 24px 20px !important;
+  /* Symmetrical internal layout bounds */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  margin-bottom: 0 !important;
 }
 
 .sd-brand-icon {
-  background: #2563EB;
-  color: white;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 40px !important;
+  height: 40px !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  /* Clean modern glassmorphic background */
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #ffffff !important;
+  backdrop-filter: blur(4px) !important;
+  box-shadow: none !important;
+  flex-shrink: 0 !important;
+}
+
+.sd-brand-icon svg {
+  width: 20px !important;
+  height: 20px !important;
 }
 
 .sd-brand-text h3 {
-  font-size: clamp(1rem, 1.6vw, 1.625rem);
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  letter-spacing: -0.01em !important;
+  white-space: nowrap !important;
 }
 
 .sd-brand-text span {
-  font-size: clamp(0.75rem, 1.1vw, 1.125rem);
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #10B981 !important;
+  /* Strict design status token sync */
 }
 
+
+/* ==========================================================================
+   SIDEBAR NAVIGATION (CRISP DESIGN & SLICK MICRO-INTERACTIONS)
+   ========================================================================== */
+
 .sd-nav {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(0.5rem, 0.8vw, 0.75rem);
-  padding: clamp(1rem, 1.5vw, 1.5rem) clamp(0.75rem, 1vw, 1rem);
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  padding: 20px 12px !important;
 }
 
 .sd-nav-item {
-  display: flex;
-  align-items: center;
-  gap: clamp(0.625rem, 1vw, 0.875rem);
-  padding: clamp(0.75rem, 1.2vw, 1rem) clamp(0.875rem, 1.4vw, 1.25rem);
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: clamp(0.875rem, 1.3vw, 1.375rem);
-  transition: all 0.2s ease;
-  cursor: pointer;
-  white-space: nowrap;
-  overflow: hidden;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 12px 16px !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  text-decoration: none !important;
+  border-radius: 10px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  position: relative !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  height: 44px !important;
+  /* Slightly taller for premium cursor target mappings */
+  user-select: none !important;
 }
 
+/* Fluid sidebar slide transition hover effect */
 .sd-nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  transform: translateX(6px) !important;
+  /* Premium elastic lateral tracking bahi */
 }
 
+/* Branded Active Navigation Highlight Selection */
 .sd-nav-item.active {
-  background: linear-gradient(90deg, rgba(37, 99, 235, 0.15) 0%, rgba(37, 99, 235, 0) 100%);
-  color: #60a5fa;
-  border-left: 3px solid #3b82f6;
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.1) !important;
+  transform: translateX(6px) !important;
+  border-left: none !important;
 }
+
+/* Left Accent vertical marker tag for active options */
+.sd-nav-item.active::before {
+  content: '' !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 25% !important;
+  height: 50% !important;
+  width: 4px !important;
+  background-color: #ffffff !important;
+  border-radius: 0 4px 4px 0 !important;
+}
+
+.sd-nav-item svg,
+.sd-nav-item .menu-icon {
+  font-size: 18px !important;
+  flex-shrink: 0 !important;
+  transition: transform 0.22s ease !important;
+}
+
+.sd-nav-item:hover svg,
+.sd-nav-item.active svg {
+  transform: scale(1.08) !important;
+  /* High fidelity scaling */
+}
+
+
+/* ==========================================================
+   LOGOUT (PREMIUM INSTANT HOVER SYSTEM STATUS RESPONSE)
+   ========================================================== */
 
 .sd-logout-btn {
-  display: flex;
-  align-items: center;
-  gap: clamp(0.625rem, 1vw, 0.875rem);
-  padding: clamp(0.75rem, 1.2vw, 1rem) clamp(0.875rem, 1.4vw, 1.25rem);
-  margin: clamp(1rem, 1.5vw, 1.5rem) clamp(0.75rem, 1vw, 1rem);
-  border-radius: 8px;
-  color: #F87171;
-  background: transparent;
-  border: none;
-  font-weight: 600;
-  font-size: clamp(0.875rem, 1.3vw, 1.375rem);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
+  width: calc(100% - 24px) !important;
+  height: 42px !important;
+  margin: 16px 12px !important;
+  padding: 0 14px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
 }
 
 .sd-logout-btn:hover {
-  background-color: rgba(239, 68, 68, 0.1);
+  background: #ef4444 !important;
+  /* Clean semantic alert red on active hover states */
+  color: #ffffff !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25) !important;
+  transform: translateY(-1px) !important;
 }
 
-/* Main Content */
-.sd-main {
-  flex: 1;
-  overflow-y: auto;
-  padding: 2rem;
+
+/* ==========================================================
+   MAIN DASHBOARD CONTROLLER AREA (TOPBAR + CONTENT CONTENT)
+   ========================================================== */
+
+.sd-main-area {
+  flex-grow: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100vh !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  position: relative !important;
+  background: #f8fafc !important;
 }
+
+
+/* ==========================================================
+   GLOBAL TOP BAR (STUDENT PORTAL REWAMP MATRIX)
+   ========================================================== */
+
+.sd-global-topbar {
+  height: 72px !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  padding: 0 28px !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #e8edf3 !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+}
+
+.sd-topbar-left-group {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+/* Global Search Input Box */
+.sd-global-search-wrapper {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  width: min(520px, 100%) !important;
+  flex: 1 !important;
+}
+
+.sd-global-search-icon {
+  position: absolute !important;
+  left: 16px !important;
+  font-size: 15px !important;
+  color: #8b98a9 !important;
+  pointer-events: none !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.sd-global-search-input {
+  width: 100% !important;
+  height: 44px !important;
+  padding: 0 16px 0 44px !important;
+  border: 1px solid #e1e7ef !important;
+  border-radius: 12px !important;
+  outline: none !important;
+  background: #f7f9fc !important;
+  color: #253044 !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+.sd-global-search-input::placeholder {
+  color: #9aa6b5 !important;
+}
+
+.sd-global-search-input:focus {
+  background: #ffffff !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+}
+
+/* Topbar Right Profile Trigger Section */
+.sd-global-topbar-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin-left: auto !important;
+}
+
+.sd-topbar-profile-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-height: 46px !important;
+  padding: 5px 8px !important;
+  border: none !important;
+  border-radius: 12px !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  transition: background 0.2s ease !important;
+}
+
+.sd-topbar-profile-btn:hover {
+  background: #f5f7fb !important;
+}
+
+/* TOPBAR AVATAR FIXED blue box rendering fix bahi */
+.sd-topbar-profile-avatar {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  max-width: 38px !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #dbeafe !important;
+  border: 2px solid #bfdbfe !important;
+  flex-shrink: 0 !important;
+}
+
+.sd-topbar-profile-avatar img,
+.sd-topbar-profile-photo {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  max-width: none !important;
+  display: block !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+}
+
+.sd-topbar-profile-fallback {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #2563eb !important;
+  border-radius: 50% !important;
+}
+
+.sd-topbar-profile-info {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  min-width: 90px !important;
+}
+
+.sd-topbar-profile-info strong {
+  color: #263142 !important;
+  font-size: 13px !important;
+  line-height: 18px !important;
+}
+
+.sd-topbar-profile-info span {
+  color: #8b95a5 !important;
+  font-size: 10px !important;
+}
+
+.sd-profile-chevron {
+  margin-left: 4px !important;
+  color: #8b95a5 !important;
+  font-size: 10px !important;
+  transition: transform 0.2s ease !important;
+}
+
+
+/* ==========================================================
+   DROPDOWNS MASTER FRAMEWORK
+   ========================================================== */
+
+.topbar-dropdown {
+  position: absolute !important;
+  top: calc(100% + 12px) !important;
+  right: 0 !important;
+  width: 310px !important;
+  background: #ffffff !important;
+  border: 1px solid #e6ebf2 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 15px 40px rgba(30, 45, 70, 0.15) !important;
+  overflow: hidden !important;
+  z-index: 1000 !important;
+}
+
+.profile-dropdown-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 18px !important;
+}
+
+/* DROPDOWN AVATAR FIXED layout rendering fix bahi */
+.profile-large-avatar {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  max-width: 48px !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #dbeafe !important;
+  border: 2px solid #bfdbfe !important;
+  flex-shrink: 0 !important;
+}
+
+.profile-large-avatar img {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  border-radius: 50% !important;
+}
+
+.profile-dropdown-fallback {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #2563eb !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+}
+
+.profile-dropdown-header strong {
+  display: block !important;
+  margin-bottom: 2px !important;
+  color: #263142 !important;
+  font-size: 14px !important;
+}
+
+.profile-dropdown-header span {
+  color: #8b95a5 !important;
+  font-size: 11px !important;
+}
+
+.profile-dropdown-divider {
+  height: 1px !important;
+  background: #edf0f5 !important;
+  margin: 0 !important;
+}
+
+.profile-dropdown-item {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 12px 18px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #475467 !important;
+  font-size: 13.5px !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.profile-dropdown-item svg {
+  font-size: 14px !important;
+  color: #718096 !important;
+}
+
+.profile-dropdown-item:hover {
+  background: #f6f8fc !important;
+  color: #2563eb !important;
+}
+
+.profile-dropdown-item:hover svg {
+  color: #2563eb !important;
+}
+
+.profile-dropdown-item.logout-item {
+  color: #ef4444 !important;
+}
+
+.profile-dropdown-item.logout-item svg {
+  color: #ef4444 !important;
+}
+
+.profile-dropdown-item.logout-item:hover {
+  background: #fff1f1 !important;
+}
+
+
+/* ==========================================================
+   MAIN CONTENT
+   ========================================================== */
+
+.sd-main {
+  flex: 1 !important;
+  min-width: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 24px 32px !important;
+}
+
+
+/* ==========================================================
+   CONTENT CONTROLS HEADER
+   ========================================================== */
 
 .sd-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .sd-header-title {
-  font-size: 2.5rem;
+  font-size: 23px;
   font-weight: 700;
   color: #0F172A;
+  letter-spacing: -0.02em;
+  margin: 0;
 }
 
-/* Overview Tab */
+
+/* ==========================================================
+   OVERVIEW / PROFILE COMPONENT CARD
+   ========================================================== */
+
 .sd-profile-card {
   background: white;
   border-radius: 12px;
@@ -201,6 +608,7 @@
   display: flex;
   gap: 0.5rem;
   margin-top: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .sd-tag {
@@ -212,12 +620,18 @@
   font-weight: 600;
 }
 
-/* Filter Section */
+
+/* ==========================================================
+   FILTER LAYER MANAGEMENT SECTION
+   ========================================================== */
+
 .sd-filter-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .sd-filters {
@@ -236,9 +650,13 @@
   border-radius: 6px;
   color: #64748B;
   font-weight: 500;
-  font-size: 1.125rem;
+  font-size: 13.5px;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.sd-filter-btn:hover {
+  background: #F1F5F9;
 }
 
 .sd-filter-btn.active {
@@ -249,14 +667,16 @@
 .sd-download-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.8rem 1.5rem;
+  height: 38px;
+  padding: 0 16px;
   background-color: #10B981;
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 1.25rem;
+  font-size: 13.5px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -265,33 +685,43 @@
   background-color: #059669;
 }
 
-/* Stats Row */
+
+/* ==========================================================
+   KPI ATTENDANCE STATS METRICS ROW
+   ========================================================== */
+
 .sd-stats-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  gap: 16px;
   margin-bottom: 2rem;
 }
 
 .sd-stat-card {
   background: white;
-  padding: 1.5rem;
+  padding: 16px 20px;
   border-radius: 12px;
   border: 1px solid #E2E8F0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.sd-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
 }
 
 .sd-stat-label {
   color: #64748B;
-  font-size: 1.125rem;
+  font-size: 13px;
   font-weight: 500;
   margin-bottom: 0.5rem;
 }
 
 .sd-stat-value {
-  font-size: 2.5rem;
+  font-size: 26px;
   font-weight: 700;
   color: #0F172A;
 }
@@ -304,40 +734,52 @@
   color: #EF4444;
 }
 
-/* Chart Section */
+
+/* ==========================================================
+   ANALYTICS CHART GRID CARD
+   ========================================================== */
+
 .sd-chart-card {
   background: white;
-  padding: 1.5rem;
+  padding: 20px;
   border-radius: 12px;
   border: 1px solid #E2E8F0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  min-width: 0;
 }
 
 .sd-chart-title {
+  font-size: 15.5px;
   font-weight: 600;
   color: #0F172A;
   margin-bottom: 1.5rem;
   display: block;
 }
 
-/* Data Table */
+
+/* ==========================================================
+   ATTENDANCE RECORD SHEETS DATA TABLE
+   ========================================================== */
+
 .sd-table-container {
   background: white;
   border-radius: 12px;
   border: 1px solid #E2E8F0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   margin-top: 2rem;
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .sd-table {
   width: 100%;
+  min-width: 540px;
   border-collapse: collapse;
 }
 
 .sd-table th,
 .sd-table td {
-  padding: 1rem 1.5rem;
+  padding: 12px 16px;
   text-align: left;
   border-bottom: 1px solid #F1F5F9;
 }
@@ -346,18 +788,23 @@
   background: #F8FAFC;
   font-weight: 600;
   color: #475569;
-  font-size: 1rem;
+  font-size: 12.5px;
+  white-space: nowrap;
 }
 
 .sd-table td {
   color: #1E293B;
-  font-size: 1.05rem;
+  font-size: 13.5px;
+}
+
+.sd-table tbody tr:hover {
+  background: #F8FAFC;
 }
 
 .sd-status-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 99px;
-  font-size: 0.9rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
   font-weight: 600;
   display: inline-block;
 }
@@ -372,7 +819,11 @@
   color: #991B1B;
 }
 
-/* Profile Form */
+
+/* ==========================================================
+   PROFILE SETTINGS DATA FORM
+   ========================================================== */
+
 .sd-form-card {
   background: white;
   padding: 2rem;
@@ -388,7 +839,7 @@
 
 .sd-form-label {
   display: block;
-  font-size: 1.125rem;
+  font-size: 13.5px;
   font-weight: 500;
   color: #475569;
   margin-bottom: 0.5rem;
@@ -399,7 +850,7 @@
   padding: 0.75rem 1rem;
   border: 1px solid #CBD5E1;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 13.5px;
   color: #1E293B;
   transition: border-color 0.2s;
   outline: none;
@@ -422,7 +873,7 @@
   border-radius: 8px;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
-  font-size: 1.125rem;
+  font-size: 13.5px;
   cursor: pointer;
   transition: background-color 0.2s;
   width: 100%;
@@ -439,11 +890,16 @@
   border-radius: 8px;
   margin-bottom: 1.5rem;
   font-weight: 500;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-/* Redesigned Profile Layout */
+
+/* ==========================================================
+   REDESIGNED EXTENDED PROFILE LAYOUT VIEWS
+   ========================================================== */
+
 .sd-profile-layout {
   max-width: 2000px;
   margin: 0 auto;
@@ -453,7 +909,8 @@
 .sd-main-profile-card {
   background-color: #F0F4FA;
   border-radius: 16px;
-  padding: 2rem 1rem;
+  padding: 24px 16px !important;
+  /* Compact adjustment bahi */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -463,8 +920,9 @@
 
 .sd-profile-avatar-large {
   position: relative;
-  width: 90px;
-  height: 90px;
+  width: 80px !important;
+  /* Compact dynamic sync specifications */
+  height: 80px !important;
   margin-bottom: 1rem;
 }
 
@@ -473,7 +931,8 @@
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #FFFFFF;
+  border: 3px solid #FFFFFF !important;
+  /* Forced layout sync bounds */
 }
 
 .sd-edit-avatar-btn {
@@ -493,28 +952,33 @@
 }
 
 .sd-profile-name-large {
-  font-size: 2rem;
+  font-size: 24px !important;
+  /* Compact layout overrides */
   font-weight: 700;
   color: #0F172A;
   margin-bottom: 0.25rem;
 }
 
 .sd-profile-id-large {
-  font-size: 1.25rem;
+  font-size: 13px !important;
   color: #64748B;
-  margin-bottom: 0.75rem;
+  margin-bottom: 10px !important;
 }
 
 .sd-profile-dept-pill {
   background-color: #DBEAFE;
   color: #1E3A8A;
-  padding: 0.25rem 0.75rem;
+  padding: 4px 10px !important;
   border-radius: 99px;
-  font-size: 0.9rem;
+  font-size: 12px !important;
   font-weight: 600;
 }
 
-/* Redesigned Stats Row */
+
+/* ==========================================================
+   CIRCULAR RENDERING RADIAL PROFILE KPI METRICS
+   ========================================================== */
+
 .sd-profile-stats-row {
   display: flex;
   gap: 1rem;
@@ -526,7 +990,8 @@
   background: white;
   border: 1px solid #E2E8F0;
   border-radius: 12px;
-  padding: 1.25rem;
+  padding: 16px !important;
+  /* Custom mini-pad alignment rules */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -534,22 +999,23 @@
 }
 
 .sd-profile-stat-label {
-  font-size: 1rem;
+  font-size: 13px !important;
   font-weight: 600;
   color: #475569;
   letter-spacing: 0.5px;
-  margin-bottom: 1rem;
+  margin-bottom: 10px !important;
 }
 
 .sd-profile-stat-circle {
-  width: 90px;
-  height: 90px;
+  width: 70px !important;
+  /* Compact structure mappings */
+  height: 70px !important;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 2rem;
+  font-size: 20px !important;
   margin-bottom: 0.75rem;
 }
 
@@ -564,11 +1030,15 @@
 }
 
 .sd-profile-stat-sub {
-  font-size: 0.9rem;
+  font-size: 12px !important;
   color: #64748B;
 }
 
-/* Personal Info Section */
+
+/* ==========================================================
+   PERSONAL INFO
+   ========================================================== */
+
 .sd-section-header {
   display: flex;
   justify-content: space-between;
@@ -577,14 +1047,15 @@
 }
 
 .sd-section-title {
-  font-size: 1.35rem;
+  font-size: 16px !important;
+  /* Compact design guidelines tokens */
   font-weight: 600;
   color: #0F172A;
 }
 
 .sd-link-btn {
   color: #2563EB;
-  font-size: 1.1rem;
+  font-size: 13px !important;
   font-weight: 600;
   background: none;
   border: none;
@@ -612,25 +1083,30 @@
 
 .sd-info-label {
   display: block;
-  font-size: 0.95rem;
+  font-size: 12.5px !important;
+  /* Precise dynamic labels font update bahi */
   font-weight: 600;
   color: #475569;
-  margin-bottom: 0.5rem;
+  margin-bottom: 6px !important;
 }
 
 .sd-info-field {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  padding: 10px 12px !important;
   background-color: #F8FAFC;
   border: 1px solid #E2E8F0;
   border-radius: 8px;
   color: #0F172A;
-  font-size: 1.1rem;
+  font-size: 13px !important;
 }
 
-/* Settings List */
+
+/* ==========================================================
+   SETTINGS DATA SHEET OVERLAYS
+   ========================================================== */
+
 .sd-settings-list {
   background: white;
   border: 1px solid #E2E8F0;
@@ -642,13 +1118,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem;
+  padding: 14px 16px !important;
+  /* Tight text constraints bahi */
   border-bottom: 1px solid #F1F5F9;
   cursor: pointer;
   transition: background-color 0.2s;
   color: #0F172A;
   font-weight: 500;
-  font-size: 1.1rem;
+  font-size: 13.5px !important;
 }
 
 .sd-settings-item:hover {
@@ -669,12 +1146,16 @@
   gap: 1rem;
 }
 
-/* Accordion Expanded Content */
+
+/* ==========================================================
+   ACCORDION TEASER WRAPPERS
+   ========================================================== */
+
 .sd-settings-content {
-  padding: 0 1.25rem 1.25rem 1.25rem;
+  padding: 0 16px 16px 16px !important;
   background-color: #F8FAFC;
   border-bottom: 1px solid #F1F5F9;
-  font-size: 1.05rem;
+  font-size: 13px !important;
   color: #475569;
 }
 
@@ -685,7 +1166,11 @@
   gap: 1rem;
 }
 
-/* Toggle Switch */
+
+/* ==========================================================
+   TOGGLE SWITCH & SLIDERS OVERRIDES
+   ========================================================== */
+
 .sd-toggle-row {
   display: flex;
   justify-content: space-between;
@@ -713,7 +1198,7 @@
   right: 0;
   bottom: 0;
   background-color: #CBD5E1;
-  transition: .2s;
+  transition: 0.2s;
   border-radius: 24px;
 }
 
@@ -725,7 +1210,7 @@
   left: 3px;
   bottom: 3px;
   background-color: white;
-  transition: .2s;
+  transition: 0.2s;
   border-radius: 50%;
 }
 
@@ -737,9 +1222,11 @@ input:checked+.sd-slider:before {
   transform: translateX(20px);
 }
 
+
 /* ==========================================================
-   MOBILE HEADER BAR & OVERLAY SIDEBAR DRAWER
+   MOBILE HEADER BAR & RESPONSIVE COMPONENT STATES
    ========================================================== */
+
 .sd-mobile-header-bar {
   display: none;
   width: 100%;
@@ -821,11 +1308,12 @@ input:checked+.sd-slider:before {
   z-index: 998;
 }
 
+
 /* ==========================================================
-   Responsive Media Queries for All Breakpoints
+   RESPONSIVE MEDIA QUERIES FOR ALL VIEWPORT BREAKPOINTS
    ========================================================== */
 
-/* Ultra-Wide Displays (1920px+) */
+/* ── Ultra-Wide Displays (1920px+) ──────────────────────── */
 @media screen and (min-width: 1920px) {
   .sd-main {
     max-width: 1920px;
@@ -834,47 +1322,64 @@ input:checked+.sd-slider:before {
   }
 }
 
-/* Large Laptops (1600px) */
+/* ── Large Desktop (1441px – 1600px) ────────────────────── */
 @media screen and (max-width: 1600px) {
   .sd-sidebar {
-    width: clamp(14rem, 16vw, 17.5rem);
+    width: 260px !important;
+    /* Unified static grid enforcement bahi */
   }
 }
 
-/* Standard Laptops (1440px) */
+/* ── Standard Laptop (1201px – 1440px) ──────────────────── */
 @media screen and (max-width: 1440px) {
+  .sd-sidebar {
+    width: 260px !important;
+  }
+
   .sd-stats-row {
-    gap: 1rem;
+    gap: 16px;
   }
+
   .sd-stat-value {
-    font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+    font-size: 26px;
   }
+
   .sd-main {
-    padding: 1.5rem;
+    padding: 24px 28px;
   }
 }
 
-/* Medium Laptops (1366px) */
+/* ── Medium Laptop (1024px – 1366px) ────────────────────── */
 @media screen and (max-width: 1366px) {
+  .sd-sidebar {
+    width: 260px !important;
+  }
+
   .sd-header-title {
-    font-size: clamp(1.75rem, 2.5vw, 2.5rem);
+    font-size: 23px;
+  }
+
+  .sd-main {
+    padding: 24px;
   }
 }
 
-/* Small Laptops (1200px) */
+/* ── Small Laptop (1024px – 1200px) ─────────────────────── */
 @media screen and (max-width: 1200px) {
   .sd-sidebar {
-    width: 15rem;
+    width: 260px !important;
   }
+
   .sd-stats-row {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .sd-profile-layout {
     padding: 0 0.5rem;
   }
 }
 
-/* Tablets Landscape (992px – 1023px) */
+/* ── Tablet / Mobile Drawer Layouts (≤1023px) ───────────── */
 @media screen and (max-width: 1023px) {
   .sd-container {
     flex-direction: column;
@@ -883,7 +1388,7 @@ input:checked+.sd-slider:before {
   }
 
   .sd-mobile-header-bar {
-    display: flex;
+    display: none !important;
   }
 
   .sd-sidebar-overlay {
@@ -891,21 +1396,20 @@ input:checked+.sd-slider:before {
   }
 
   .sd-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    height: 100dvh;
-    width: 280px;
-    max-width: 85vw;
-    z-index: 999;
-    transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.35);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    width: 260px !important;
+    max-width: 85vw !important;
+    z-index: 999 !important;
+    transform: translateX(-100%) !important;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.35) !important;
   }
 
   .sd-sidebar.open {
-    transform: translateX(0);
+    transform: translateX(0) !important;
   }
 
   .sd-sidebar-close-btn {
@@ -913,10 +1417,10 @@ input:checked+.sd-slider:before {
   }
 
   .sd-main {
-    height: calc(100vh - 60px);
-    height: calc(100dvh - 60px);
+    height: calc(100vh - 72px);
+    height: calc(100dvh - 72px);
     width: 100%;
-    padding: 1rem;
+    padding: 20px;
   }
 
   .sd-profile-stats-row {
@@ -928,11 +1432,48 @@ input:checked+.sd-slider:before {
   }
 }
 
-/* Tablets Portrait (768px) */
+/* ── Tablet Portrait views (≤768px Breakpoints) ──────────── */
 @media screen and (max-width: 768px) {
+  .sd-global-topbar {
+    height: 60px !important;
+    padding: 0 14px !important;
+    gap: 8px !important;
+  }
+
+  .sd-global-search-input {
+    height: 38px !important;
+    font-size: 12.5px !important;
+    padding-left: 40px !important;
+  }
+
+  .sd-global-search-icon {
+    left: 13px !important;
+    font-size: 13px !important;
+  }
+
+  .sd-topbar-profile-avatar {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    max-width: 34px !important;
+  }
+
+  .topbar-dropdown {
+    position: fixed !important;
+    top: 66px !important;
+    right: 8px !important;
+    left: 8px !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+
+  .sd-main {
+    padding: 18px;
+  }
+
   .sd-stats-row {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    gap: 16px;
   }
 
   .sd-profile-card {
@@ -953,8 +1494,12 @@ input:checked+.sd-slider:before {
   }
 }
 
-/* Large Mobile (576px) */
+/* ── Large Mobile Phone Displays (≤576px Breakpoints) ────── */
 @media screen and (max-width: 576px) {
+  .sd-main {
+    padding: 16px;
+  }
+
   .sd-stats-row {
     grid-template-columns: 1fr;
   }
@@ -964,45 +1509,211 @@ input:checked+.sd-slider:before {
   }
 
   .sd-header-title {
-    font-size: 1.5rem;
+    font-size: 20px;
   }
 
   .sd-profile-stats-row {
     flex-direction: column;
   }
 
+  .sd-profile-stat-box {
+    width: 100%;
+  }
+
   .sd-download-btn {
     width: 100%;
     justify-content: center;
   }
+
+  .sd-filter-section {
+    width: 100%;
+  }
+
+  .sd-filters {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .sd-filter-btn {
+    white-space: nowrap;
+  }
 }
 
-/* Medium Mobile (480px) */
+/* ── Medium Mobile Viewports (≤480px Breakpoints) ────────── */
 @media screen and (max-width: 480px) {
+  .sd-global-topbar {
+    height: 56px !important;
+    padding: 0 10px !important;
+    gap: 6px !important;
+  }
+
+  .sd-global-search-input {
+    height: 36px !important;
+    font-size: 12px !important;
+    padding-left: 36px !important;
+  }
+
+  .sd-global-search-icon {
+    left: 11px !important;
+    font-size: 12px !important;
+  }
+
+  .sd-topbar-profile-avatar {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    max-width: 30px !important;
+  }
+
+  .topbar-dropdown {
+    top: 62px !important;
+    right: 6px !important;
+    left: 6px !important;
+  }
+
   .sd-main {
-    padding: 0.75rem;
+    padding: 12px;
   }
 
   .sd-stat-card {
-    padding: 1rem;
+    padding: 16px;
   }
 
   .sd-form-card {
     padding: 1.25rem 1rem;
   }
+
+  .sd-profile-card {
+    padding: 1.25rem;
+  }
+
+  .sd-profile-details h2 {
+    font-size: 1.5rem;
+  }
+
+  .sd-profile-name-large {
+    font-size: 1.5rem;
+  }
+
+  .sd-profile-id-large {
+    font-size: 1rem;
+  }
+
+  .sd-table th,
+  .sd-table td {
+    padding: 10px 12px;
+  }
 }
 
-/* Small Mobile (375px & 320px) */
+/* ── Small Mobile Viewports (≤375px Breakpoints) ─────────── */
 @media screen and (max-width: 375px) {
-  .sd-mobile-header-bar {
-    padding: 0 0.75rem;
+  .sd-main {
+    padding: 10px;
   }
 
   .sd-header-title {
-    font-size: 1.25rem;
+    font-size: 18px;
   }
 
-  .sd-main {
-    padding: 0.5rem;
+  .sd-stat-card {
+    padding: 14px;
   }
+
+  .sd-stat-value {
+    font-size: 23px;
+  }
+
+  .sd-profile-card {
+    gap: 1rem;
+  }
+
+  .sd-avatar,
+  .sd-avatar-initials {
+    width: 70px;
+    height: 70px;
+  }
+
+  .sd-table {
+    min-width: 500px;
+  }
+}
+
+/* ── PROFILE TAB — COMPACT TEXT SIZING CONFIGURATIONS ────── */
+.sd-profile-name-large {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.sd-profile-id-large {
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.sd-profile-dept-pill {
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+.sd-profile-stat-label {
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.sd-profile-stat-circle {
+  width: 70px;
+  height: 70px;
+  font-size: 20px;
+}
+
+.sd-profile-stat-sub {
+  font-size: 12px;
+}
+
+.sd-section-title {
+  font-size: 16px;
+}
+
+.sd-link-btn {
+  font-size: 13px;
+}
+
+/* Personal Information Extra Compact Margins Overrides */
+.sd-info-label {
+  font-size: 12.5px !important;
+  margin-bottom: 6px !important;
+}
+
+.sd-info-field {
+  padding: 10px 12px !important;
+  font-size: 13px !important;
+}
+
+/* Settings List Extra Compact Overrides */
+.sd-settings-item {
+  padding: 14px 16px !important;
+  font-size: 13.5px !important;
+}
+
+.sd-settings-content {
+  padding: 0 16px 16px 16px !important;
+  font-size: 13px !important;
+}
+
+/* Profile Main Card Extra Compact Overrides */
+.sd-main-profile-card {
+  padding: 24px 16px !important;
+}
+
+.sd-profile-avatar-large {
+  width: 80px !important;
+  height: 80px !important;
+}
+
+.sd-profile-avatar-large img {
+  border-width: 3px !important;
+}
+
+/* Profile Stats Boxes Overrides */
+.sd-profile-stat-box {
+  padding: 16px !important;
 }

@@ -19,8 +19,9 @@ class StudentViewSet(viewsets.ModelViewSet):
         data = request.data
         name = data.get("name") or data.get("full_name") or data.get("student_name") or "New Student"
         roll_number = str(data.get("rollNo") or data.get("roll_number") or "").strip()
-        grade = data.get("grade") or data.get("class_name") or "Grade 10"
+        grade = data.get("grade") or data.get("class_name") or "1st Year"
         division = data.get("division") or data.get("division_name") or "A"
+        department = data.get("department") or data.get("department_name") or "Computer Engineering"
         phone = data.get("phone") or data.get("mobile") or ""
 
         if not roll_number:
@@ -54,17 +55,25 @@ class StudentViewSet(viewsets.ModelViewSet):
                 user_obj.mobile = phone
             user_obj.save()
 
-        # Create or find Class
+        # Create or find Class & Department
         from classes.models import Class as ClassModel
+        from departments.models import Department
         class_obj, _ = ClassModel.objects.get_or_create(class_name=grade)
+        dept_obj, _ = Department.objects.get_or_create(
+            department_name=department,
+            defaults={"department_code": department[:10].upper().replace(" ", "_")}
+        )
 
         student_obj = Student.objects.create(
             user=user_obj,
             roll_number=roll_number,
+            department=dept_obj,
             student_class=class_obj,
             class_name=grade,
             division_name=division,
-            status="active"
+            status="active",
+            face_enrolled=False,
+            face_encoding=None
         )
 
         serializer = self.get_serializer(student_obj)
@@ -123,6 +132,14 @@ class StudentViewSet(viewsets.ModelViewSet):
         division = data.get("division") or data.get("division_name")
         if division:
             instance.division_name = division
+        department = data.get("department") or data.get("department_name")
+        if department:
+            from departments.models import Department
+            dept_obj, _ = Department.objects.get_or_create(
+                department_name=department,
+                defaults={"department_code": department[:10].upper().replace(" ", "_")}
+            )
+            instance.department = dept_obj
 
         instance.save()
         serializer = self.get_serializer(instance)

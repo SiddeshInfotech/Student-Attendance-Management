@@ -20,6 +20,22 @@ export const adminLogin = async (data) => {
   return res;
 };
 
+// ── Teacher Auth ───────────────────────────────────────────
+
+export const teacherLogin = async (data) => {
+  const res = await apiClient.post("/api/auth/admin/login/", data);
+  if (res && res.token) {
+    setToken(res.token);
+    const teacherUser = {
+      ...(res.user || {}),
+      role: res.user?.role?.role_name?.toLowerCase() || "teacher"
+    };
+    setUser(teacherUser);
+  }
+  return res;
+};
+
+
 // ── Student Auth & APIs ───────────────────────────────────
 
 export const studentSignup = async (data) => {

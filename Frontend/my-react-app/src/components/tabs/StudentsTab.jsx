@@ -18,6 +18,19 @@ import {
   FaEnvelope, FaLock, FaEye, FaEyeSlash,
 } from "react-icons/fa";
 
+const DEPARTMENTS = [
+  "Computer Engineering",
+  "Electrical Engineering",
+  "Civil Engineering",
+  "Mechanical Engineering",
+];
+
+const YEARS = [
+  "1st Year",
+  "2nd Year",
+  "3rd Year",
+];
+
 function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) {
   const { students, addStudent, deleteStudent, updateStudent, searchStudents } = store;
 
@@ -37,18 +50,19 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
   }, [scrollToEnroll, onScrollHandled]);
 
   // ── Add-form state ──────────────────────────────────────
-  const [newName,        setNewName]        = useState("");
-  const [newRoll,        setNewRoll]        = useState("");
-  const [newGrade,       setNewGrade]       = useState("Grade 1");
-  const [newDivision,    setNewDivision]    = useState("A");
-  const [newPhone,       setNewPhone]       = useState("");
-  const [newEmail,       setNewEmail]       = useState("");
-  const [newPassword,    setNewPassword]    = useState("");
-  const [newConfirmPwd,  setNewConfirmPwd]  = useState("");
-  const [showNewPwd,     setShowNewPwd]     = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newRoll, setNewRoll] = useState("");
+  const [newDepartment, setNewDepartment] = useState(DEPARTMENTS[0]);
+  const [newGrade, setNewGrade] = useState(YEARS[0]);
+  const [newDivision, setNewDivision] = useState("A");
+  const [newPhone, setNewPhone] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newConfirmPwd, setNewConfirmPwd] = useState("");
+  const [showNewPwd, setShowNewPwd] = useState(false);
   const [showConfirmPwd, setShowConfirmPwd] = useState(false);
-  const [formError,      setFormError]      = useState("");
-  const [formLoading,    setFormLoading]    = useState(false);
+  const [formError, setFormError] = useState("");
+  const [formLoading, setFormLoading] = useState(false);
 
   // ── Search / filter state ───────────────────────────────
   const [searchQuery, setSearchQuery] = useState("");
@@ -58,17 +72,18 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
   // ── Edit modal state ────────────────────────────────────
-  const [editStudent,  setEditStudent]  = useState(null); // the student being edited
-  const [editName,     setEditName]     = useState("");
-  const [editRoll,     setEditRoll]     = useState("");
-  const [editGrade,    setEditGrade]    = useState("");
+  const [editStudent, setEditStudent] = useState(null); // the student being edited
+  const [editName, setEditName] = useState("");
+  const [editRoll, setEditRoll] = useState("");
+  const [editDepartment, setEditDepartment] = useState(DEPARTMENTS[0]);
+  const [editGrade, setEditGrade] = useState(YEARS[0]);
   const [editDivision, setEditDivision] = useState("");
-  const [editPhone,    setEditPhone]    = useState("");
-  const [editEmail,    setEditEmail]    = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editEmail, setEditEmail] = useState("");
   const [editPassword, setEditPassword] = useState("");
-  const [showEditPwd,  setShowEditPwd]  = useState(false);
-  const [editError,    setEditError]    = useState("");
-  const [editSaving,   setEditSaving]   = useState(false);
+  const [showEditPwd, setShowEditPwd] = useState(false);
+  const [editError, setEditError] = useState("");
+  const [editSaving, setEditSaving] = useState(false);
 
   // ── Filtered students ───────────────────────────────────
   const filteredStudents = useMemo(() => {
@@ -84,11 +99,7 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
   }, [students, searchQuery, gradeFilter, searchStudents]);
 
   const allGrades = useMemo(() => {
-    return ["All", ...new Set(students.map((s) => s.grade))].sort((a, b) => {
-      if (a === "All") return -1;
-      if (b === "All") return 1;
-      return a.localeCompare(b, undefined, { numeric: true });
-    });
+    return ["All", ...YEARS, ...new Set(students.map((s) => s.grade))].filter((item, index, self) => self.indexOf(item) === index);
   }, [students]);
 
   // ── Stats ───────────────────────────────────────────────
@@ -113,12 +124,14 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
       const err = await addStudent({
         name: newName, rollNo: newRoll,
         grade: newGrade, division: newDivision, phone: newPhone,
+        department: newDepartment,
         email: newEmail.trim(), password: newPassword.trim(),
       });
 
       if (err) { setFormError(err); return; }
 
       setNewName(""); setNewRoll(""); setNewPhone("");
+      setNewDepartment(DEPARTMENTS[0]); setNewGrade(YEARS[0]);
       setNewEmail(""); setNewPassword(""); setNewConfirmPwd("");
       triggerBanner(`Student "${savedName}" enrolled successfully!`);
     } catch (err) {
@@ -141,10 +154,11 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
     setEditStudent(student);
     setEditName(student.name);
     setEditRoll(student.rollNo);
-    setEditGrade(student.grade || "Grade 1");
+    setEditDepartment(student.department || DEPARTMENTS[0]);
+    setEditGrade(student.grade || YEARS[0]);
     setEditDivision(student.division || "A");
     setEditPhone(student.phone || "");
-    setEditEmail(student.email || "");
+    setEditEmail(student.email || student.user_details?.email || "");
     setEditPassword("");
     setShowEditPwd(false);
     setEditError("");
@@ -177,6 +191,7 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
       const updates = {
         name: editName.trim(),
         rollNo: editRoll.trim(),
+        department: editDepartment,
         grade: editGrade,
         division: editDivision,
         phone: editPhone.trim(),
@@ -306,17 +321,31 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
                 </div>
               </div>
 
-              {/* Grade & Division row */}
+              {/* Department */}
+              <div className="modal-input-group">
+                <label>Department *</label>
+                <select
+                  value={editDepartment}
+                  onChange={(e) => setEditDepartment(e.target.value)}
+                  style={{ height: "46px", fontSize: "15px" }}
+                >
+                  {DEPARTMENTS.map((dept) => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Year & Division row */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div className="modal-input-group">
-                  <label>Class / Grade *</label>
+                  <label>Year *</label>
                   <select
                     value={editGrade}
                     onChange={(e) => setEditGrade(e.target.value)}
                     style={{ height: "46px", fontSize: "15px" }}
                   >
-                    {Array.from({ length: 12 }, (_, i) => `Grade ${i + 1}`).map((g) => (
-                      <option key={g} value={g}>{g}</option>
+                    {YEARS.map((y) => (
+                      <option key={y} value={y}>{y}</option>
                     ))}
                   </select>
                 </div>
@@ -430,7 +459,7 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
           </div>
           <div className="metric-info">
             <h3 style={{ fontSize: "26px" }}>{activeClasses}</h3>
-            <p style={{ fontSize: "13px" }}>Classes</p>
+            <p style={{ fontSize: "13px" }}>Academic Years</p>
           </div>
         </div>
         <div className="metric-card bg-glass" style={{ padding: "18px 20px" }}>
@@ -449,7 +478,7 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
         <div className="table-card-header">
           <div className="table-title">
             <h3>Registered Students</h3>
-            <p>Search by name, roll number, class, or division</p>
+            <p>Search by name, roll number, department, year, or division</p>
           </div>
           <div className="table-filters">
             <div className="search-bar">
@@ -461,14 +490,14 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <div className="filter-badge-row" style={{ flexWrap: "wrap" }}>
+            <div className="filter-badge-row">
               {allGrades.map((grade) => (
                 <button
                   key={grade}
                   className={`filter-badge-btn ${gradeFilter === grade ? "active" : ""}`}
                   onClick={() => setGradeFilter(grade)}
                 >
-                  {grade === "All" ? "All" : grade.replace("Grade ", "Gr.")}
+                  {grade === "All" ? "All" : grade}
                 </button>
               ))}
             </div>
@@ -478,17 +507,21 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
         <div className="table-wrapper">
           <table className="student-table" style={{ tableLayout: "fixed", width: "100%" }}>
             <colgroup>
-              <col style={{ width: "10%" }} />
-              <col style={{ width: "30%" }} />
+              <col style={{ width: "8%" }} />
+              <col style={{ width: "20%" }} />
+              <col style={{ width: "20%" }} />
               <col style={{ width: "18%" }} />
+              <col style={{ width: "12%" }} />
+              <col style={{ width: "8%" }} />
               <col style={{ width: "14%" }} />
-              <col style={{ width: "28%" }} />
             </colgroup>
             <thead>
               <tr>
                 <th style={{ textAlign: "center" }}>Roll No</th>
                 <th>Student Name</th>
-                <th>Class</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Year</th>
                 <th style={{ textAlign: "center" }}>Division</th>
                 <th style={{ textAlign: "center" }}>Action</th>
               </tr>
@@ -501,14 +534,24 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
                     <td>
                       <div className="student-profile">
                         <div className="avatar-badge">
-                          {student.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                          {student.name ? student.name.split(" ").map((n) => n[0]).join("").slice(0, 2) : "S"}
                         </div>
                         <span className="student-name">{student.name}</span>
                       </div>
                     </td>
-                    <td>{student.grade}</td>
+                    <td>
+                      <span style={{ fontSize: "13px", color: "#64748b" }} title={student.email || student.user_details?.email || ""}>
+                        {student.email || student.user_details?.email || "—"}
+                      </span>
+                    </td>
+                    <td>
+                      <span style={{ fontSize: "13.5px", fontWeight: 500, color: "#334155" }}>
+                        {student.department || "Computer Engineering"}
+                      </span>
+                    </td>
+                    <td>{student.grade || "1st Year"}</td>
                     <td style={{ textAlign: "center" }}>
-                      <span className="division-badge">{student.division}</span>
+                      <span className="division-badge">{student.division || "A"}</span>
                     </td>
                     <td>
                       {deleteConfirmId === student.id ? (
@@ -558,7 +601,7 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="table-empty-state">
+                  <td colSpan="7" className="table-empty-state">
                     {searchQuery
                       ? `No students match "${searchQuery}".`
                       : "No students registered yet."}
@@ -577,17 +620,17 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
       </div>
 
       {/* ── Enroll New Student Form (Below Table) ───────── */}
-      <div ref={enrollFormRef} className="add-student-inline-card bg-glass" style={{ marginTop: "1.5rem", maxWidth: "600px", marginLeft: "auto", marginRight: "auto" }}>
+      <div ref={enrollFormRef} className="add-student-inline-card bg-glass" style={{ marginTop: "1.5rem", maxWidth: "800px", marginLeft: "auto", marginRight: "auto" }}>
         <div className="inline-card-header">
           <div
             className="brand-logo-icon"
-            style={{ backgroundColor: "#eff6ff", color: "#3b82f6", width: "44px", height: "44px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}
+            style={{ backgroundColor: "#eff6ff", color: "#3b82f6", width: "40px", height: "40px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}
           >
             <FaUserPlus style={{ fontSize: "18px" }} />
           </div>
           <div>
-            <h3>Enroll New Student</h3>
-            <p>Students are added once — attend daily via Attendance tab</p>
+            <h3 style={{ fontSize: "16px", fontWeight: 600, color: "#0f172a" }}>Enroll New Student</h3>
+            <p style={{ fontSize: "13px", color: "#64748b" }}>Students are added once — attend daily via Attendance tab</p>
           </div>
         </div>
 
@@ -598,18 +641,18 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
           </div>
         )}
 
-        <form onSubmit={handleAddStudent} className="inline-form-form">
+        <form onSubmit={handleAddStudent} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "14px", marginTop: "10px" }}>
           {/* 1. Student Name */}
           <div className="modal-input-group">
-            <label>Student Name *</label>
-            <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
-              <FaUser className="input-icon" style={{ fontSize: "15px", left: "14px", color: "#64748b" }} />
+            <label style={{ fontSize: "13px", fontWeight: 500, color: "#334155" }}>Student Name *</label>
+            <div className="input-field-wrapper" style={{ border: "1px solid #cbd5e1", borderRadius: "8px" }}>
+              <FaUser className="input-icon" style={{ fontSize: "14px", left: "12px", color: "#64748b" }} />
               <input
                 type="text"
                 placeholder="Enter full name"
                 value={newName}
                 onChange={(e) => { setNewName(e.target.value); setFormError(""); }}
-                style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
+                style={{ height: "40px", paddingLeft: "38px", fontSize: "13.5px" }}
                 required
               />
             </div>
@@ -617,15 +660,15 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
 
           {/* 2. Email Address */}
           <div className="modal-input-group">
-            <label>Email Address *</label>
-            <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
-              <FaEnvelope className="input-icon" style={{ fontSize: "14px", left: "14px", color: "#64748b" }} />
+            <label style={{ fontSize: "13px", fontWeight: 500, color: "#334155" }}>Email Address *</label>
+            <div className="input-field-wrapper" style={{ border: "1px solid #cbd5e1", borderRadius: "8px" }}>
+              <FaEnvelope className="input-icon" style={{ fontSize: "14px", left: "12px", color: "#64748b" }} />
               <input
                 type="email"
                 placeholder="student@example.com"
                 value={newEmail}
                 onChange={(e) => { setNewEmail(e.target.value); setFormError(""); }}
-                style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
+                style={{ height: "40px", paddingLeft: "38px", fontSize: "13.5px" }}
                 required
               />
             </div>
@@ -633,56 +676,70 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
 
           {/* 3. Phone Number */}
           <div className="modal-input-group">
-            <label>Phone Number (optional)</label>
-            <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
-              <FaPhone className="input-icon" style={{ fontSize: "14px", left: "14px", color: "#64748b" }} />
+            <label style={{ fontSize: "13px", fontWeight: 500, color: "#334155" }}>Phone Number (optional)</label>
+            <div className="input-field-wrapper" style={{ border: "1px solid #cbd5e1", borderRadius: "8px" }}>
+              <FaPhone className="input-icon" style={{ fontSize: "14px", left: "12px", color: "#64748b" }} />
               <input
                 type="tel"
                 placeholder="Parent contact"
                 value={newPhone}
                 onChange={(e) => setNewPhone(e.target.value)}
-                style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
+                style={{ height: "40px", paddingLeft: "38px", fontSize: "13.5px" }}
               />
             </div>
           </div>
 
           {/* 4. Roll Number */}
           <div className="modal-input-group">
-            <label>Roll Number *</label>
-            <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1" }}>
-              <FaIdCard className="input-icon" style={{ fontSize: "15px", left: "14px", color: "#64748b" }} />
+            <label style={{ fontSize: "13px", fontWeight: 500, color: "#334155" }}>Roll Number *</label>
+            <div className="input-field-wrapper" style={{ border: "1px solid #cbd5e1", borderRadius: "8px" }}>
+              <FaIdCard className="input-icon" style={{ fontSize: "14px", left: "12px", color: "#64748b" }} />
               <input
                 type="text"
                 placeholder="e.g. 101"
                 value={newRoll}
                 onChange={(e) => { setNewRoll(e.target.value); setFormError(""); }}
-                style={{ height: "46px", paddingLeft: "42px", fontSize: "15px" }}
+                style={{ height: "40px", paddingLeft: "38px", fontSize: "13.5px" }}
                 required
               />
             </div>
           </div>
 
-          {/* 5. Class / Grade */}
+          {/* 5. Department */}
           <div className="modal-input-group">
-            <label>Class / Grade *</label>
+            <label style={{ fontSize: "13px", fontWeight: 500, color: "#334155" }}>Department *</label>
             <select
-              value={newGrade}
-              onChange={(e) => setNewGrade(e.target.value)}
-              style={{ height: "46px", fontSize: "15px" }}
+              value={newDepartment}
+              onChange={(e) => setNewDepartment(e.target.value)}
+              style={{ height: "40px", fontSize: "13.5px", border: "1px solid #cbd5e1", borderRadius: "8px" }}
             >
-              {Array.from({ length: 12 }, (_, i) => `Grade ${i + 1}`).map((g) => (
-                <option key={g} value={g}>{g}</option>
+              {DEPARTMENTS.map((dept) => (
+                <option key={dept} value={dept}>{dept}</option>
               ))}
             </select>
           </div>
 
-          {/* 6. Division */}
+          {/* 6. Year */}
           <div className="modal-input-group">
-            <label>Division</label>
+            <label style={{ fontSize: "13px", fontWeight: 500, color: "#334155" }}>Year *</label>
+            <select
+              value={newGrade}
+              onChange={(e) => setNewGrade(e.target.value)}
+              style={{ height: "40px", fontSize: "13.5px", border: "1px solid #cbd5e1", borderRadius: "8px" }}
+            >
+              {YEARS.map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* 7. Division */}
+          <div className="modal-input-group" style={{ gridColumn: "span 1" }}>
+            <label style={{ fontSize: "13px", fontWeight: 500, color: "#334155" }}>Division</label>
             <select
               value={newDivision}
               onChange={(e) => setNewDivision(e.target.value)}
-              style={{ height: "46px", fontSize: "15px" }}
+              style={{ height: "40px", fontSize: "13.5px", border: "1px solid #cbd5e1", borderRadius: "8px" }}
             >
               {["A", "B", "C", "D"].map((d) => (
                 <option key={d} value={d}>Division {d}</option>
@@ -690,64 +747,75 @@ function StudentsTab({ store, triggerBanner, scrollToEnroll, onScrollHandled }) 
             </select>
           </div>
 
-          {/* 7. Create Password */}
+          {/* Empty spacer on wide screens if needed */}
+          <div style={{ display: "none" }} />
+
+          {/* 8. Create Password */}
           <div className="modal-input-group">
-            <label>Create Password *</label>
-            <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1", position: "relative" }}>
-              <FaLock className="input-icon" style={{ fontSize: "14px", left: "14px", color: "#64748b" }} />
+            <label style={{ fontSize: "13px", fontWeight: 500, color: "#334155" }}>Create Password *</label>
+            <div className="input-field-wrapper" style={{ border: "1px solid #cbd5e1", borderRadius: "8px", position: "relative" }}>
+              <FaLock className="input-icon" style={{ fontSize: "14px", left: "12px", color: "#64748b" }} />
               <input
                 type={showNewPwd ? "text" : "password"}
                 placeholder="Create password (min 6 chars)"
                 value={newPassword}
                 onChange={(e) => { setNewPassword(e.target.value); setFormError(""); }}
-                style={{ height: "46px", paddingLeft: "42px", paddingRight: "44px", fontSize: "15px" }}
+                style={{ height: "40px", paddingLeft: "38px", paddingRight: "40px", fontSize: "13.5px" }}
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowNewPwd(!showNewPwd)}
-                style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: "15px", display: "flex", alignItems: "center" }}
+                style={{
+                  position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)",
+                  background: "none", border: "none", cursor: "pointer", color: "#64748b", fontSize: "14px",
+                }}
               >
                 {showNewPwd ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
           </div>
 
-          {/* 8. Confirm Password */}
+          {/* 9. Confirm Password */}
           <div className="modal-input-group">
-            <label>Confirm Password *</label>
-            <div className="input-field-wrapper" style={{ border: "1.5px solid #cbd5e1", position: "relative" }}>
-              <FaLock className="input-icon" style={{ fontSize: "14px", left: "14px", color: "#64748b" }} />
+            <label style={{ fontSize: "13px", fontWeight: 500, color: "#334155" }}>Confirm Password *</label>
+            <div className="input-field-wrapper" style={{ border: "1px solid #cbd5e1", borderRadius: "8px", position: "relative" }}>
+              <FaLock className="input-icon" style={{ fontSize: "14px", left: "12px", color: "#64748b" }} />
               <input
                 type={showConfirmPwd ? "text" : "password"}
                 placeholder="Repeat password"
                 value={newConfirmPwd}
                 onChange={(e) => { setNewConfirmPwd(e.target.value); setFormError(""); }}
-                style={{ height: "46px", paddingLeft: "42px", paddingRight: "44px", fontSize: "15px" }}
+                style={{ height: "40px", paddingLeft: "38px", paddingRight: "40px", fontSize: "13.5px" }}
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPwd(!showConfirmPwd)}
-                style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: "15px", display: "flex", alignItems: "center" }}
+                style={{
+                  position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)",
+                  background: "none", border: "none", cursor: "pointer", color: "#64748b", fontSize: "14px",
+                }}
               >
                 {showConfirmPwd ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="primary-action-btn inline-submit-btn"
-            style={{ marginTop: "4px" }}
-            disabled={formLoading}
-          >
-            {formLoading
-              ? <div className="loading-spinner" style={{ width: "15px", height: "15px", borderTopColor: "#fff", borderColor: "rgba(255,255,255,0.3)" }} />
-              : <FaUserPlus />
-            }
-            <span>{formLoading ? "Registering..." : "Register Student"}</span>
-          </button>
+          <div style={{ gridColumn: "1 / -1", marginTop: "6px" }}>
+            <button
+              type="submit"
+              className="primary-action-btn"
+              disabled={formLoading}
+              style={{ width: "100%", height: "40px", justifyContent: "center", fontSize: "14px", fontWeight: 600 }}
+            >
+              {formLoading
+                ? <div className="loading-spinner" style={{ width: "15px", height: "15px", borderTopColor: "#fff", borderColor: "rgba(255,255,255,0.3)" }} />
+                : <FaUserPlus />
+              }
+              <span>{formLoading ? "Registering..." : "Register Student"}</span>
+            </button>
+          </div>
         </form>
       </div>
     </>

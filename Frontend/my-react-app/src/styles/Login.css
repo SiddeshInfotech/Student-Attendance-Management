@@ -1,857 +1,564 @@
-/* ==========================================================
-   Login / Signup / ForgotPassword — Fully Responsive Styles
-   Breakpoints:
-     Mobile:  320px – 767px
-     Tablet:  768px – 1023px
-     Laptop:  1024px – 1439px
-     Desktop: 1440px+
-   ========================================================== */
+/* ==========================================================================
+   ScholarTrack Modern Curved Login Styles (PERFECT EQUAL CENTER & BLUE THEME)
+   ========================================================================== */
 
-/* Inter font — loaded globally via index.html */
-
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+:root {
+  --brand-color: #2563eb;
+  --brand-hover: #1d4ed8;
+  --bg-surface: #f1f5f9;
+  --text-dark: #0f172a;
+  --text-gray: #64748b;
+  --input-bg: #eff6ff;
+  --border-color: #e2e8f0;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body {
-  background: #f8fafc;
-  overflow-x: hidden;
-  color: #0f172a;
+/* पूरे पेज के बेस स्ट्रक्चर को फुल स्क्रीन पर मजबूर करने के लिए */
+html,
+body,
+#root {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100vh !important;
+  background-color: var(--bg-surface) !important;
+  position: relative !important;
 }
 
-/* ── Container ──────────────────────────────────────────── */
+/* पैरेंट कंटेनर को एब्सोल्यूट पोजीशनिंग दी गई है ताकि यह चारों तरफ से बराबर हो */
 .login-container {
-  display: flex;
-  min-height: 100vh;
-  width: 100%;
-  overflow: hidden;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 95% !important;
+  max-width: 1140px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-/* ── Left Sidebar — Illustration ────────────────────────── */
+/* मुख्य लॉगिन कार्ड (सफेद बॉक्स) */
+.login-card-container {
+  display: flex;
+  width: 100%;
+  min-height: 640px;
+  background: #ffffff;
+  border-radius: 32px !important;
+  box-shadow: 0 25px 50px -12px rgba(148, 163, 184, 0.35);
+  overflow: hidden !important;
+  align-items: stretch !important;
+}
+
+/* ==========================================================================
+   LEFT PANEL - BLUE PANEL (SHARP RIGHT INNER EDGES, ROUNDED LEFT EDGES)
+   ========================================================================= */
+/* flex: 1 kiya hai taaki right panel ke barabar equal space le */
 .login-left {
   flex: 1;
-  background: linear-gradient(135deg, #020617 0%, #0a173d 50%, #032b49 100%);
+  background-color: var(--brand-color);
+  color: #ffffff;
+  padding: 48px;
   display: flex;
   flex-direction: column;
-  /* clamp: 28px on tablet → 50px on desktop */
-  padding: clamp(1.75rem, 4vw, 3.125rem) clamp(1.5rem, 3.5vw, 2.8125rem);
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
   position: relative;
-  overflow: hidden;
-  color: #ffffff;
-  gap: clamp(1.5rem, 3vw, 2.8125rem);
+  z-index: 2;
+  align-self: stretch !important;
+  height: auto !important;
+
+  border-top-left-radius: 32px;
+  border-bottom-left-radius: 32px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  margin: 0px;
 }
 
-/* Floating glow — top-right */
-.login-left::before {
-  content: "";
-  position: absolute;
-  top: -10%;
-  right: -10%;
-  width: clamp(200px, 30vw, 400px);
-  height: clamp(200px, 30vw, 400px);
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
-  filter: blur(60px);
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Floating glow — bottom-left */
-.login-left::after {
-  content: "";
-  position: absolute;
-  bottom: -10%;
-  left: -5%;
-  width: clamp(220px, 32vw, 450px);
-  height: clamp(220px, 32vw, 450px);
-  background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
-  filter: blur(70px);
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* ── Brand ───────────────────────────────────────────────── */
+/* ब्रांड सेक्शन (ScholarTrack लोगो) */
 .brand {
   display: flex;
   align-items: center;
-  gap: clamp(0.625rem, 1.2vw, 0.875rem);
-  z-index: 2;
-  animation: fadeInDown 0.8s ease-out;
+  gap: 10px;
+  align-self: flex-start;
 }
 
 .brand-logo-icon {
-  /* clamp: 44px → 64px */
-  width: clamp(2.75rem, 5vw, 4rem);
-  height: clamp(2.75rem, 5vw, 4rem);
-  background: rgba(37, 99, 235, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #3b82f6;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  flex-shrink: 0;
-}
-
-.brand-logo-icon svg {
-  width: clamp(1.25rem, 2.2vw, 2.25rem);
-  height: clamp(1.25rem, 2.2vw, 2.25rem);
-}
-
-.brand-text {
-  display: flex;
-  flex-direction: column;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 8px;
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
 }
 
 .brand-title {
-  /* clamp: 18px → 28px */
-  font-size: clamp(1.125rem, 2vw, 1.75rem);
+  font-size: 20px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  color: #ffffff;
 }
 
-.brand-subtitle {
-  /* clamp: 13px → 19px */
-  font-size: clamp(0.8125rem, 1.3vw, 1.1875rem);
-  font-weight: 600;
-  color: #10b981;
-}
-
-/* ── Intro Section ───────────────────────────────────────── */
+/* टेक्स्ट और टाइटल */
 .intro-section {
-  z-index: 2;
-  padding: 0;
-  animation: fadeInLeft 0.8s ease-out 0.2s both;
+  margin: auto 0;
 }
 
 .intro-section h1 {
-  /* clamp: 28px (tablet) → 54px (desktop) */
-  font-size: clamp(1.75rem, 4vw, 3.375rem);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -1px;
-  color: #ffffff;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
 }
 
-.intro-section h1 .highlight {
-  color: #10b981;
-  position: relative;
-  display: inline-block;
+.intro-section .highlight {
+  color: #e0f2fe;
 }
 
 .intro-text {
-  margin-top: clamp(0.75rem, 1.5vw, 1.125rem);
-  /* clamp: 14px → 20px */
-  font-size: clamp(0.875rem, 1.4vw, 1.25rem);
-  line-height: 1.7;
-  color: #cbd5e1;
-  max-width: 560px;
+  font-size: 15px;
+  line-height: 1.6;
+  opacity: 0.9;
+  max-width: 340px;
+  margin: 0 auto;
+  font-weight: 400;
 }
 
-/* ── Illustration ────────────────────────────────────────── */
+/* इलस्ट्रेशन इमेज */
 .illustration-wrapper {
-  z-index: 2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 100%;
-  flex-grow: 1;
-  animation: fadeInUp 0.8s ease-out 0.4s both;
+  max-width: 260px;
+  margin-top: 20px;
 }
 
 .illustration-img {
   width: 100%;
-  max-width: min(650px, 90%);
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
 }
 
-/* ── Right Section — Form ────────────────────────────────── */
+/* ==========================================================================
+   RIGHT PANEL - FORM SECTION
+   ========================================================================== */
+/* flex: 1 kiya hai taaki left panel ke barabar absolute 50% display ho */
 .login-right {
   flex: 1;
-  background: #f8fafc;
+  background: #ffffff;
+  padding: 56px 64px;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* clamp: 20px → 50px */
-  padding: clamp(1.25rem, 4vw, 3.125rem);
-  z-index: 2;
-  animation: fadeInRight 0.8s ease-out;
+  z-index: 1;
+  align-self: stretch !important;
+  height: auto !important;
+
+  border-top-right-radius: 32px !important;
+  border-bottom-right-radius: 32px !important;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 }
 
-/* ── Auth Card ───────────────────────────────────────────── */
 .auth-card {
   width: 100%;
-  max-width: min(740px, 100%);
-  background: #ffffff;
-  border-radius: clamp(1rem, 2vw, 1.75rem);
-  /* clamp: 24px 20px → 75px 60px */
-  padding: clamp(1.5rem, 5vw, 4.6875rem) clamp(1.25rem, 4vw, 3.75rem);
-  border: 1px solid #f1f5f9;
-  box-shadow:
-    0 20px 40px -15px rgba(0, 0, 0, 0.04),
-    0 2px 4px rgba(0, 0, 0, 0.01);
+  max-width: 440px;
 }
 
-/* ── Card Header ─────────────────────────────────────────── */
+/* कार्ड हेडर */
 .card-header {
   text-align: center;
-  margin-bottom: clamp(1.25rem, 3vw, 2.5rem);
+  margin-bottom: 32px;
 }
 
 .card-logo {
-  display: flex;
-  justify-content: center;
-  margin-bottom: clamp(0.75rem, 1.5vw, 1.5rem);
+  display: inline-flex;
+  margin-bottom: 14px;
 }
 
 .logo-badge {
-  /* clamp: 72px → 104px */
-  width: clamp(4.5rem, 8vw, 6.5rem);
-  height: clamp(4.5rem, 8vw, 6.5rem);
-  background: #f0fdf4;
-  border: 1.5px solid #d1fae5;
-  border-radius: 50%;
+  position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.06);
-}
-
-.logo-cap {
-  color: #2563eb;
-  margin-top: 8px;
-  /* clamp: 36px → 52px */
-  width: clamp(2.25rem, 4vw, 3.25rem);
-  height: clamp(2.25rem, 4vw, 3.25rem);
-}
-
-.logo-book {
-  color: #10b981;
-  margin-top: -2px;
-  /* clamp: 22px → 32px */
-  width: clamp(1.375rem, 2.5vw, 2rem);
-  height: clamp(1.375rem, 2.5vw, 2rem);
+  width: 56px;
+  height: 56px;
+  background: #eff6ff;
+  border-radius: 14px;
 }
 
 .card-header h2 {
-  /* clamp: 22px → 46px */
-  font-size: clamp(1.375rem, 3.2vw, 2.875rem);
+  font-size: 30px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-dark);
   letter-spacing: -0.5px;
+  margin-bottom: 6px;
 }
 
 .card-subtitle {
-  /* clamp: 13px → 22px */
-  font-size: clamp(0.8125rem, 1.5vw, 1.375rem);
-  color: #64748b;
-  margin-top: clamp(0.375rem, 0.8vw, 0.625rem);
+  font-size: 14px;
+  color: var(--text-gray);
 }
 
-/* ── Login Form ──────────────────────────────────────────── */
+/* इनपुट फ़ील्ड्स */
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: clamp(1rem, 2vw, 1.625rem);
+  gap: 18px;
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: clamp(0.375rem, 0.8vw, 0.625rem);
+  gap: 6px;
+  width: 100%;
 }
 
 .input-group label {
-  /* clamp: 13px → 20px */
-  font-size: clamp(0.8125rem, 1.3vw, 1.25rem);
+  font-size: 13.5px;
   font-weight: 600;
-  color: #475569;
+  color: var(--text-dark);
+  text-align: left;
 }
 
 .input-field-wrapper {
   position: relative;
   display: flex;
   align-items: center;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 12px;
-  transition: all 0.2s ease;
-  background: #ffffff;
-}
-
-.input-field-wrapper:hover {
-  border-color: #94a3b8;
-}
-
-.input-field-wrapper:focus-within {
-  border-color: #10b981;
-  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+  width: 100%;
 }
 
 .input-icon {
   position: absolute;
-  left: clamp(0.75rem, 1.5vw, 1.25rem);
-  color: #64748b;
-  /* clamp: 16px → 22px */
-  font-size: clamp(1rem, 1.5vw, 1.375rem);
-  flex-shrink: 0;
+  left: 14px;
+  color: #94a3b8;
+  font-size: 16px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
 }
 
 .input-field-wrapper input {
   width: 100%;
-  /* clamp: 48px → 72px */
-  height: clamp(3rem, 6vh, 4.5rem);
-  padding: 0 clamp(0.75rem, 1.5vw, 1rem) 0 clamp(2.5rem, 4vw, 3.625rem);
-  border: none;
+  padding: 13px 16px 13px 44px;
+  font-size: 14.5px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-dark);
   outline: none;
-  /* clamp: 14px → 20px */
-  font-size: clamp(0.875rem, 1.4vw, 1.25rem);
-  color: #0f172a;
-  background: transparent;
-  border-radius: 12px;
+  transition: var(--transition);
 }
 
-.input-field-wrapper input::placeholder {
-  color: #94a3b8;
+.input-field-wrapper input:focus {
+  border-color: var(--brand-color);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
 }
 
+/* पासवर्ड आँख वाला बटन */
 .password-toggle {
   position: absolute;
-  right: clamp(0.75rem, 1.5vw, 1.25rem);
+  right: 14px;
   background: none;
   border: none;
+  color: #94a3b8;
   cursor: pointer;
-  padding: 4px;
   display: flex;
   align-items: center;
-  color: #94a3b8;
-  transition: color 0.2s ease;
+  outline: none;
+  padding: 0;
 }
 
 .password-toggle:hover {
-  color: #64748b;
+  color: var(--brand-color);
 }
 
 .toggle-icon {
-  /* clamp: 16px → 22px */
-  font-size: clamp(1rem, 1.5vw, 1.375rem);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
 }
 
-/* ── Form Actions ────────────────────────────────────────── */
+/* ==========================================================================
+   FIXED 100% CUSTOM PURE BLUE CHECKBOX STYLES (STRICT LEFT ALIGNMENT)
+   ========================================================================== */
 .form-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 4px;
-  margin-bottom: 8px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-top: 4px !important;
+  font-size: 14px !important;
+  width: 100% !important;
 }
 
-/* ── Custom Checkbox ─────────────────────────────────────── */
 .checkbox-container {
-  display: flex;
-  align-items: center;
-  position: relative;
-  padding-left: clamp(1.5rem, 2.5vw, 2rem);
-  cursor: pointer;
-  /* clamp: 13px → 22px */
-  font-size: clamp(0.8125rem, 1.4vw, 1.375rem);
-  font-weight: 500;
-  color: #475569;
-  user-select: none;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  color: var(--text-gray) !important;
+  position: relative !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
 }
 
+/* Native input bypass */
 .checkbox-container input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
+  position: absolute !important;
+  opacity: 0 !important;
+  cursor: pointer !important;
+  height: 0 !important;
+  width: 0 !important;
 }
 
-.checkbox-checkmark {
-  position: absolute;
-  left: 0;
-  /* clamp: 16px → 22px */
-  height: clamp(1rem, 1.5vw, 1.375rem);
-  width: clamp(1rem, 1.5vw, 1.375rem);
-  background-color: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 6px;
-  transition: all 0.2s ease;
+/* Custom Element Box Layout */
+.checkbox-custom {
+  position: relative !important;
+  display: inline-block !important;
+  margin-right: 8px !important;
+  margin-left: 0px !important;
+  height: 16px !important;
+  width: 16px !important;
+  background-color: #ffffff !important;
+  border: 2px solid var(--brand-color) !important;
+  border-radius: 4px !important;
+  transition: var(--transition) !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
 }
 
-.checkbox-container:hover input ~ .checkbox-checkmark {
-  border-color: #94a3b8;
+/* Focus adjustments */
+.checkbox-container input:focus~.checkbox-custom {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
 }
 
-.checkbox-container input:checked ~ .checkbox-checkmark {
-  background-color: #10b981;
-  border-color: #10b981;
+/* Checked blue state */
+.checkbox-container input:checked~.checkbox-custom {
+  background-color: var(--brand-color) !important;
+  border-color: var(--brand-color) !important;
 }
 
-.checkbox-checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
+/* Checkmark arrow */
+.checkbox-custom::after {
+  content: '' !important;
+  position: absolute !important;
+  display: none !important;
+  left: 4px !important;
+  top: 1px !important;
+  width: 4px !important;
+  height: 8px !important;
+  border: solid #ffffff !important;
+  border-width: 0 2px 2px 0 !important;
+  transform: rotate(45deg) !important;
 }
 
-.checkbox-container input:checked ~ .checkbox-checkmark:after {
-  display: block;
+.checkbox-container input:checked~.checkbox-custom::after {
+  display: block !important;
 }
 
-.checkbox-container .checkbox-checkmark:after {
-  left: 5px;
-  top: 2px;
-  width: 5px;
-  height: 9px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
+.checkbox-label {
+  font-size: 14px !important;
+  color: var(--text-gray) !important;
+  font-weight: 500 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
 }
 
+/* Forgot password link alignment */
 .forgot-password-link {
-  /* clamp: 13px → 22px */
-  font-size: clamp(0.8125rem, 1.4vw, 1.375rem);
-  font-weight: 600;
-  color: #2563eb;
+  color: var(--brand-color);
   text-decoration: none;
-  transition: color 0.2s ease;
-  white-space: nowrap;
+  font-weight: 600;
+  transition: var(--transition);
 }
 
 .forgot-password-link:hover {
-  color: #1d4ed8;
+  color: var(--brand-hover);
   text-decoration: underline;
 }
 
-/* ── Submit Button ───────────────────────────────────────── */
+/* सबमिट लॉगिन बटन */
 .login-submit-btn {
   width: 100%;
-  /* clamp: 48px → 72px */
-  height: clamp(3rem, 6vh, 4.5rem);
-  background: #10b981;
+  padding: 14px;
+  background-color: var(--brand-color);
   color: #ffffff;
-  /* clamp: 15px → 26px */
-  font-size: clamp(0.9375rem, 1.8vw, 1.625rem);
-  font-weight: 700;
   border: none;
-  border-radius: 16px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  transition: var(--transition);
 }
 
-.login-submit-btn:hover {
-  background: #059669;
+.login-submit-btn:hover:not(:disabled) {
+  background-color: var(--brand-hover);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.25);
-}
-
-.login-submit-btn:active {
-  transform: translateY(1px);
 }
 
 .login-submit-btn:disabled {
-  background: #a7f3d0;
+  opacity: 0.65;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
 }
 
 .btn-icon {
-  /* clamp: 16px → 24px */
-  font-size: clamp(1rem, 1.6vw, 1.5rem);
+  font-size: 15px;
 }
 
+/* एरर अलर्ट बॉक्स */
+.error-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fee2e2;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  margin-bottom: 18px;
+}
+
+/* लोडिंग स्पिनर */
 .loading-spinner {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top-color: #ffffff;
   animation: spin 0.8s linear infinite;
 }
 
-/* ── Divider ─────────────────────────────────────────────── */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* सोशल डिवाइडर लाइन */
 .auth-divider {
   display: flex;
   align-items: center;
   text-align: center;
-  margin: clamp(1rem, 2.5vw, 1.75rem) 0;
+  margin: 24px 0;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 
 .auth-divider::before,
 .auth-divider::after {
-  content: "";
+  content: '';
   flex: 1;
-  border-bottom: 1.5px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .auth-divider span {
-  padding: 0 clamp(0.5rem, 1.5vw, 1.125rem);
-  font-size: clamp(0.75rem, 1vw, 1rem);
-  font-weight: 700;
-  color: #94a3b8;
-  letter-spacing: 1px;
+  padding: 0 12px;
 }
 
-/* ── Social Buttons ──────────────────────────────────────── */
+/* सोशल लॉगिन बटन्स */
 .social-auth-row {
   display: flex;
-  gap: clamp(0.5rem, 1.2vw, 0.875rem);
-  margin-bottom: clamp(1rem, 2.5vw, 1.75rem);
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
 }
 
 .social-auth-btn {
-  flex: 1;
-  min-width: 0; /* allow shrinking */
-  /* clamp: 44px → 68px */
-  height: clamp(2.75rem, 5.5vh, 4.25rem);
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 16px;
+  width: 100%;
+  padding: 12px;
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(0.375rem, 0.8vw, 0.75rem);
-  /* clamp: 12px → 20px */
-  font-size: clamp(0.75rem, 1.3vw, 1.25rem);
-  font-weight: 600;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
   color: #334155;
   cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  overflow: hidden;
+  transition: var(--transition);
 }
 
 .social-auth-btn:hover {
-  background: #f8fafc;
+  background-color: #f8fafc;
   border-color: #cbd5e1;
 }
 
-.social-auth-btn:active {
-  transform: scale(0.98);
-}
-
 .social-btn-icon {
-  font-size: clamp(1rem, 1.5vw, 1.5rem);
-  width: clamp(1rem, 1.5vw, 1.5rem);
-  height: clamp(1rem, 1.5vw, 1.5rem);
-  display: inline-block;
-  vertical-align: middle;
-  flex-shrink: 0;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
 }
 
-/* ── Signup Prompt ───────────────────────────────────────── */
+/* साइनअप प्रॉम्प्ट लिंक */
 .signup-prompt {
   text-align: center;
-  /* clamp: 13px → 22px */
-  font-size: clamp(0.8125rem, 1.4vw, 1.375rem);
-  font-weight: 500;
-  color: #64748b;
-  margin-top: clamp(0.5rem, 1.2vw, 0.9375rem);
+  font-size: 14px;
+  color: var(--text-gray);
 }
 
 .signup-prompt a {
-  color: #2563eb;
-  font-weight: 700;
+  color: var(--brand-color);
   text-decoration: none;
-  transition: color 0.2s ease;
+  font-weight: 600;
 }
 
 .signup-prompt a:hover {
-  color: #1d4ed8;
   text-decoration: underline;
 }
 
-/* ── Keyframe Animations ─────────────────────────────────── */
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeInLeft {
-  from { opacity: 0; transform: translateX(-30px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeInRight {
-  from { opacity: 0; transform: translateX(30px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20%, 60%  { transform: translateX(-4px); }
-  40%, 80%  { transform: translateX(4px); }
-}
-
-/* ── Alert Boxes ─────────────────────────────────────────── */
-.error-alert {
-  background: #fef2f2;
-  border: 1.5px solid #fee2e2;
-  color: #991b1b;
-  padding: 14px 16px;
-  border-radius: 12px;
-  font-size: 13.5px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 6px -1px rgba(153, 27, 27, 0.05);
-  animation: shake 0.4s ease-in-out;
-}
-
-.error-alert-icon {
-  flex-shrink: 0;
-  color: #ef4444;
-}
-
-.success-alert {
-  background: #f0fdf4;
-  border: 1.5px solid #d1fae5;
-  color: #065f46;
-  padding: 14px 16px;
-  border-radius: 12px;
-  font-size: 13.5px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 6px -1px rgba(6, 95, 70, 0.05);
-  animation: fadeInDown 0.3s ease-out;
-}
-
-.success-alert-icon {
-  flex-shrink: 0;
-  color: #10b981;
-}
-
-/* ==========================================================
-   RESPONSIVE BREAKPOINTS
-   ========================================================== */
-
-/* ── Ultra Wide: 1600px+ ─────────────────────────────────── */
-@media (min-width: 1600px) {
+/* रेस्पॉन्सिव लेआउट (मोबाइल और टैबलेट के लिए) */
+@media (max-width: 868px) {
   .login-container {
-    max-width: 1920px;
-    margin: 0 auto;
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    width: 100% !important;
+    position: relative !important;
+    padding: 16px !important;
   }
-}
 
-/* ── Large Laptop: 1440px ────────────────────────────────── */
-@media (max-width: 1440px) {
-  .login-left {
-    padding: clamp(2rem, 3.5vw, 3rem) clamp(2rem, 3.5vw, 3rem);
-  }
-  .auth-card {
-    max-width: min(640px, 95vw);
-  }
-}
-
-/* ── Standard Laptop: 1366px ─────────────────────────────── */
-@media (max-width: 1366px) {
-  .login-left {
-    flex: 0 0 48%;
-    max-width: 48%;
-  }
-  .login-right {
-    flex: 0 0 52%;
-    max-width: 52%;
-    padding: clamp(1.25rem, 3.5vw, 2.5rem);
-  }
-  .illustration-img {
-    max-width: min(520px, 90%);
-  }
-}
-
-/* ── Medium Laptop: 1200px ───────────────────────────────── */
-@media (max-width: 1200px) {
-  .login-left {
-    flex: 0 0 45%;
-    max-width: 45%;
-  }
-  .login-right {
-    flex: 0 0 55%;
-    max-width: 55%;
-    padding: clamp(1rem, 3vw, 2rem);
-  }
-  .auth-card {
-    padding: clamp(1.5rem, 3.5vw, 2.5rem) clamp(1.25rem, 3vw, 2rem);
-  }
-}
-
-/* ── Tablet Landscape: 992px ─────────────────────────────── */
-@media (max-width: 992px) {
-  .login-left {
-    flex: 0 0 42%;
-    max-width: 42%;
-    padding: 1.75rem 1.5rem;
-  }
-  .login-right {
-    flex: 0 0 58%;
-    max-width: 58%;
-    padding: 1.5rem 1.25rem;
-  }
-  .intro-section h1 {
-    font-size: clamp(1.5rem, 3.2vw, 2.25rem);
-  }
-  .illustration-img {
-    max-width: min(380px, 90%);
-  }
-}
-
-/* ── Tablet Portrait: 768px ──────────────────────────────── */
-@media (max-width: 768px) {
-  .login-container {
+  .login-card-container {
     flex-direction: column;
-    min-height: 100vh;
-    min-height: 100dvh;
+    max-width: 440px;
+    min-height: auto;
   }
 
   .login-left {
-    flex: 0 0 auto;
-    max-width: 100%;
     width: 100%;
-    padding: 1rem 1.25rem;
-    gap: 0;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
+    padding: 40px 24px;
+    border-top-left-radius: 32px;
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 32px;
+    border-bottom-right-radius: 0px;
   }
 
-  .intro-section,
-  .illustration-wrapper {
-    display: none;
+  .brand {
+    align-self: center;
+    margin-bottom: 16px;
   }
 
   .login-right {
-    flex: 1;
-    max-width: 100%;
     width: 100%;
-    padding: 1.25rem 1rem;
-    align-items: flex-start;
-  }
-
-  .auth-card {
-    padding: 1.5rem 1.25rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-  }
-
-  .card-header {
-    margin-bottom: 1.25rem;
-  }
-
-  .social-auth-row {
-    flex-direction: column;
-    gap: 0.625rem;
-  }
-
-  .social-auth-btn {
-    width: 100%;
-    flex: unset;
-    border-radius: 12px;
-  }
-
-  .social-auth-btn span {
-    display: inline;
-  }
-
-  .form-actions {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.625rem;
-  }
-}
-
-/* ── Large Mobile: 576px ─────────────────────────────────── */
-@media (max-width: 576px) {
-  .login-right {
-    padding: 1rem 0.75rem;
-  }
-  .auth-card {
-    padding: 1.25rem 1rem;
-  }
-  .card-header h2 {
-    font-size: clamp(1.25rem, 5vw, 1.75rem);
-  }
-  .card-subtitle {
-    font-size: clamp(0.78125rem, 3.5vw, 0.9375rem);
-  }
-}
-
-/* ── Medium Mobile: 480px ────────────────────────────────── */
-@media (max-width: 480px) {
-  .login-left {
-    padding: 0.875rem 1rem;
-  }
-  .brand-title {
-    font-size: 1.125rem;
-  }
-  .brand-subtitle {
-    font-size: 0.8125rem;
-  }
-  .input-field-wrapper input {
-    height: 2.75rem;
-    font-size: 0.9375rem;
-  }
-  .login-submit-btn {
-    height: 2.75rem;
-    font-size: 0.9375rem;
-  }
-}
-
-/* ── Standard Small Mobile: 375px & 320px ────────────────── */
-@media (max-width: 375px) {
-  .auth-card {
-    padding: 1rem 0.75rem;
-    border-radius: 0.75rem;
-  }
-  .brand-title {
-    font-size: 0.9375rem;
-  }
-  .brand-subtitle {
-    font-size: 0.75rem;
-  }
-  .checkbox-container {
-    font-size: 0.78125rem;
-  }
-  .forgot-password-link {
-    font-size: 0.78125rem;
+    padding: 40px 24px;
   }
 }

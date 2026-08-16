@@ -16,6 +16,8 @@ class Student(models.Model):
     division_name = models.CharField(max_length=20, default="A", blank=True, null=True)
     gpa = models.DecimalField(max_digits=3, decimal_places=2, default=3.80, null=True, blank=True)
     status = models.CharField(max_length=20, default="active")
+    face_encoding = models.TextField(blank=True, null=True)
+    face_enrolled = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

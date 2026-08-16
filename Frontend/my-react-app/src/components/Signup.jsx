@@ -74,14 +74,13 @@ function Signup({ setPage }) {
           </div>
           <div className="brand-text">
             <span className="brand-title">ScholarTrack</span>
-
           </div>
         </div>
 
         <div className="intro-section">
           <h1>
-            Student Attendance <br />
-            <span className="highlight">Management System</span>
+            Hello, Welcome! <br />
+            <span className="highlight">Admin Portal</span>
           </h1>
           <p className="intro-text">
             Welcome! Manage student attendance quickly, accurately, and efficiently from one centralized platform.
@@ -103,13 +102,10 @@ function Signup({ setPage }) {
           <div className="card-header">
             <div className="card-logo">
               <div className="logo-badge">
+                {/* Fixed Single Blue Logo without overlapping green book */}
                 <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="logo-cap">
                   <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
                   <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
-                </svg>
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="logo-book">
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
                 </svg>
               </div>
             </div>
@@ -137,6 +133,7 @@ function Signup({ setPage }) {
                 <span>{success}</span>
               </div>
             )}
+
             <div className="input-group">
               <label htmlFor="fullName">Full Name</label>
               <div className="input-field-wrapper">
@@ -148,6 +145,7 @@ function Signup({ setPage }) {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -163,6 +161,7 @@ function Signup({ setPage }) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -178,17 +177,15 @@ function Signup({ setPage }) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   className="password-toggle"
                   onClick={() => setShowPassword(!showPassword)}
+                  tabIndex="-1"
                 >
-                  {showPassword ? (
-                    <FaEyeSlash className="toggle-icon" />
-                  ) : (
-                    <FaEye className="toggle-icon" />
-                  )}
+                  {showPassword ? <FaEyeSlash className="toggle-icon" /> : <FaEye className="toggle-icon" />}
                 </button>
               </div>
             </div>
@@ -204,57 +201,50 @@ function Signup({ setPage }) {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   className="password-toggle"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  tabIndex="-1"
                 >
-                  {showConfirmPassword ? (
-                    <FaEyeSlash className="toggle-icon" />
-                  ) : (
-                    <FaEye className="toggle-icon" />
-                  )}
+                  {showConfirmPassword ? <FaEyeSlash className="toggle-icon" /> : <FaEye className="toggle-icon" />}
                 </button>
               </div>
             </div>
 
-            <div className="form-actions" style={{ justifyContent: "flex-start", marginTop: "8px", marginBottom: "8px" }}>
+            {/* Custom Fixed Blue Checkbox Layout */}
+            <div className="form-actions">
               <label className="checkbox-container">
                 <input
                   type="checkbox"
                   checked={agreeToTerms}
                   onChange={(e) => setAgreeToTerms(e.target.checked)}
-                  required
+                  disabled={isLoading}
                 />
-                <span className="checkbox-checkmark"></span>
-                <span className="checkbox-label" style={{ lineHeight: "1.4" }}>
-                  I agree to the{" "}
-                  <a href="#" style={{ color: "#2563eb", fontWeight: "600", textDecoration: "none" }} onClick={(e) => e.preventDefault()}>
-                    Terms of Service
-                  </a>{" "}
-                  and{" "}
-                  <a href="#" style={{ color: "#2563eb", fontWeight: "600", textDecoration: "none" }} onClick={(e) => e.preventDefault()}>
-                    Privacy Policy
-                  </a>{" "}
-                  regarding my academic data.
-                </span>
+                <span className="checkbox-custom"></span>
+                <span className="checkbox-label">I agree to Terms & Conditions</span>
               </label>
             </div>
 
             <button type="submit" className="login-submit-btn" disabled={isLoading}>
               {isLoading ? (
-                <div className="loading-spinner"></div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
+                  <div className="loading-spinner"></div>
+                  <span>Saving...</span>
+                </div>
               ) : (
                 <>
-                  <FaSignInAlt className="btn-icon" style={{ transform: "rotate(180deg)" }} />
+                  <FaSignInAlt className="btn-icon" />
                   <span>Sign Up</span>
                 </>
               )}
             </button>
           </form>
 
-          <div className="signup-prompt">
+          {/* Prompt link with proper margin and distance setup */}
+          <div className="signup-prompt" style={{ marginTop: "28px" }}>
             Already have an account?{" "}
             <a
               href="#"
@@ -263,9 +253,10 @@ function Signup({ setPage }) {
                 setPage("login");
               }}
             >
-              Login
+              Log-in
             </a>
           </div>
+
         </div>
       </div>
     </div>

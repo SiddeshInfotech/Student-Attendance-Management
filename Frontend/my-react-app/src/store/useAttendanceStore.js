@@ -148,11 +148,12 @@ export function useAttendanceStore() {
           student_id: s.student_id || s.id || s.pk,
           name: s.user_details?.full_name || s.name || s.full_name || "Unknown",
           rollNo: s.roll_number || s.rollNo || "",
+          email: s.user_details?.email || s.email || "",
           grade: s.class_name || s.student_class?.class_name || s.grade || "",
           class_id: s.student_class?.class_id || s.student_class?.id || s.class_id || null,
           division: s.division_name || s.division?.division_name || s.branch_name || s.division || "",
           phone: s.user_details?.mobile || s.phone || "",
-          department: s.department_name || s.department?.department_name || "",
+          department: s.department_name || s.department?.department_name || s.department || "",
           createdAt: s.created_at || s.createdAt || todayStr(),
         }));
 
@@ -229,10 +230,10 @@ export function useAttendanceStore() {
 
   /** Returns error string or null (async when email+password provided) */
   const addStudent = useCallback(async (studentData) => {
-    const { name, rollNo, grade, division, phone, email, password } = studentData;
+    const { name, rollNo, grade, division, phone, email, password, department } = studentData;
 
     if (!name?.trim() || !rollNo?.trim() || !grade?.trim()) {
-      return "Name, Roll Number, and Grade are required.";
+      return "Name, Roll Number, and Year are required.";
     }
 
     // Duplicate roll number check
@@ -242,6 +243,8 @@ export function useAttendanceStore() {
     if (dupRoll) {
       return `Roll Number "${rollNo}" is already registered (${dupRoll.name}).`;
     }
+
+    const deptVal = (department || "Computer Engineering").trim();
 
     // If email + password provided, use the student register API (creates login account)
     if (email && password) {
@@ -254,6 +257,8 @@ export function useAttendanceStore() {
         roll_no: rollNo.trim(),
         class_name: grade.trim(),
         division_name: (division || "A").trim(),
+        department_name: deptVal,
+        department: deptVal,
       });
       // Normalize the returned student for the local store
       const created = res?.student || res?.profile || {};
@@ -264,6 +269,7 @@ export function useAttendanceStore() {
         rollNo: created.roll_number || rollNo.trim(),
         grade: created.class_name || created.grade || grade.trim(),
         division: created.division_name || created.division || (division || "A").trim(),
+        department: created.department_name || created.department || deptVal,
         phone: created.phone_number || created.mobile || phone || "",
         email: email.trim(),
         createdAt: created.created_at || todayStr(),
@@ -279,7 +285,9 @@ export function useAttendanceStore() {
       rollNo: rollNo.trim(),
       grade: grade.trim(),
       division: (division || "A").trim(),
+      department: deptVal,
       phone: (phone || "").trim(),
+      email: (email || "").trim(),
       createdAt: todayStr(),
     };
 
@@ -293,7 +301,7 @@ export function useAttendanceStore() {
         setStudents((prev) =>
           prev.map((s) =>
             s.id === newStudent.id || s.rollNo === newStudent.rollNo
-              ? { ...s, id: realId, student_id: created.student_id || created.id, class_id: realClassId }
+              ? { ...s, id: realId, student_id: created.student_id || created.id, class_id: realClassId, department: created.department_name || deptVal }
               : s
           )
         );

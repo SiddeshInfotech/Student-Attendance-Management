@@ -24,18 +24,18 @@ import {
 import DatePicker from "../ui/DatePicker";
 
 const MONTHS_FULL = [
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December",
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
 ];
 
-// ── CSS for date inputs (large, consistent) ───────────────
+// ── CSS for date inputs (consistent 40px) ───────────────────
 const dateInputStyle = {
   width: "100%",
-  height: "52px",
-  padding: "0 16px",
+  height: "40px",
+  padding: "0 12px",
   border: "1.5px solid #cbd5e1",
-  borderRadius: "10px",
-  fontSize: "15px",
+  borderRadius: "8px",
+  fontSize: "13.5px",
   color: "#0f172a",
   outline: "none",
   fontFamily: "Inter, sans-serif",
@@ -47,11 +47,11 @@ const dateInputStyle = {
 // ── Date range helpers ────────────────────────────────────
 const getDateRange = (period, customStart, customEnd) => {
   const today = todayStr();
-  const now   = new Date();
+  const now = new Date();
 
-  if (period === "today")   return { start: today,           end: today };
-  if (period === "7days")   return { start: nDaysAgo(6),     end: today };
-  if (period === "10days")  return { start: nDaysAgo(9),     end: today };
+  if (period === "today") return { start: today, end: today };
+  if (period === "7days") return { start: nDaysAgo(6), end: today };
+  if (period === "10days") return { start: nDaysAgo(9), end: today };
   if (period === "lastMonth") {
     const y = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
     const m = now.getMonth() === 0 ? 12 : now.getMonth();
@@ -92,7 +92,7 @@ const getSundayOfWeek = (mondayStr) => {
 // ── PDF: Individual Student Report ────────────────────────
 const downloadIndividualPDF = (student, records, schoolName, academicYear) => {
   const doc = new jsPDF();
-  
+
   // Sort records chronologically ascending (oldest to newest)
   const sortedRecords = [...records].sort((a, b) => {
     const dA = a.date || a.attendance_date || "";
@@ -101,9 +101,9 @@ const downloadIndividualPDF = (student, records, schoolName, academicYear) => {
   });
 
   const present = sortedRecords.filter((r) => r.status === "Present").length;
-  const absent  = sortedRecords.filter((r) => r.status === "Absent").length;
-  const total   = sortedRecords.length;
-  const pct     = total > 0 ? ((present / total) * 100).toFixed(1) : "0.0";
+  const absent = sortedRecords.filter((r) => r.status === "Absent").length;
+  const total = sortedRecords.length;
+  const pct = total > 0 ? ((present / total) * 100).toFixed(1) : "0.0";
 
   // Banner Header
   doc.setFillColor(9, 13, 31);
@@ -132,14 +132,14 @@ const downloadIndividualPDF = (student, records, schoolName, academicYear) => {
   doc.setFillColor(239, 246, 255); doc.rect(139, 82, 56, 20, "F");
 
   doc.setFontSize(16); doc.setFont("helvetica", "bold");
-  doc.setTextColor(6, 95, 70);   doc.text(`${present}`, 32, 94);
-  doc.setTextColor(153, 27, 27); doc.text(`${absent}`,  95, 94);
-  doc.setTextColor(37, 99, 235); doc.text(`${pct}%`,   153, 94);
+  doc.setTextColor(6, 95, 70); doc.text(`${present}`, 32, 94);
+  doc.setTextColor(153, 27, 27); doc.text(`${absent}`, 95, 94);
+  doc.setTextColor(37, 99, 235); doc.text(`${pct}%`, 153, 94);
 
   doc.setFontSize(9); doc.setFont("helvetica", "normal");
   doc.setTextColor(100, 116, 139);
   doc.text("Present Days", 20, 99);
-  doc.text("Absent Days",  82, 99);
+  doc.text("Absent Days", 82, 99);
   doc.text("Attendance Rate", 144, 99);
 
   // Table Header
@@ -153,12 +153,12 @@ const downloadIndividualPDF = (student, records, schoolName, academicYear) => {
   doc.text("Status", 155, 113.5);
 
   doc.setFont("helvetica", "normal"); doc.setFontSize(9.5);
-  const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   let y = 122;
 
   sortedRecords.forEach((record, index) => {
-    if (y > 265) { 
-      doc.addPage(); 
+    if (y > 265) {
+      doc.addPage();
       // Re-draw table header on new page
       doc.setFillColor(241, 245, 249);
       doc.rect(15, 15, 180, 8, "F");
@@ -169,7 +169,7 @@ const downloadIndividualPDF = (student, records, schoolName, academicYear) => {
       doc.text("Day", 100, 20.5);
       doc.text("Status", 155, 20.5);
       doc.setFont("helvetica", "normal"); doc.setFontSize(9.5);
-      y = 29; 
+      y = 29;
     }
 
     const recDate = record.date || record.attendance_date;
@@ -183,10 +183,10 @@ const downloadIndividualPDF = (student, records, schoolName, academicYear) => {
 
     if (statusStr === "Present") {
       doc.setTextColor(16, 185, 129);
-      doc.text("● Present", 155, y);
+      doc.text("Present", 155, y);
     } else {
       doc.setTextColor(239, 68, 68);
-      doc.text("● Absent", 155, y);
+      doc.text("Absent", 155, y);
     }
 
     doc.setDrawColor(241, 245, 249);
@@ -240,11 +240,11 @@ const getRecFromMap = (map, student, date) => {
 
 // ── PDF: Weekly Report ────────────────────────────────────
 const downloadWeeklyPDF = (weekStart, weekEnd, students, attendanceRecords, schoolName, academicYear) => {
-  const doc     = new jsPDF("landscape");
-  const dates   = dateRange(weekStart, weekEnd);
-  const DAYS    = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  const wLabel  = `${formatDate(weekStart)} – ${formatDate(weekEnd)}`;
-  const attMap  = buildAttendanceMap(attendanceRecords);
+  const doc = new jsPDF("landscape");
+  const dates = dateRange(weekStart, weekEnd);
+  const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const wLabel = `${formatDate(weekStart)} – ${formatDate(weekEnd)}`;
+  const attMap = buildAttendanceMap(attendanceRecords);
 
   // Sort students by Roll Number ascending
   const sortedStudents = [...students].sort((a, b) =>
@@ -259,56 +259,62 @@ const downloadWeeklyPDF = (weekStart, weekEnd, students, attendanceRecords, scho
   doc.setFontSize(9); doc.setFont("helvetica", "normal");
   doc.text(`${schoolName} | Academic Year: ${academicYear} | Generated: ${formatDate(todayStr())}`, 15, 24);
 
-  const colX   = 15;
-  const nameW  = 55;
-  const rollW  = 18;
-  const cellW  = 24;
-  let rowY     = 42;
+  const colX = 15;
+  const rollW = 22;
+  const nameW = 55;
+  // Fixed summary column X positions (anchored from right of 297mm page)
+  const presX = 215;  // Total Present column
+  const absX = 238;  // Total Absent column
+  const rateX = 260;  // Rate % column
+  // Compute cell width to fit dates before presX
+  const datesStartX = colX + rollW + nameW + 2;
+  const availW = presX - datesStartX - 2;
+  const cellW = dates.length > 0 ? Math.min(24, availW / dates.length) : 24;
+  let rowY = 42;
 
   // Header row
   doc.setFillColor(241, 245, 249);
   doc.rect(colX, rowY - 6, 297 - 2 * colX, 10, "F");
   doc.setFontSize(8); doc.setFont("helvetica", "bold");
   doc.setTextColor(71, 85, 105);
-  doc.text("Student Name", colX + 2, rowY);
-  doc.text("Roll", colX + nameW + 2, rowY);
+  doc.text("Roll No", colX + 2, rowY);
+  doc.text("Student Name", colX + rollW + 2, rowY);
 
   dates.forEach((d, i) => {
     const dayName = DAYS[new Date(d + "T00:00:00").getDay()];
-    const dayNum  = d.split("-")[2];
-    const x       = colX + nameW + rollW + 2 + i * cellW;
+    const dayNum = d.split("-")[2];
+    const x = datesStartX + i * cellW;
     doc.text(`${dayName}`, x, rowY - 2);
     doc.text(`${dayNum}`, x + 2, rowY + 3);
   });
 
-  const endHeaderX = colX + nameW + rollW + 2 + dates.length * cellW;
-  doc.text("Present", endHeaderX + 2, rowY);
-  doc.text("Absent",  endHeaderX + 16, rowY);
-  doc.text("Rate %",   endHeaderX + 30, rowY);
+  doc.text("Total Present", presX, rowY);
+  doc.text("Total Absent", absX, rowY);
+  doc.text("Rate %", rateX, rowY);
 
   rowY += 8;
 
   sortedStudents.forEach((student, si) => {
-    if (rowY > 185) { 
-      doc.addPage(); 
-      rowY = 25; 
+    if (rowY > 185) {
+      doc.addPage();
+      rowY = 25;
       // Re-draw header on new page
       doc.setFillColor(241, 245, 249);
       doc.rect(colX, rowY - 6, 297 - 2 * colX, 10, "F");
       doc.setFontSize(8); doc.setFont("helvetica", "bold");
       doc.setTextColor(71, 85, 105);
-      doc.text("Student Name", colX + 2, rowY);
-      doc.text("Roll", colX + nameW + 2, rowY);
+      doc.text("Roll No", colX + 2, rowY);
+      doc.text("Student Name", colX + rollW + 2, rowY);
       dates.forEach((d, i) => {
         const dayName = DAYS[new Date(d + "T00:00:00").getDay()];
-        const dayNum  = d.split("-")[2];
-        const x       = colX + nameW + rollW + 2 + i * cellW;
+        const dayNum = d.split("-")[2];
+        const x = datesStartX + i * cellW;
         doc.text(`${dayName}`, x, rowY - 2);
         doc.text(`${dayNum}`, x + 2, rowY + 3);
       });
-      doc.text("Present", endHeaderX + 2, rowY);
-      doc.text("Absent",  endHeaderX + 16, rowY);
-      doc.text("Rate %",   endHeaderX + 30, rowY);
+      doc.text("Total Present", presX, rowY);
+      doc.text("Total Absent", absX, rowY);
+      doc.text("Rate %", rateX, rowY);
       rowY += 8;
     }
 
@@ -318,13 +324,13 @@ const downloadWeeklyPDF = (weekStart, weekEnd, students, attendanceRecords, scho
 
     doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
     doc.setTextColor(15, 23, 42);
-    doc.text(student.name.slice(0, 22), colX + 2, rowY);
-    doc.text(student.rollNo, colX + nameW + 2, rowY);
+    doc.text(student.rollNo, colX + 2, rowY);
+    doc.text(student.name.slice(0, 22), colX + rollW + 2, rowY);
 
     let pres = 0, abs = 0;
     dates.forEach((d, i) => {
       const rec = getRecFromMap(attMap, student, d);
-      const x   = colX + nameW + rollW + 2 + i * cellW + 3;
+      const x = datesStartX + i * cellW + 3;
       if (rec) {
         if (rec.status === "Present") {
           doc.setTextColor(16, 185, 129); pres++;
@@ -340,12 +346,12 @@ const downloadWeeklyPDF = (weekStart, weekEnd, students, attendanceRecords, scho
     });
 
     const total = pres + abs;
-    const pct   = total > 0 ? ((pres / total) * 100).toFixed(0) : "0";
-    doc.setTextColor(16, 185, 129);  doc.text(`${pres}`, endHeaderX + 4, rowY);
-    doc.setTextColor(239, 68, 68);   doc.text(`${abs}`,  endHeaderX + 18, rowY);
+    const pct = total > 0 ? ((pres / total) * 100).toFixed(0) : "0";
+    doc.setTextColor(16, 185, 129); doc.text(`${pres}`, presX + 4, rowY);
+    doc.setTextColor(239, 68, 68); doc.text(`${abs}`, absX + 4, rowY);
     doc.setTextColor(pct >= 75 ? 16 : 239, pct >= 75 ? 185 : 68, pct >= 75 ? 129 : 68);
     doc.setFont("helvetica", "bold");
-    doc.text(`${pct}%`, endHeaderX + 30, rowY);
+    doc.text(`${pct}%`, rateX + 2, rowY);
 
     rowY += 9;
   });
@@ -355,12 +361,12 @@ const downloadWeeklyPDF = (weekStart, weekEnd, students, attendanceRecords, scho
 
 // ── PDF: Monthly Report ───────────────────────────────────
 const downloadMonthlyPDF = (month, year, students, attendanceRecords, schoolName, academicYear) => {
-  const doc      = new jsPDF("landscape");
+  const doc = new jsPDF("landscape");
   const monthStr = MONTHS_FULL[month - 1];
-  const lastDay  = new Date(year, month, 0).getDate();
-  const mo       = String(month).padStart(2, "0");
-  const dates    = dateRange(`${year}-${mo}-01`, `${year}-${mo}-${lastDay}`);
-  const attMap   = buildAttendanceMap(attendanceRecords);
+  const lastDay = new Date(year, month, 0).getDate();
+  const mo = String(month).padStart(2, "0");
+  const dates = dateRange(`${year}-${mo}-01`, `${year}-${mo}-${lastDay}`);
+  const attMap = buildAttendanceMap(attendanceRecords);
 
   // Sort students by Roll Number ascending
   const sortedStudents = [...students].sort((a, b) =>
@@ -375,49 +381,55 @@ const downloadMonthlyPDF = (month, year, students, attendanceRecords, schoolName
   doc.setFontSize(9); doc.setFont("helvetica", "normal");
   doc.text(`${schoolName} | Academic Year: ${academicYear} | Generated: ${formatDate(todayStr())}`, 15, 24);
 
-  const colX  = 12;
-  const nameW = 46;
-  const rollW = 12;
-  const cellW = Math.max(5.5, (297 - colX * 2 - nameW - rollW - 32) / dates.length);
-  let rowY    = 42;
+  const colX = 12;
+  const rollW = 14;
+  const nameW = 44;
+  // Fixed summary column X positions anchored from right
+  const presX = 230;  // Total Present
+  const absX = 250;  // Total Absent
+  const pctX = 270;  // Percentage
+  // Compute cell width to fit all dates before presX
+  const datesStartX = colX + rollW + nameW + 1;
+  const availW = presX - datesStartX - 2;
+  const cellW = dates.length > 0 ? Math.max(4.5, Math.min(7, availW / dates.length)) : 5.5;
+  let rowY = 42;
 
   // Header row
   doc.setFillColor(241, 245, 249);
   doc.rect(colX, rowY - 6, 297 - 2 * colX, 8, "F");
   doc.setFontSize(7); doc.setFont("helvetica", "bold");
   doc.setTextColor(71, 85, 105);
-  doc.text("Student Name", colX + 2, rowY);
-  doc.text("Roll", colX + nameW + 1, rowY);
+  doc.text("Roll No", colX + 2, rowY);
+  doc.text("Student Name", colX + rollW + 2, rowY);
 
   dates.forEach((d, i) => {
     const dayNum = parseInt(d.split("-")[2], 10);
-    doc.text(`${dayNum}`, colX + nameW + rollW + 1 + i * cellW, rowY);
+    doc.text(`${dayNum}`, datesStartX + i * cellW, rowY);
   });
 
-  const endHeaderX = colX + nameW + rollW + dates.length * cellW;
-  doc.text("Pres", endHeaderX + 2, rowY);
-  doc.text("Abs",  endHeaderX + 12, rowY);
-  doc.text("%",    colX + 297 - colX - 10, rowY);
+  doc.text("Total Present", presX, rowY);
+  doc.text("Total Absent", absX, rowY);
+  doc.text("Percentage", pctX, rowY);
   rowY += 6;
 
   sortedStudents.forEach((student, si) => {
-    if (rowY > 185) { 
-      doc.addPage(); 
-      rowY = 22; 
+    if (rowY > 185) {
+      doc.addPage();
+      rowY = 22;
       // Re-draw header on new page
       doc.setFillColor(241, 245, 249);
       doc.rect(colX, rowY - 6, 297 - 2 * colX, 8, "F");
       doc.setFontSize(7); doc.setFont("helvetica", "bold");
       doc.setTextColor(71, 85, 105);
-      doc.text("Student Name", colX + 2, rowY);
-      doc.text("Roll", colX + nameW + 1, rowY);
+      doc.text("Roll No", colX + 2, rowY);
+      doc.text("Student Name", colX + rollW + 2, rowY);
       dates.forEach((d, i) => {
         const dayNum = parseInt(d.split("-")[2], 10);
-        doc.text(`${dayNum}`, colX + nameW + rollW + 1 + i * cellW, rowY);
+        doc.text(`${dayNum}`, datesStartX + i * cellW, rowY);
       });
-      doc.text("Pres", endHeaderX + 2, rowY);
-      doc.text("Abs",  endHeaderX + 12, rowY);
-      doc.text("%",    colX + 297 - colX - 10, rowY);
+      doc.text("Total Present", presX, rowY);
+      doc.text("Total Absent", absX, rowY);
+      doc.text("Percentage", pctX, rowY);
       rowY += 6;
     }
 
@@ -426,13 +438,13 @@ const downloadMonthlyPDF = (month, year, students, attendanceRecords, schoolName
     doc.rect(colX, rowY - 4, 297 - 2 * colX, 7.5, "F");
     doc.setFont("helvetica", "normal"); doc.setFontSize(7);
     doc.setTextColor(15, 23, 42);
-    doc.text(student.name.slice(0, 18), colX + 2, rowY);
-    doc.text(student.rollNo, colX + nameW + 1, rowY);
+    doc.text(student.rollNo, colX + 2, rowY);
+    doc.text(student.name.slice(0, 18), colX + rollW + 2, rowY);
 
     let pres = 0, abs = 0;
     dates.forEach((d, i) => {
       const rec = getRecFromMap(attMap, student, d);
-      const x = colX + nameW + rollW + 1 + i * cellW;
+      const x = datesStartX + i * cellW;
       if (rec) {
         if (rec.status === "Present") {
           doc.setTextColor(16, 185, 129); pres++;
@@ -448,12 +460,12 @@ const downloadMonthlyPDF = (month, year, students, attendanceRecords, schoolName
     });
 
     const total = pres + abs;
-    const pct   = total > 0 ? ((pres / total) * 100).toFixed(0) : "0";
-    doc.setTextColor(16, 185, 129);  doc.text(`${pres}`, endHeaderX + 2, rowY);
-    doc.setTextColor(239, 68, 68);   doc.text(`${abs}`,  endHeaderX + 12, rowY);
+    const pct = total > 0 ? ((pres / total) * 100).toFixed(0) : "0";
+    doc.setTextColor(16, 185, 129); doc.text(`${pres}`, presX + 4, rowY);
+    doc.setTextColor(239, 68, 68); doc.text(`${abs}`, absX + 4, rowY);
     doc.setTextColor(pct >= 75 ? 16 : 239, pct >= 75 ? 185 : 68, pct >= 75 ? 129 : 68);
     doc.setFont("helvetica", "bold");
-    doc.text(`${pct}%`, colX + 297 - colX - 10, rowY);
+    doc.text(`${pct}%`, pctX + 2, rowY);
 
     rowY += 7.5;
   });
@@ -468,22 +480,22 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
   const { students, attendanceRecords, getRangeSummaryPerStudent, getStudentSummary } = store;
 
   // Period selector
-  const [period, setPeriod]         = useState("currentMonth");
+  const [period, setPeriod] = useState("currentMonth");
   const [customStart, setCustomStart] = useState(nDaysAgo(30));
-  const [customEnd,   setCustomEnd]   = useState(todayStr());
+  const [customEnd, setCustomEnd] = useState(todayStr());
 
   // Individual report
-  const [studentSearch,   setStudentSearch]   = useState("");
+  const [studentSearch, setStudentSearch] = useState("");
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [showDropdown,    setShowDropdown]    = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [indivStart, setIndivStart] = useState(nDaysAgo(29));
-  const [indivEnd,   setIndivEnd]   = useState(todayStr());
-  const [downloading,    setDownloading]      = useState(false);
+  const [indivEnd, setIndivEnd] = useState(todayStr());
+  const [downloading, setDownloading] = useState(false);
   const searchRef = useRef(null);
 
   // Weekly report
-  const [weekDate,  setWeekDate]  = useState(todayStr());
-  const [dlWeekly,  setDlWeekly]  = useState(false);
+  const [weekDate, setWeekDate] = useState(todayStr());
+  const [dlWeekly, setDlWeekly] = useState(false);
 
   // Monthly report
   const now = new Date();
@@ -514,9 +526,9 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
   );
 
   const totalPresent = summaries.reduce((acc, s) => acc + s.presentDays, 0);
-  const totalAbsent  = summaries.reduce((acc, s) => acc + s.absentDays,  0);
-  const totalDays    = totalPresent + totalAbsent;
-  const overallPct   = totalDays > 0
+  const totalAbsent = summaries.reduce((acc, s) => acc + s.absentDays, 0);
+  const totalDays = totalPresent + totalAbsent;
+  const overallPct = totalDays > 0
     ? parseFloat(((totalPresent / totalDays) * 100).toFixed(1))
     : 0;
 
@@ -556,7 +568,7 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
 
   // ── Week computed from weekDate ──────────────────────
   const weekStart = getMondayOfWeek(weekDate);
-  const weekEnd   = (() => {
+  const weekEnd = (() => {
     const s = getSundayOfWeek(weekStart);
     return s > todayStr() ? todayStr() : s;
   })();
@@ -611,12 +623,12 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
           </span>
           <div className="filter-badge-row" style={{ flexWrap: "wrap" }}>
             {[
-              { key: "today",        label: "Today" },
-              { key: "7days",        label: "Last 7 Days" },
-              { key: "10days",       label: "Last 10 Days" },
-              { key: "lastMonth",    label: "Last Month" },
+              { key: "today", label: "Today" },
+              { key: "7days", label: "Last 7 Days" },
+              { key: "10days", label: "Last 10 Days" },
+              { key: "lastMonth", label: "Last Month" },
               { key: "currentMonth", label: "Current Month" },
-              { key: "custom",       label: "Custom Range" },
+              { key: "custom", label: "Custom Range" },
             ].map(({ key, label }) => (
               <button
                 key={key}
@@ -710,17 +722,19 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
           <table className="student-table" style={{ tableLayout: "fixed", width: "100%" }}>
             <colgroup>
               <col style={{ width: "8%" }} />
-              <col style={{ width: "30%" }} />
-              <col style={{ width: "17%" }} />
-              <col style={{ width: "15%" }} />
-              <col style={{ width: "15%" }} />
-              <col style={{ width: "15%" }} />
+              <col style={{ width: "22%" }} />
+              <col style={{ width: "20%" }} />
+              <col style={{ width: "12%" }} />
+              <col style={{ width: "12%" }} />
+              <col style={{ width: "12%" }} />
+              <col style={{ width: "14%" }} />
             </colgroup>
             <thead>
               <tr>
                 <th style={{ textAlign: "center" }}>Roll No</th>
                 <th>Student Name</th>
-                <th>Class</th>
+                <th>Department</th>
+                <th>Year</th>
                 <th style={{ textAlign: "center" }}>Present</th>
                 <th style={{ textAlign: "center" }}>Absent</th>
                 <th>Percentage</th>
@@ -734,12 +748,17 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
                     <td>
                       <div className="student-profile">
                         <div className="avatar-badge">
-                          {student.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                          {student.name ? student.name.split(" ").map((n) => n[0]).join("").slice(0, 2) : "S"}
                         </div>
                         <span className="student-name">{student.name}</span>
                       </div>
                     </td>
-                    <td style={{ whiteSpace: "nowrap" }}>{student.grade}</td>
+                    <td>
+                      <span style={{ fontSize: "13.5px", color: "#334155" }}>
+                        {student.department || "Computer Engineering"}
+                      </span>
+                    </td>
+                    <td style={{ whiteSpace: "nowrap" }}>{student.grade || "1st Year"}</td>
                     <td style={{ textAlign: "center" }}>
                       <span className="count-badge present">
                         {presentDays}
@@ -773,7 +792,7 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="table-empty-state">
+                  <td colSpan="7" className="table-empty-state">
                     No records found for the selected period.
                   </td>
                 </tr>
@@ -787,7 +806,7 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
       <div className="reports-download-row" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.25rem", alignItems: "stretch", marginBottom: "2rem" }}>
 
         {/* ── 1. Individual Student Report ────────────── */}
-        <div className="add-student-inline-card bg-glass" style={{ flex: "none", margin: 0 }}>
+        <div className="add-student-inline-card bg-glass" style={{ flex: "none", margin: 0, display: "flex", flexDirection: "column", height: "100%", boxSizing: "border-box" }}>
           <div className="inline-card-header">
             <div className="report-card-icon" style={{ background: "#fef2f2", color: "#ef4444" }}>
               <FaUser style={{ fontSize: "18px" }} />
@@ -798,110 +817,112 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
             </div>
           </div>
 
-          <div className="inline-form-form">
-            {/* ── Improved student search ────────────── */}
-            <div className="modal-input-group" ref={searchRef} style={{ position: "relative" }}>
-              <label className="reports-date-label">
-                <FaSearch style={{ marginRight: "10px", color: "#3b82f6" }} />
-                Search Student
-              </label>
+          <div className="inline-form-form" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              {/* ── Improved student search ────────────── */}
+              <div className="modal-input-group" ref={searchRef} style={{ position: "relative" }}>
+                <label className="reports-date-label">
+                  <FaSearch style={{ marginRight: "10px", color: "#3b82f6" }} />
+                  Search Student
+                </label>
 
-              {/* Search input */}
-              <div className="indiv-search-wrapper">
-                <FaSearch className="indiv-search-icon" />
-                <input
-                  type="text"
-                  className="indiv-search-input"
-                  placeholder="Type name, roll number or class..."
-                  value={studentSearch}
-                  autoComplete="off"
-                  onChange={(e) => {
-                    setStudentSearch(e.target.value);
-                    setSelectedStudent(null);
-                    setShowDropdown(true);
-                  }}
-                  onFocus={() => setShowDropdown(true)}
-                />
-                {studentSearch && (
-                  <button
-                    type="button"
-                    className="indiv-search-clear"
-                    onClick={clearStudent}
-                    title="Clear"
-                  >
-                    <FaTimes />
-                  </button>
+                {/* Search input */}
+                <div className="indiv-search-wrapper">
+                  <FaSearch className="indiv-search-icon" />
+                  <input
+                    type="text"
+                    className="indiv-search-input"
+                    placeholder="Type name, roll number or class..."
+                    value={studentSearch}
+                    autoComplete="off"
+                    onChange={(e) => {
+                      setStudentSearch(e.target.value);
+                      setSelectedStudent(null);
+                      setShowDropdown(true);
+                    }}
+                    onFocus={() => setShowDropdown(true)}
+                  />
+                  {studentSearch && (
+                    <button
+                      type="button"
+                      className="indiv-search-clear"
+                      onClick={clearStudent}
+                      title="Clear"
+                    >
+                      <FaTimes />
+                    </button>
+                  )}
+                </div>
+
+                {/* Dropdown */}
+                {showDropdown && matchedStudents.length > 0 && (
+                  <div className="student-dropdown">
+                    {matchedStudents.map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        className="student-dropdown-item"
+                        onMouseDown={() => handleSelectStudent(s)}
+                      >
+                        <div className="dropdown-item-inner">
+                          <div className="dropdown-avatar">
+                            {s.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                          </div>
+                          <div className="dropdown-info">
+                            <span className="dropdown-name">{s.name}</span>
+                            <span className="dropdown-meta">Roll {s.rollNo} · {s.grade} · Div {s.division}</span>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Selected pill */}
+                {selectedStudent && (
+                  <div className="selected-student-pill">
+                    <FaUserCheck style={{ color: "#10b981", marginRight: "6px" }} />
+                    {selectedStudent.name} &nbsp;·&nbsp; Roll {selectedStudent.rollNo} &nbsp;·&nbsp; {selectedStudent.grade}
+                    <button type="button" onClick={clearStudent} className="pill-clear-btn">
+                      <FaTimes />
+                    </button>
+                  </div>
                 )}
               </div>
 
-              {/* Dropdown */}
-              {showDropdown && matchedStudents.length > 0 && (
-                <div className="student-dropdown">
-                  {matchedStudents.map((s) => (
-                    <button
-                      key={s.id}
-                      type="button"
-                      className="student-dropdown-item"
-                      onMouseDown={() => handleSelectStudent(s)}
-                    >
-                      <div className="dropdown-item-inner">
-                        <div className="dropdown-avatar">
-                          {s.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
-                        </div>
-                        <div className="dropdown-info">
-                          <span className="dropdown-name">{s.name}</span>
-                          <span className="dropdown-meta">Roll {s.rollNo} · {s.grade} · Div {s.division}</span>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
+              {/* Date range */}
+              <div className="settings-form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <div className="modal-input-group">
+                  <label className="reports-date-label">
+                    <FaCalendarAlt style={{ marginRight: "5px", color: "#3b82f6" }} /> From
+                  </label>
+                  <DatePicker
+                    value={indivStart}
+                    max={indivEnd}
+                    onChange={(dateStr) => setIndivStart(dateStr)}
+                    style={dateInputStyle}
+                    placeholder="From Date"
+                  />
                 </div>
-              )}
-
-              {/* Selected pill */}
-              {selectedStudent && (
-                <div className="selected-student-pill">
-                  <FaUserCheck style={{ color: "#10b981", marginRight: "6px" }} />
-                  {selectedStudent.name} &nbsp;·&nbsp; Roll {selectedStudent.rollNo} &nbsp;·&nbsp; {selectedStudent.grade}
-                  <button type="button" onClick={clearStudent} className="pill-clear-btn">
-                    <FaTimes />
-                  </button>
+                <div className="modal-input-group">
+                  <label className="reports-date-label">
+                    <FaCalendarAlt style={{ marginRight: "5px", color: "#10b981" }} /> To
+                  </label>
+                  <DatePicker
+                    value={indivEnd}
+                    min={indivStart}
+                    max={todayStr()}
+                    onChange={(dateStr) => setIndivEnd(dateStr)}
+                    style={dateInputStyle}
+                    placeholder="To Date"
+                  />
                 </div>
-              )}
-            </div>
-
-            {/* Date range — bigger */}
-            <div className="settings-form-grid" style={{ gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-              <div className="modal-input-group">
-                <label className="reports-date-label">
-                  <FaCalendarAlt style={{ marginRight: "5px", color: "#3b82f6" }} /> From
-                </label>
-                <DatePicker
-                  value={indivStart}
-                  max={indivEnd}
-                  onChange={(dateStr) => setIndivStart(dateStr)}
-                  style={dateInputStyle}
-                  placeholder="From Date"
-                />
-              </div>
-              <div className="modal-input-group">
-                <label className="reports-date-label">
-                  <FaCalendarAlt style={{ marginRight: "5px", color: "#10b981" }} /> To
-                </label>
-                <DatePicker
-                  value={indivEnd}
-                  min={indivStart}
-                  max={todayStr()}
-                  onChange={(dateStr) => setIndivEnd(dateStr)}
-                  style={dateInputStyle}
-                  placeholder="To Date"
-                />
               </div>
             </div>
 
             <button
               className="primary-action-btn inline-submit-btn"
-              style={{ background: "#ef4444", boxShadow: "0 4px 12px rgba(239,68,68,0.15)" }}
+              style={{ background: "#ef4444", boxShadow: "0 4px 12px rgba(239,68,68,0.15)", marginTop: "14px" }}
               disabled={!selectedStudent || downloading}
               onClick={handleIndividualDownload}
             >
@@ -915,7 +936,7 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
         </div>
 
         {/* ── 2. Weekly Report ─────────────────────────── */}
-        <div className="add-student-inline-card bg-glass" style={{ flex: "none", margin: 0 }}>
+        <div className="add-student-inline-card bg-glass" style={{ flex: "none", margin: 0, display: "flex", flexDirection: "column", height: "100%", boxSizing: "border-box" }}>
           <div className="inline-card-header">
             <div className="report-card-icon" style={{ background: "#f5f3ff", color: "#7c3aed" }}>
               <FaCalendarAlt style={{ fontSize: "18px" }} />
@@ -926,31 +947,33 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
             </div>
           </div>
 
-          <div className="inline-form-form">
-            <div className="modal-input-group">
-              <label className="reports-date-label">
-                <FaCalendarAlt style={{ marginRight: "6px", color: "#7c3aed" }} />
-                Any Date in the Week
-              </label>
-              <DatePicker
-                value={weekDate}
-                max={todayStr()}
-                onChange={(dateStr) => setWeekDate(dateStr)}
-                style={dateInputStyle}
-                placeholder="Select Date"
-              />
-            </div>
+          <div className="inline-form-form" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              <div className="modal-input-group">
+                <label className="reports-date-label">
+                  <FaCalendarAlt style={{ marginRight: "6px", color: "#7c3aed" }} />
+                  Any Date in the Week
+                </label>
+                <DatePicker
+                  value={weekDate}
+                  max={todayStr()}
+                  onChange={(dateStr) => setWeekDate(dateStr)}
+                  style={dateInputStyle}
+                  placeholder="Select Date"
+                />
+              </div>
 
-            <div className="week-range-preview">
-              <span className="week-label">Selected Week:</span>
-              <span className="week-dates">
-                {formatDate(weekStart)} – {formatDate(weekEnd)}
-              </span>
+              <div className="week-range-preview">
+                <span className="week-label">Selected Week:</span>
+                <span className="week-dates">
+                  {formatDate(weekStart)} – {formatDate(weekEnd)}
+                </span>
+              </div>
             </div>
 
             <button
               className="primary-action-btn inline-submit-btn"
-              style={{ background: "#7c3aed", boxShadow: "0 4px 12px rgba(124,58,237,0.2)" }}
+              style={{ background: "#7c3aed", boxShadow: "0 4px 12px rgba(124,58,237,0.2)", marginTop: "14px" }}
               disabled={dlWeekly}
               onClick={handleWeeklyDownload}
             >
@@ -964,7 +987,7 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
         </div>
 
         {/* ── 3. Monthly Report ─────────────────────────── */}
-        <div className="add-student-inline-card bg-glass" style={{ flex: "none", margin: 0 }}>
+        <div className="add-student-inline-card bg-glass" style={{ flex: "none", margin: 0, display: "flex", flexDirection: "column", height: "100%", boxSizing: "border-box" }}>
           <div className="inline-card-header">
             <div className="report-card-icon" style={{ background: "#eff6ff", color: "#3b82f6" }}>
               <FaFilePdf style={{ fontSize: "18px" }} />
@@ -975,24 +998,26 @@ function ReportsTab({ store, schoolName, academicYear, triggerBanner }) {
             </div>
           </div>
 
-          <div className="inline-form-form">
-            <div className="modal-input-group">
-              <label className="reports-date-label">
-                <FaCalendarAlt style={{ marginRight: "6px", color: "#3b82f6" }} />
-                Select Month
-              </label>
-              <input
-                type="month"
-                value={monthYear}
-                max={`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`}
-                onChange={(e) => setMonthYear(e.target.value)}
-                style={{ ...dateInputStyle, height: "52px" }}
-              />
+          <div className="inline-form-form" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              <div className="modal-input-group">
+                <label className="reports-date-label">
+                  <FaCalendarAlt style={{ marginRight: "6px", color: "#3b82f6" }} />
+                  Select Month
+                </label>
+                <input
+                  type="month"
+                  value={monthYear}
+                  max={`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`}
+                  onChange={(e) => setMonthYear(e.target.value)}
+                  style={{ ...dateInputStyle, height: "42px" }}
+                />
+              </div>
             </div>
 
             <button
               className="primary-action-btn inline-submit-btn"
-              style={{ background: "#3b82f6", boxShadow: "0 4px 12px rgba(59,130,246,0.15)" }}
+              style={{ background: "#3b82f6", boxShadow: "0 4px 12px rgba(59,130,246,0.15)", marginTop: "14px" }}
               disabled={dlMonthly}
               onClick={handleMonthlyDownload}
             >

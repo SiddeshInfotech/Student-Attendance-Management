@@ -50,6 +50,9 @@ function AttendanceTab({ store, triggerBanner }) {
 
   // ── Helpers ─────────────────────────────────────────────
   const toggleStatus = (studentId) => {
+    if (alreadySaved && !editMode) {
+      setEditMode(true);
+    }
     setStatusMap((prev) => ({
       ...prev,
       [studentId]: prev[studentId] === "Present" ? "Absent" : "Present",
@@ -57,6 +60,9 @@ function AttendanceTab({ store, triggerBanner }) {
   };
 
   const markAll = (status) => {
+    if (alreadySaved && !editMode) {
+      setEditMode(true);
+    }
     const map = {};
     students.forEach((s) => { map[s.id] = status; });
     setStatusMap(map);
@@ -73,7 +79,7 @@ function AttendanceTab({ store, triggerBanner }) {
     }
     setSaving(true);
     try {
-      const err = await saveAttendanceForDate(selectedDate, statusMap, editMode || !alreadySaved);
+      const err = await saveAttendanceForDate(selectedDate, statusMap, true);
       setSaving(false);
       if (err) {
         triggerBanner(err, "error");
@@ -105,8 +111,6 @@ function AttendanceTab({ store, triggerBanner }) {
     });
   }, [students, searchQuery]);
 
-  const canEdit = alreadySaved && !editMode;
-
   return (
     <>
       {/* ── Header ─────────────────────────────────────────── */}
@@ -118,10 +122,10 @@ function AttendanceTab({ store, triggerBanner }) {
       </header>
 
       {/* ── Date Picker Card ──────────────────────────────── */}
-      <div className="bg-glass attendance-date-card">
-        <div className="attendance-date-row">
-          <div className="modal-input-group" style={{ flex: "1 1 200px", maxWidth: "320px" }}>
-            <label style={{ fontSize: "14px", fontWeight: 600, color: "#475569" }}>
+      <div className="bg-glass attendance-date-card" style={{ position: "relative", zIndex: 30, overflow: "visible" }}>
+        <div className="attendance-date-row" style={{ overflow: "visible" }}>
+          <div className="modal-input-group" style={{ flex: "1 1 200px", maxWidth: "300px", overflow: "visible", position: "relative" }}>
+            <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>
               <FaCalendarAlt style={{ marginRight: "6px", color: "#3b82f6" }} />
               Select Date
             </label>
@@ -130,9 +134,9 @@ function AttendanceTab({ store, triggerBanner }) {
               max={todayStr()}
               onChange={(dateStr) => setSelectedDate(dateStr)}
               style={{
-                height: "46px", padding: "0 14px",
-                border: "1.5px solid #cbd5e1", borderRadius: "10px",
-                fontSize: "15px", color: "#0f172a", outline: "none",
+                height: "40px", padding: "0 12px",
+                border: "1.5px solid #cbd5e1", borderRadius: "8px",
+                fontSize: "13.5px", color: "#0f172a", outline: "none",
                 fontFamily: "Inter, sans-serif", background: "#fff",
               }}
               placeholder="Select Date"
@@ -201,24 +205,24 @@ function AttendanceTab({ store, triggerBanner }) {
             </div>
 
             {/* Bulk actions */}
-            {!canEdit && (
-              <div className="filter-badge-row">
-                <button
-                  className="filter-badge-btn"
-                  style={{ borderColor: "#10b981", color: "#10b981" }}
-                  onClick={() => markAll("Present")}
-                >
-                  All Present
-                </button>
-                <button
-                  className="filter-badge-btn"
-                  style={{ borderColor: "#ef4444", color: "#ef4444" }}
-                  onClick={() => markAll("Absent")}
-                >
-                  All Absent
-                </button>
-              </div>
-            )}
+            <div className="filter-badge-row">
+              <button
+                type="button"
+                className="filter-badge-btn"
+                style={{ borderColor: "#10b981", color: "#10b981", fontWeight: "600", background: "#f0fdf4" }}
+                onClick={() => markAll("Present")}
+              >
+                All Present
+              </button>
+              <button
+                type="button"
+                className="filter-badge-btn"
+                style={{ borderColor: "#ef4444", color: "#ef4444", fontWeight: "600", background: "#fef2f2" }}
+                onClick={() => markAll("Absent")}
+              >
+                All Absent
+              </button>
+            </div>
           </div>
         </div>
 
@@ -228,7 +232,8 @@ function AttendanceTab({ store, triggerBanner }) {
               <tr>
                 <th>Roll No</th>
                 <th>Student Name</th>
-                <th>Class</th>
+                <th>Department</th>
+                <th>Year</th>
                 <th>Division</th>
                 <th>Status</th>
               </tr>
@@ -236,13 +241,13 @@ function AttendanceTab({ store, triggerBanner }) {
             <tbody>
               {students.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="table-empty-state">
+                  <td colSpan="6" className="table-empty-state">
                     No students registered. Go to Students tab to add students.
                   </td>
                 </tr>
               ) : visibleStudents.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="table-empty-state">
+                  <td colSpan="6" className="table-empty-state">
                     No students match "{searchQuery}".
                   </td>
                 </tr>
@@ -257,19 +262,20 @@ function AttendanceTab({ store, triggerBanner }) {
                       <td>
                         <div className="student-profile">
                           <div className="avatar-badge">
-                            {student.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                            {student.name ? student.name.split(" ").map((n) => n[0]).join("").slice(0, 2) : "S"}
                           </div>
                           <span className="student-name">{student.name}</span>
                         </div>
                       </td>
-                      <td>{student.grade}</td>
-                      <td><span className="division-badge">{student.division}</span></td>
+                      <td>{student.department || "Computer Engineering"}</td>
+                      <td>{student.grade || "1st Year"}</td>
+                      <td><span className="division-badge">{student.division || "A"}</span></td>
                       <td>
                         <button
+                          type="button"
                           className={`att-toggle-btn ${isPresent ? "att-toggle-present" : "att-toggle-absent"}`}
-                          onClick={() => !canEdit && toggleStatus(student.id)}
-                          disabled={canEdit}
-                          title={canEdit ? "Click Edit Attendance to modify" : "Click to toggle"}
+                          onClick={() => toggleStatus(student.id)}
+                          title="Click to toggle Present ↔ Absent"
                         >
                           {isPresent ? (
                             <><FaUserCheck /> Present</>
@@ -287,7 +293,7 @@ function AttendanceTab({ store, triggerBanner }) {
         </div>
 
         {/* Save Button */}
-        {students.length > 0 && !canEdit && (
+        {students.length > 0 && (
           <div className="att-save-footer">
             <div style={{ fontSize: "14px", color: "#64748b" }}>
               {presentCount} present · {absentCount} absent out of {totalCount} students

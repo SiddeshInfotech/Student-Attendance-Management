@@ -35,30 +35,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 28px;
+  margin-bottom: 22px;
   flex-wrap: wrap;
   gap: 16px;
 }
 
 .settings-title-section h2 {
-  /* exact match to other tab main headers (.content-header h2) */
-  font-size: clamp(1.375rem, 3vw, 2.875rem);
-  font-weight: 800;
+  font-size: 23px;
+  font-weight: 700;
   color: #0f172a;
   margin: 0;
-  letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  letter-spacing: -0.02em;
 }
 
 .settings-breadcrumb {
-  /* matches sub-labels: clamp(0.75rem, 1.1vw, 1.125rem) */
-  font-size: clamp(0.75rem, 1.1vw, 1.125rem);
-  color: #94a3b8;
+  font-size: 13px;
+  color: #64748b;
   margin-top: 4px;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .settings-header-actions {
@@ -69,16 +63,17 @@
 
 /* ── Header Buttons ──────────────────────────────────────── */
 .btn-reset {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: clamp(0.5rem, 0.8vw, 0.75rem) clamp(0.875rem, 1.4vw, 1.375rem);
+  height: 38px;
+  padding: 0 16px;
   background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
   color: #64748b;
-  font-size: clamp(0.8125rem, 1.2vw, 1.125rem);
-  font-weight: 600;
+  font-size: 13.5px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -88,30 +83,30 @@
   background: #f1f5f9;
   color: #0f172a;
   border-color: #cbd5e1;
-  transform: translateY(-1px);
 }
 
 .btn-save-all {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: clamp(0.5rem, 0.8vw, 0.75rem) clamp(0.875rem, 1.4vw, 1.375rem);
+  height: 38px;
+  padding: 0 16px;
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   color: #ffffff;
-  font-size: clamp(0.8125rem, 1.2vw, 1.125rem);
-  font-weight: 700;
+  font-size: 13.5px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
   white-space: nowrap;
 }
 
 .btn-save-all:hover {
   background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
 /* ── Main Layout ─────────────────────────────────────────── */
@@ -205,7 +200,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   width: 100%;
-  align-items: start;
+  align-items: stretch;
 }
 
 .settings-single-layout {
@@ -217,13 +212,16 @@
 /* ── Settings Card ───────────────────────────────────────── */
 .settings-card {
   background: #ffffff;
-  border: 1.5px solid #e8edf5;
-  border-radius: 18px;
-  box-shadow: 0 2px 16px rgba(15, 23, 42, 0.05);
-  padding: clamp(1rem, 1.6vw, 1.5rem) clamp(1rem, 1.8vw, 1.5rem);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.03);
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: clamp(1rem, 1.5vw, 1.375rem);
+  justify-content: flex-start;
+  gap: 16px;
+  height: 100%;
+  box-sizing: border-box;
   transition: box-shadow 0.25s ease, transform 0.25s ease;
   animation: fadeSlideUp 0.4s ease both;
   overflow: hidden;
@@ -240,11 +238,11 @@
   background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
   opacity: 0;
   transition: opacity 0.3s ease;
-  border-radius: 18px 18px 0 0;
+  border-radius: 12px 12px 0 0;
 }
 
 .settings-card:hover {
-  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.1);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
   transform: translateY(-2px);
 }
 
@@ -262,8 +260,8 @@
 .settings-card-header {
   display: flex;
   align-items: flex-start;
-  gap: clamp(0.75rem, 1.2vw, 1rem);
-  padding-bottom: clamp(0.75rem, 1.2vw, 1rem);
+  gap: 12px;
+  padding-bottom: 12px;
   border-bottom: 1px solid #f1f5f9;
 }
 
@@ -271,33 +269,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(2.25rem, 3vw, 2.75rem);
-  height: clamp(2.25rem, 3vw, 2.75rem);
-  border-radius: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   flex-shrink: 0;
-  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  background: #eff6ff;
   color: #2563eb;
 }
 
 .settings-card-icon-wrapper svg {
-  width: clamp(1rem, 1.4vw, 1.375rem);
-  height: clamp(1rem, 1.4vw, 1.375rem);
+  width: 18px;
+  height: 18px;
 }
 
 .settings-card-header h3 {
-  /* matches card-title: clamp(1rem, 1.7vw, 1.625rem) */
-  font-size: clamp(1rem, 1.7vw, 1.625rem);
-  font-weight: 700;
+  font-size: 15.5px;
+  font-weight: 600;
   color: #0f172a;
   margin: 0;
-  letter-spacing: -0.2px;
   line-height: 1.2;
 }
 
 .settings-card-header p {
-  /* matches sub-description: clamp(0.75rem, 1.1vw, 1.125rem) */
-  font-size: clamp(0.75rem, 1.1vw, 1.125rem);
-  color: #94a3b8;
+  font-size: 12.5px;
+  color: #64748b;
   margin: 3px 0 0 0;
   line-height: 1.4;
 }
@@ -305,32 +300,30 @@
 /* ── Form Elements ───────────────────────────────────────── */
 .settings-form-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: clamp(0.75rem, 1.2vw, 1.125rem);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
 }
 
 .settings-input-group {
   display: flex;
   flex-direction: column;
-  gap: clamp(0.375rem, 0.6vw, 0.5rem);
+  gap: 6px;
 }
 
 .settings-input-group label {
-  /* matches table header / form-label: clamp(0.8125rem, 1.3vw, 1.3125rem) */
-  font-size: clamp(0.8125rem, 1.3vw, 1.3125rem);
-  font-weight: 700;
-  color: #475569;
-  letter-spacing: 0.2px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
 }
 
 .settings-input,
 .settings-select {
-  padding: clamp(0.5rem, 0.8vw, 0.75rem) clamp(0.75rem, 1.1vw, 1rem);
-  border: 1.5px solid #e2e8f0;
-  border-radius: 10px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
   outline: none;
-  /* matches form input text: clamp(0.875rem, 1.3vw, 1.375rem) */
-  font-size: clamp(0.875rem, 1.3vw, 1.375rem);
+  font-size: 13.5px;
   color: #1e293b;
   background: #f8fafc;
   transition: all 0.2s ease;
@@ -362,7 +355,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: clamp(0.5rem, 0.8vw, 0.875rem) clamp(0.75rem, 1.1vw, 1rem);
+  padding: 8px 12px;
   border-radius: 10px;
   background: #f8fafc;
   border: 1px solid transparent;
@@ -381,15 +374,13 @@
 }
 
 .settings-toggle-title {
-  /* matches data-label / row text: clamp(0.875rem, 1.3vw, 1.375rem) */
-  font-size: clamp(0.875rem, 1.3vw, 1.375rem);
-  font-weight: 650;
+  font-size: 13.5px;
+  font-weight: 600;
   color: #1e293b;
 }
 
 .settings-toggle-desc {
-  /* matches sub-desc: clamp(0.75rem, 1.1vw, 1.125rem) */
-  font-size: clamp(0.75rem, 1.1vw, 1.125rem);
+  font-size: 12px;
   color: #94a3b8;
 }
 
@@ -450,13 +441,13 @@ input:checked + .slider:before {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: clamp(0.5rem, 0.8vw, 0.75rem) clamp(0.625rem, 1vw, 1rem);
+  padding: 8px 12px;
+  height: 36px;
   border: 1.5px solid #e2e8f0;
   border-radius: 10px;
   background: #f8fafc;
   color: #64748b;
-  /* matches button text: clamp(0.8125rem, 1.3vw, 1.3125rem) */
-  font-size: clamp(0.8125rem, 1.3vw, 1.3125rem);
+  font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -483,8 +474,8 @@ input:checked + .slider:before {
 }
 
 .color-circle {
-  width: clamp(1.75rem, 2.5vw, 2.25rem);
-  height: clamp(1.75rem, 2.5vw, 2.25rem);
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   border: 2.5px solid transparent;
   cursor: pointer;
@@ -550,12 +541,13 @@ input:checked + .slider:before {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: clamp(0.5rem, 0.8vw, 0.75rem) clamp(0.625rem, 1vw, 1rem);
+  padding: 0 14px;
+  height: 36px;
   background: #ffffff;
   border: 1.5px solid #e2e8f0;
   border-radius: 9px;
   color: #475569;
-  font-size: clamp(0.8125rem, 1.2vw, 1.125rem);
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -568,17 +560,17 @@ input:checked + .slider:before {
 }
 
 .upload-hint {
-  font-size: clamp(0.6875rem, 1vw, 0.9375rem);
+  font-size: 11.5px;
   color: #94a3b8;
 }
 
 /* ── Backup Badge ────────────────────────────────────────── */
 .backup-status-badge {
-  padding: 4px 12px;
+  padding: 3px 10px;
   background: #16a34a;
   color: #ffffff;
   border-radius: 20px;
-  font-size: clamp(0.6875rem, 1vw, 0.9375rem);
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.3px;
   box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
@@ -590,12 +582,13 @@ input:checked + .slider:before {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: clamp(0.5rem, 0.8vw, 0.75rem) clamp(0.75rem, 1.2vw, 1.125rem);
+  height: 36px;
+  padding: 0 14px;
   background: #ffffff;
   border: 1.5px solid #e2e8f0;
   border-radius: 10px;
   color: #475569;
-  font-size: clamp(0.8125rem, 1.3vw, 1.3125rem);
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -614,13 +607,14 @@ input:checked + .slider:before {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: clamp(0.5rem, 0.8vw, 0.75rem) clamp(0.75rem, 1.2vw, 1.125rem);
+  height: 36px;
+  padding: 0 14px;
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   border: none;
   border-radius: 10px;
   color: #ffffff;
-  font-size: clamp(0.8125rem, 1.3vw, 1.3125rem);
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.25s ease;
   width: 100%;
@@ -652,9 +646,8 @@ input:checked + .slider:before {
 }
 
 .matrix-table th {
-  padding: clamp(0.625rem, 1vw, 1rem) clamp(0.75rem, 1.2vw, 1.125rem);
-  /* matches table-header: clamp(0.8125rem, 1.3vw, 1.3125rem) */
-  font-size: clamp(0.8125rem, 1.3vw, 1.3125rem);
+  padding: 9px 12px;
+  font-size: 12px;
   font-weight: 700;
   color: #64748b;
   border-bottom: 1.5px solid #e2e8f0;
@@ -664,9 +657,8 @@ input:checked + .slider:before {
 }
 
 .matrix-table td {
-  padding: clamp(0.625rem, 1vw, 1rem) clamp(0.75rem, 1.2vw, 1.125rem);
-  /* matches table-cell: clamp(0.875rem, 1.3vw, 1.375rem) */
-  font-size: clamp(0.875rem, 1.3vw, 1.375rem);
+  padding: 9px 12px;
+  font-size: 13px;
   color: #1e293b;
   border-bottom: 1px solid #f1f5f9;
   font-weight: 500;
@@ -701,11 +693,11 @@ input:checked + .slider:before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: clamp(0.5rem, 0.8vw, 0.75rem) clamp(0.75rem, 1.2vw, 1rem);
+  padding: 8px 12px;
   background: #f8fafc;
   border: 1.5px solid #e8edf5;
   border-radius: 10px;
-  font-size: clamp(0.875rem, 1.3vw, 1.375rem);
+  font-size: 13px;
   color: #1e293b;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -734,8 +726,8 @@ input:checked + .slider:before {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(1.75rem, 2.5vw, 2.25rem);
-  height: clamp(1.75rem, 2.5vw, 2.25rem);
+  width: 30px;
+  height: 30px;
   background: transparent;
   border: 1.5px solid #e2e8f0;
   border-radius: 8px;
@@ -762,8 +754,8 @@ input:checked + .slider:before {
 
 /* ── Subsection label ────────────────────────────────────── */
 .settings-subsection-label {
-  font-size: clamp(0.6875rem, 1vw, 0.9375rem);
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 700;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -777,14 +769,14 @@ input:checked + .slider:before {
   right: 28px;
   background: linear-gradient(135deg, #0f172a, #1e293b);
   color: #ffffff;
-  padding: clamp(0.75rem, 1.2vw, 1rem) clamp(1rem, 1.6vw, 1.375rem);
+  padding: 12px 18px;
   border-radius: 14px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
   display: flex;
   align-items: center;
   gap: 12px;
   z-index: 9999;
-  font-size: clamp(0.8125rem, 1.3vw, 1.3125rem);
+  font-size: 13.5px;
   font-weight: 600;
   animation: slideInUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(255, 255, 255, 0.08);

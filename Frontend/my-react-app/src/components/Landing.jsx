@@ -40,15 +40,19 @@ const Landing = ({ setPage }) => {
             <li>
               <a href="#home">Home</a>
             </li>
+
             <li>
               <a href="#solutions">Solutions</a>
             </li>
+
             <li>
               <a href="#portals">Portals</a>
             </li>
+
             <li>
               <a href="#features">Features</a>
             </li>
+
             <li>
               <a href="#about">About Us</a>
             </li>
@@ -109,44 +113,14 @@ const Landing = ({ setPage }) => {
                       <span className="dropdown-item-title">
                         Admin Login
                       </span>
+
                       <span className="dropdown-item-sub">
                         Access admin dashboard
                       </span>
                     </div>
                   </button>
 
-                  {/* Admin Signup */}
-                  <button
-                    className="dropdown-item"
-                    onClick={() => {
-                      closeMenus();
-                      setPage("signup");
-                    }}
-                  >
-                    <div className="dropdown-item-icon admin-signup">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M15 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                        <circle cx="8.5" cy="7" r="4" />
-                        <path d="M20 8v6M17 11h6" />
-                      </svg>
-                    </div>
 
-                    <div className="dropdown-item-text">
-                      <span className="dropdown-item-title">
-                        Admin Register
-                      </span>
-                      <span className="dropdown-item-sub">
-                        Create administrator account
-                      </span>
-                    </div>
-                  </button>
 
                   {/* Student Login */}
                   <button
@@ -174,57 +148,26 @@ const Landing = ({ setPage }) => {
                       <span className="dropdown-item-title">
                         Student Login
                       </span>
+
                       <span className="dropdown-item-sub">
                         Access student dashboard
                       </span>
                     </div>
                   </button>
-
-                  {/* Student Register */}
-                  <button
-                    className="dropdown-item"
-                    onClick={() => {
-                      closeMenus();
-                      setPage("student-signup");
-                    }}
-                  >
-                    <div className="dropdown-item-icon student-register">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <circle cx="9" cy="8" r="4" />
-                        <path d="M2 21a7 7 0 0 1 14 0" />
-                        <path d="M19 8v6M16 11h6" />
-                      </svg>
-                    </div>
-
-                    <div className="dropdown-item-text">
-                      <span className="dropdown-item-title">
-                        Student Register
-                      </span>
-                      <span className="dropdown-item-sub">
-                        Create student account
-                      </span>
-                    </div>
-                  </button>
-
                 </div>
               )}
             </div>
 
+            {/* Get Started */}
             <button
               className="btn-primary"
               onClick={() => {
-                setPage("student-signup");
+                setPage("login");
               }}
             >
               Get Started
             </button>
+
           </div>
 
           {/* Mobile Menu Button */}
@@ -251,6 +194,7 @@ const Landing = ({ setPage }) => {
           <div className="st-mobile-menu open">
 
             <ul className="st-mobile-nav-links">
+
               <li>
                 <a href="#home" onClick={closeMenus}>
                   Home
@@ -280,6 +224,7 @@ const Landing = ({ setPage }) => {
                   About Us
                 </a>
               </li>
+
             </ul>
 
             <div className="st-mobile-nav-actions">
@@ -287,6 +232,7 @@ const Landing = ({ setPage }) => {
               <button
                 className="btn-primary"
                 onClick={() => {
+                  closeMenus();
                   setPage("login");
                 }}
               >
@@ -296,6 +242,7 @@ const Landing = ({ setPage }) => {
               <button
                 className="btn-ghost"
                 onClick={() => {
+                  closeMenus();
                   setPage("student-login");
                 }}
               >
@@ -305,19 +252,43 @@ const Landing = ({ setPage }) => {
               <button
                 className="btn-primary"
                 onClick={() => {
-                  setPage("student-signup");
+                  closeMenus();
+                  setPage("login");
                 }}
               >
                 Get Started
               </button>
 
             </div>
+
           </div>
         </>
       )}
 
       {/* ================= HERO ================= */}
       <section className="st-hero" id="home">
+
+        {/* Background Video */}
+        <video
+          className="st-hero-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+        >
+          <source
+            src="https://www.shutterstock.com/shutterstock/videos/3996680655/preview/stock-footage-corporate-payroll-administration-for-tax-compliance-and-salary-payment.webm"
+            type="video/webm"
+          />
+
+          Your browser does not support the video tag.
+        </video>
+
+        {/* Video Overlay */}
+
+
+        {/* Hero Content */}
         <div className="st-hero-inner">
 
           <div className="st-badge">
@@ -339,7 +310,7 @@ const Landing = ({ setPage }) => {
             <button
               className="btn-primary btn-lg"
               onClick={() => {
-                setPage("student-signup");
+                setPage("login");
               }}
             >
               Get Started
@@ -358,7 +329,10 @@ const Landing = ({ setPage }) => {
           <div className="st-stats">
 
             <div className="st-stat">
-              <span className="st-stat-num">100%</span>
+              <span className="st-stat-num">
+                100%
+              </span>
+
               <span className="st-stat-lbl">
                 Digital
               </span>
@@ -367,7 +341,10 @@ const Landing = ({ setPage }) => {
             <div className="st-stat-divider" />
 
             <div className="st-stat">
-              <span className="st-stat-num">24/7</span>
+              <span className="st-stat-num">
+                24/7
+              </span>
+
               <span className="st-stat-lbl">
                 Accessible
               </span>
@@ -376,7 +353,10 @@ const Landing = ({ setPage }) => {
             <div className="st-stat-divider" />
 
             <div className="st-stat">
-              <span className="st-stat-num">Smart</span>
+              <span className="st-stat-num">
+                Smart
+              </span>
+
               <span className="st-stat-lbl">
                 Reporting
               </span>
@@ -392,6 +372,7 @@ const Landing = ({ setPage }) => {
         <div className="st-section-inner">
 
           <div className="st-section-header">
+
             <span className="st-section-tag">
               Solutions
             </span>
@@ -404,12 +385,16 @@ const Landing = ({ setPage }) => {
               Powerful tools that make attendance management
               simple, organized and efficient.
             </p>
+
           </div>
 
           <div className="st-solutions-grid">
 
+            {/* Student Management */}
             <div className="st-solution-card">
+
               <div className="st-solution-card-top">
+
                 <div className="st-solution-icon">
                   📋
                 </div>
@@ -417,6 +402,7 @@ const Landing = ({ setPage }) => {
                 <span className="st-sol-badge">
                   Admin
                 </span>
+
               </div>
 
               <h3>
@@ -429,23 +415,31 @@ const Landing = ({ setPage }) => {
               </p>
 
               <ul className="st-solution-features">
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Student Profiles
                 </li>
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Class Management
                 </li>
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Search & Filter
                 </li>
+
               </ul>
+
             </div>
 
+            {/* Attendance Tracking */}
             <div className="st-solution-card">
+
               <div className="st-solution-card-top">
+
                 <div className="st-solution-icon">
                   📊
                 </div>
@@ -453,6 +447,7 @@ const Landing = ({ setPage }) => {
                 <span className="st-sol-badge">
                   Tracking
                 </span>
+
               </div>
 
               <h3>
@@ -465,23 +460,31 @@ const Landing = ({ setPage }) => {
               </p>
 
               <ul className="st-solution-features">
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Daily Attendance
                 </li>
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Attendance History
                 </li>
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Attendance Percentage
                 </li>
+
               </ul>
+
             </div>
 
+            {/* Reports */}
             <div className="st-solution-card">
+
               <div className="st-solution-card-top">
+
                 <div className="st-solution-icon">
                   📈
                 </div>
@@ -489,6 +492,7 @@ const Landing = ({ setPage }) => {
                 <span className="st-sol-badge">
                   Reports
                 </span>
+
               </div>
 
               <h3>
@@ -501,19 +505,24 @@ const Landing = ({ setPage }) => {
               </p>
 
               <ul className="st-solution-features">
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Daily Reports
                 </li>
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Monthly Reports
                 </li>
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   PDF & Excel Export
                 </li>
+
               </ul>
+
             </div>
 
           </div>
@@ -525,6 +534,7 @@ const Landing = ({ setPage }) => {
         <div className="st-section-inner">
 
           <div className="st-section-header">
+
             <span className="st-section-tag">
               Portals
             </span>
@@ -536,6 +546,7 @@ const Landing = ({ setPage }) => {
             <p>
               Dedicated experiences for administrators and students.
             </p>
+
           </div>
 
           <div className="st-portal-grid">
@@ -605,6 +616,7 @@ const Landing = ({ setPage }) => {
         <div className="st-section-inner">
 
           <div className="st-section-header">
+
             <span className="st-section-tag">
               Features
             </span>
@@ -617,12 +629,16 @@ const Landing = ({ setPage }) => {
               Everything required to manage attendance
               efficiently and securely.
             </p>
+
           </div>
 
           <div className="st-features-grid">
 
+            {/* Security */}
             <div className="st-feature-card">
+
               <div className="st-feature-card-top">
+
                 <div className="st-feature-icon">
                   🔐
                 </div>
@@ -630,6 +646,7 @@ const Landing = ({ setPage }) => {
                 <span className="st-feat-badge">
                   Security
                 </span>
+
               </div>
 
               <h3>
@@ -642,19 +659,26 @@ const Landing = ({ setPage }) => {
               </p>
 
               <ul className="st-feature-highlights">
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Login & Registration
                 </li>
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Password Management
                 </li>
+
               </ul>
+
             </div>
 
+            {/* Responsive */}
             <div className="st-feature-card">
+
               <div className="st-feature-card-top">
+
                 <div className="st-feature-icon">
                   📱
                 </div>
@@ -662,6 +686,7 @@ const Landing = ({ setPage }) => {
                 <span className="st-feat-badge">
                   Responsive
                 </span>
+
               </div>
 
               <h3>
@@ -674,19 +699,26 @@ const Landing = ({ setPage }) => {
               </p>
 
               <ul className="st-feature-highlights">
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Mobile Friendly
                 </li>
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Modern Interface
                 </li>
+
               </ul>
+
             </div>
 
+            {/* Smart Reports */}
             <div className="st-feature-card">
+
               <div className="st-feature-card-top">
+
                 <div className="st-feature-icon">
                   📄
                 </div>
@@ -694,6 +726,7 @@ const Landing = ({ setPage }) => {
                 <span className="st-feat-badge">
                   Export
                 </span>
+
               </div>
 
               <h3>
@@ -706,19 +739,26 @@ const Landing = ({ setPage }) => {
               </p>
 
               <ul className="st-feature-highlights">
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   PDF Reports
                 </li>
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Excel Reports
                 </li>
+
               </ul>
+
             </div>
 
+            {/* Notifications */}
             <div className="st-feature-card">
+
               <div className="st-feature-card-top">
+
                 <div className="st-feature-icon">
                   🔔
                 </div>
@@ -726,6 +766,7 @@ const Landing = ({ setPage }) => {
                 <span className="st-feat-badge">
                   Updates
                 </span>
+
               </div>
 
               <h3>
@@ -738,19 +779,26 @@ const Landing = ({ setPage }) => {
               </p>
 
               <ul className="st-feature-highlights">
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Real-time Updates
                 </li>
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Read Notifications
                 </li>
+
               </ul>
+
             </div>
 
+            {/* Attendance History */}
             <div className="st-feature-card">
+
               <div className="st-feature-card-top">
+
                 <div className="st-feature-icon">
                   📅
                 </div>
@@ -758,6 +806,7 @@ const Landing = ({ setPage }) => {
                 <span className="st-feat-badge">
                   Attendance
                 </span>
+
               </div>
 
               <h3>
@@ -770,19 +819,26 @@ const Landing = ({ setPage }) => {
               </p>
 
               <ul className="st-feature-highlights">
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Date-wise Records
                 </li>
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Student-wise Records
                 </li>
+
               </ul>
+
             </div>
 
+            {/* Easy Management */}
             <div className="st-feature-card">
+
               <div className="st-feature-card-top">
+
                 <div className="st-feature-icon">
                   ⚡
                 </div>
@@ -790,6 +846,7 @@ const Landing = ({ setPage }) => {
                 <span className="st-feat-badge">
                   Efficient
                 </span>
+
               </div>
 
               <h3>
@@ -802,15 +859,19 @@ const Landing = ({ setPage }) => {
               </p>
 
               <ul className="st-feature-highlights">
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Simple Dashboard
                 </li>
+
                 <li>
                   <span className="st-bullet-check">✓</span>
                   Fast Access
                 </li>
+
               </ul>
+
             </div>
 
           </div>
@@ -822,6 +883,7 @@ const Landing = ({ setPage }) => {
         <div className="st-section-inner">
 
           <div className="st-section-header">
+
             <span className="st-section-tag">
               About Us
             </span>
@@ -834,11 +896,14 @@ const Landing = ({ setPage }) => {
               Designed to simplify academic attendance
               management through technology.
             </p>
+
           </div>
 
           <div className="st-about-grid">
 
+            {/* Mission */}
             <div className="st-about-card">
+
               <div className="st-about-icon">
                 🎯
               </div>
@@ -852,9 +917,12 @@ const Landing = ({ setPage }) => {
                 reliable and efficient digital attendance
                 management solution.
               </p>
+
             </div>
 
+            {/* Vision */}
             <div className="st-about-card">
+
               <div className="st-about-icon">
                 💡
               </div>
@@ -867,9 +935,12 @@ const Landing = ({ setPage }) => {
                 To make academic management simpler through
                 modern technology, automation and meaningful data.
               </p>
+
             </div>
 
+            {/* Approach */}
             <div className="st-about-card">
+
               <div className="st-about-icon">
                 🚀
               </div>
@@ -882,6 +953,7 @@ const Landing = ({ setPage }) => {
                 We focus on simplicity, usability, security
                 and scalable solutions for educational needs.
               </p>
+
             </div>
 
           </div>
@@ -889,6 +961,7 @@ const Landing = ({ setPage }) => {
           <div className="st-about-banner">
 
             <div className="st-about-banner-content">
+
               <h3>
                 A Complete Attendance Solution
               </h3>
@@ -898,11 +971,13 @@ const Landing = ({ setPage }) => {
                 reports and notifications, everything is managed
                 from one connected platform.
               </p>
+
             </div>
 
             <div className="st-about-stats-mini">
 
               <div className="st-mini-stat">
+
                 <span className="st-mini-num">
                   2
                 </span>
@@ -910,9 +985,11 @@ const Landing = ({ setPage }) => {
                 <span className="st-mini-lbl">
                   Portals
                 </span>
+
               </div>
 
               <div className="st-mini-stat">
+
                 <span className="st-mini-num">
                   24/7
                 </span>
@@ -920,6 +997,7 @@ const Landing = ({ setPage }) => {
                 <span className="st-mini-lbl">
                   Access
                 </span>
+
               </div>
 
             </div>
@@ -931,6 +1009,7 @@ const Landing = ({ setPage }) => {
 
       {/* ================= CTA ================= */}
       <section className="st-cta">
+
         <div className="st-cta-inner">
 
           <h2>
@@ -962,9 +1041,12 @@ const Landing = ({ setPage }) => {
               Admin Login
             </button>
 
+
+
           </div>
 
         </div>
+
       </section>
 
       {/* ================= FOOTER ================= */}
@@ -975,6 +1057,7 @@ const Landing = ({ setPage }) => {
           <div className="st-footer-brand">
 
             <a href="#home" className="st-logo">
+
               <svg
                 width="30"
                 height="30"
@@ -988,7 +1071,10 @@ const Landing = ({ setPage }) => {
                 <path d="M8 14h2M14 14h2M8 18h2M14 18h2" />
               </svg>
 
-              <span>ScholarTrack</span>
+              <span>
+                ScholarTrack
+              </span>
+
             </a>
 
             <p>
@@ -1000,17 +1086,33 @@ const Landing = ({ setPage }) => {
           </div>
 
           <div className="st-footer-links">
-            <a href="#home">Home</a>
-            <a href="#solutions">Solutions</a>
-            <a href="#portals">Portals</a>
-            <a href="#features">Features</a>
-            <a href="#about">About Us</a>
+
+            <a href="#home">
+              Home
+            </a>
+
+            <a href="#solutions">
+              Solutions
+            </a>
+
+            <a href="#portals">
+              Portals
+            </a>
+
+            <a href="#features">
+              Features
+            </a>
+
+            <a href="#about">
+              About Us
+            </a>
+
           </div>
 
           <div className="st-footer-bottom">
 
             <p className="st-footer-copy">
-              © {new Date().getFullYear()} Attendify. All rights reserved.
+              © {new Date().getFullYear()} ScholarTrack. All rights reserved.
             </p>
 
           </div>
