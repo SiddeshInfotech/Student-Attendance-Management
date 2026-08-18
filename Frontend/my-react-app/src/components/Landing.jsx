@@ -162,7 +162,7 @@ const Landing = ({ setPage }) => {
             <button
               className="btn-primary"
               onClick={() => {
-                setPage("login");
+                setPage("student-signup");
               }}
             >
               Get Started
@@ -253,7 +253,7 @@ const Landing = ({ setPage }) => {
                 className="btn-primary"
                 onClick={() => {
                   closeMenus();
-                  setPage("login");
+                  setPage("student-signup");
                 }}
               >
                 Get Started
@@ -310,7 +310,7 @@ const Landing = ({ setPage }) => {
             <button
               className="btn-primary btn-lg"
               onClick={() => {
-                setPage("login");
+                setPage("student-signup");
               }}
             >
               Get Started
