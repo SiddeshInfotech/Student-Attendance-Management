@@ -61,7 +61,7 @@ function Signup({ setPage }) {
   };
 
   return (
-    <div className="login-container">
+    <div className="login-container signup-container">
       {/* Left side illustration - same as login for brand consistency */}
       <div className="login-left">
         <div className="brand">

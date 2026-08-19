@@ -26,5 +26,7 @@ class ForgotPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
 class ResetPasswordSerializer(serializers.Serializer):
-    token = serializers.CharField()
-    new_password = serializers.CharField(write_only=True)
+    email = serializers.EmailField(required=False)
+    otp = serializers.CharField(required=False)
+    token = serializers.CharField(required=False)
+    new_password = serializers.CharField(write_only=True)

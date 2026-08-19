@@ -54,15 +54,14 @@ function ResetPassword({ setPage, token }) {
             </svg>
           </div>
           <div className="brand-text">
-            <span className="brand-title">Student Attendance</span>
-            <span className="brand-subtitle">Management System</span>
+            <span className="brand-title">ScholarTrack</span>
           </div>
         </div>
 
         <div className="intro-section">
           <h1>
-            Student Attendance <br />
-            <span className="highlight">Management System</span>
+            Hello, Welcome! <br />
+            <span className="highlight">Admin Portal</span>
           </h1>
           <p className="intro-text">
             Secure your account by setting a new password. Choose something strong and memorable.
@@ -87,10 +86,6 @@ function ResetPassword({ setPage, token }) {
                 <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="logo-cap">
                   <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
                   <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
-                </svg>
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="logo-book">
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
                 </svg>
               </div>
             </div>
@@ -198,7 +193,7 @@ function ResetPassword({ setPage, token }) {
             </form>
           )}
 
-          <div className="signup-prompt">
+          <div className="signup-prompt" style={{ marginTop: "28px" }}>
             Remembered your password?{" "}
             <a
               href="#"

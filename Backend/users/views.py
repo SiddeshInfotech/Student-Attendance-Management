@@ -14,10 +14,11 @@ from .serializers import (
     ForgotPasswordSerializer,
     ResetPasswordSerializer,
 )
-from utils import generate_random_token, send_password_reset_email
+from utils import generate_random_token, generate_otp, send_password_reset_otp_email, send_password_reset_email
 
 
 def _generate_unique_mobile():
+
     """Generate a unique placeholder mobile number."""
     import random
     while True:
@@ -208,21 +209,24 @@ class ForgotPasswordView(APIView):
     def post(self, request):
         serializer = ForgotPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        email = serializer.validated_data["email"]
-        user = User.objects.filter(email=email).first()
+        email = serializer.validated_data["email"].strip().lower()
+        user = User.objects.filter(email__iexact=email).first()
         if user:
             # Delete all old tokens for this user
             PasswordResetToken.objects.filter(user=user).delete()
-            # Create new token and save to DB
-            token = generate_random_token()
-            PasswordResetToken.objects.create(user=user, token=token)
+            # Create new 6-digit OTP and save to DB
+            otp = generate_otp(6)
+            PasswordResetToken.objects.create(user=user, token=otp)
             try:
-                send_password_reset_email(email, token, user.full_name)
+                send_password_reset_otp_email(user.email, otp, user.full_name)
             except Exception as e:
-                # Log error but don't expose it to the user
+                # Log error
                 import logging
-                logging.getLogger(__name__).error(f"Email send failed: {e}")
-        return Response({"detail": "If the email exists, a password reset link has been sent."})
+                logging.getLogger(__name__).error(f"Email OTP send failed: {e}")
+        return Response({
+            "detail": "OTP has been sent to your registered email address.",
+            "email": email
+        })
 
 
 class ResetPasswordView(APIView):
@@ -231,21 +235,30 @@ class ResetPasswordView(APIView):
     def post(self, request):
         serializer = ResetPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        token_str = serializer.validated_data["token"]
+        token_or_otp = (serializer.validated_data.get("otp") or serializer.validated_data.get("token") or "").strip()
+        email = (serializer.validated_data.get("email") or "").strip().lower()
         new_password = serializer.validated_data["new_password"]
 
-        reset_token = PasswordResetToken.objects.filter(token=token_str, is_used=False).first()
+        if not token_or_otp:
+            return Response({"detail": "OTP is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Filter token
+        token_query = PasswordResetToken.objects.filter(token=token_or_otp, is_used=False)
+        if email:
+            token_query = token_query.filter(user__email__iexact=email)
+
+        reset_token = token_query.first()
 
         if not reset_token:
             return Response(
-                {"detail": "Invalid or already used reset token."},
+                {"detail": "Invalid or already used OTP. Please check and try again."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         if reset_token.is_expired():
             reset_token.delete()
             return Response(
-                {"detail": "Reset token has expired. Please request a new one."},
+                {"detail": "OTP has expired. Please request a new OTP."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -258,4 +271,4 @@ class ResetPasswordView(APIView):
         reset_token.is_used = True
         reset_token.save()
 
-        return Response({"detail": "Password reset successfully. You can now log in."})
+        return Response({"detail": "Password reset successfully. You can now log in."})

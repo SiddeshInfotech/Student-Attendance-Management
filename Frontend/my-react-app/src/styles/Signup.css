@@ -1,2 +1,7 @@
 @import "./Login.css";
-/* Custom overrides for Signup if needed can go here */
+
+/* Signup specific illustration adjustment - shifted slightly upwards */
+.signup-container .illustration-wrapper {
+  margin-top: -16px !important;
+  margin-bottom: 6px !important;
+}
