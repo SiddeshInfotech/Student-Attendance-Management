@@ -26,6 +26,7 @@ def api_root(request):
             "reports": "/api/reports/",
             "notifications": "/api/notifications/",
             "leave_requests": "/api/leave-requests/",
+            "settings": "/api/settings/",
             "django_admin": "/admin/"
         }
     })
@@ -51,6 +52,7 @@ urlpatterns = [
     path('api/reports/', include('reports.urls')),
     path('api/notifications/', include('notifications.urls')),
     path('api/leave-requests/', include('leave_requests.urls')),
+    path('api/settings/', include('system_settings.urls')),
 ]
 
 if settings.DEBUG:

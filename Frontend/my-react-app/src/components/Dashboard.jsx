@@ -53,6 +53,7 @@ import HistoryTab from "./tabs/HistoryTab";
 import ReportsTab from "./tabs/ReportsTab";
 import SettingsTab from "./tabs/SettingsTab";
 import AdminProfileTab from "./tabs/AdminProfileTab";
+import settingsService from "../services/settingsService";
 
 import "../styles/Dashboard.css";
 
@@ -891,11 +892,35 @@ function Dashboard({ setPage }) {
 
   const [schoolName, setSchoolName] =
     useState(
-      "Siddesh Infotech High School"
+      "Siddesh Infotech College"
     );
 
   const [academicYear, setAcademicYear] =
-    useState("2026-27");
+    useState("2024 - 2025");
+
+  // Load live settings on dashboard initialization
+  useEffect(() => {
+    const fetchGlobalSettings = async () => {
+      try {
+        const data = await settingsService.getSettings();
+        if (data && data.settings) {
+          if (data.settings.college_name) setSchoolName(data.settings.college_name);
+          if (data.settings.academic_year) setAcademicYear(data.settings.academic_year);
+        }
+      } catch (err) {
+        // Fallback to local storage
+        try {
+          const saved = localStorage.getItem("sam_admin_settings");
+          if (saved) {
+            const s = JSON.parse(saved);
+            if (s.college_name || s.collegeName) setSchoolName(s.college_name || s.collegeName);
+            if (s.academic_year || s.academicYear) setAcademicYear(s.academic_year || s.academicYear);
+          }
+        } catch (e) {}
+      }
+    };
+    fetchGlobalSettings();
+  }, []);
 
   // -------------------------------------------------------
   // Central attendance store

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Settings,
   Palette,
@@ -18,8 +18,10 @@ import {
   SlidersHorizontal,
   Key,
   Users,
-  Calendar
+  Calendar,
+  Loader2
 } from "lucide-react";
+import settingsService from "../../services/settingsService";
 import "../../styles/SettingsTab.css";
 
 const SETTINGS_KEY = "sam_admin_settings";
@@ -29,6 +31,11 @@ function SettingsTab({ onSettingsChange, triggerBanner }) {
   const [activeTab, setActiveTab] = useState("all");
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Hidden file input for DB restore
+  const restoreFileInputRef = useRef(null);
 
   // --- 1. General Settings State ---
   const [collegeName, setCollegeName] = useState("Siddesh Infotech College");
@@ -64,8 +71,9 @@ function SettingsTab({ onSettingsChange, triggerBanner }) {
   const [autoBackup, setAutoBackup] = useState(true);
   const [backupFrequency, setBackupFrequency] = useState("daily");
   const [backupRetention, setBackupRetention] = useState("30 days");
-  const [lastBackup, setLastBackup] = useState("20 May 2026, 02:30 AM");
+  const [lastBackup, setLastBackup] = useState("Never");
   const [isBackupLoading, setIsBackupLoading] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
 
   // --- 6. Security Settings State ---
   const [enable2FA, setEnable2FA] = useState(false);
@@ -75,9 +83,10 @@ function SettingsTab({ onSettingsChange, triggerBanner }) {
   const [maxLoginAttempts, setMaxLoginAttempts] = useState("5");
 
   // --- 7. Role & Permission Management State ---
-  const [roles, setRoles] = useState(["Admin", "Student"]);
+  const [roles, setRoles] = useState(["Admin", "Student", "Teacher"]);
   const [permissionsMatrix, setPermissionsMatrix] = useState({
     Admin: { read: true, write: true, edit: true, delete: true },
+    Teacher: { read: true, write: true, edit: true, delete: false },
     Student: { read: true, write: false, edit: false, delete: false }
   });
   const [newRoleName, setNewRoleName] = useState("");
@@ -96,53 +105,85 @@ function SettingsTab({ onSettingsChange, triggerBanner }) {
   const [autoAttendance, setAutoAttendance] = useState(false);
   const [attendanceLockDate, setAttendanceLockDate] = useState("2026-08-31");
 
-  // Load settings on mount
+  // Load real settings from backend on mount
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(SETTINGS_KEY);
-      if (saved) {
-        const s = JSON.parse(saved);
-        if (s.collegeName) setCollegeName(s.collegeName);
-        if (s.systemTitle) setSystemTitle(s.systemTitle);
-        if (s.academicYear) setAcademicYear(s.academicYear);
-        if (s.language) setLanguage(s.language);
-        if (s.timezone) setTimezone(s.timezone);
-        if (s.dateFormat) setDateFormat(s.dateFormat);
-        if (s.collegeLogo) setCollegeLogo(s.collegeLogo);
-        if (s.themeMode) setThemeMode(s.themeMode);
-        if (s.primaryColor) setPrimaryColor(s.primaryColor);
-        if (s.sidebarStyle) setSidebarStyle(s.sidebarStyle);
-        if (s.layoutStyle) setLayoutStyle(s.layoutStyle);
-        if (s.enableNotifications !== undefined) setEnableNotifications(s.enableNotifications);
-        if (s.emailNotifications !== undefined) setEmailNotifications(s.emailNotifications);
-        if (s.attendanceAlerts !== undefined) setAttendanceAlerts(s.attendanceAlerts);
-        if (s.examNotifications !== undefined) setExamNotifications(s.examNotifications);
-        if (s.reportNotifications !== undefined) setReportNotifications(s.reportNotifications);
-        if (s.smtpHost) setSmtpHost(s.smtpHost);
-        if (s.smtpPort) setSmtpPort(s.smtpPort);
-        if (s.adminEmail) setAdminEmail(s.adminEmail);
-        if (s.encryption) setEncryption(s.encryption);
-        if (s.autoBackup !== undefined) setAutoBackup(s.autoBackup);
-        if (s.backupFrequency) setBackupFrequency(s.backupFrequency);
-        if (s.backupRetention) setBackupRetention(s.backupRetention);
-        if (s.lastBackup) setLastBackup(s.lastBackup);
-        if (s.enable2FA !== undefined) setEnable2FA(s.enable2FA);
-        if (s.sessionTimeout !== undefined) setSessionTimeout(s.sessionTimeout);
-        if (s.passwordExpiry !== undefined) setPasswordExpiry(s.passwordExpiry);
-        if (s.passwordExpiryDays) setPasswordExpiryDays(s.passwordExpiryDays);
-        if (s.maxLoginAttempts) setMaxLoginAttempts(s.maxLoginAttempts);
-        if (s.permissionsMatrix) setPermissionsMatrix(s.permissionsMatrix);
-        if (s.minAttendance) setMinAttendance(s.minAttendance);
-        if (s.workingDays) setWorkingDays(s.workingDays);
-        if (s.holidays) setHolidays(s.holidays);
-        if (s.attendanceWindow) setAttendanceWindow(s.attendanceWindow);
-        if (s.lateGracePeriod) setLateGracePeriod(s.lateGracePeriod);
-        if (s.autoAttendance !== undefined) setAutoAttendance(s.autoAttendance);
-        if (s.attendanceLockDate) setAttendanceLockDate(s.attendanceLockDate);
+    let isMounted = true;
+
+    const loadSettingsFromBackend = async () => {
+      try {
+        setIsLoading(true);
+        const data = await settingsService.getSettings();
+        if (data && data.settings && isMounted) {
+          const s = data.settings;
+          if (s.college_name) setCollegeName(s.college_name);
+          if (s.system_title) setSystemTitle(s.system_title);
+          if (s.academic_year) setAcademicYear(s.academic_year);
+          if (s.language) setLanguage(s.language);
+          if (s.timezone) setTimezone(s.timezone);
+          if (s.date_format) setDateFormat(s.date_format);
+          if (s.college_logo_url || s.college_logo) setCollegeLogo(s.college_logo_url || s.college_logo);
+          if (s.theme_mode) setThemeMode(s.theme_mode);
+          if (s.primary_color) setPrimaryColor(s.primary_color);
+          if (s.sidebar_style) setSidebarStyle(s.sidebar_style);
+          if (s.layout_style) setLayoutStyle(s.layout_style);
+          if (s.enable_notifications !== undefined) setEnableNotifications(s.enable_notifications);
+          if (s.email_notifications !== undefined) setEmailNotifications(s.email_notifications);
+          if (s.attendance_alerts !== undefined) setAttendanceAlerts(s.attendance_alerts);
+          if (s.exam_notifications !== undefined) setExamNotifications(s.exam_notifications);
+          if (s.report_notifications !== undefined) setReportNotifications(s.report_notifications);
+          if (s.smtp_host) setSmtpHost(s.smtp_host);
+          if (s.smtp_port) setSmtpPort(s.smtp_port);
+          if (s.admin_email) setAdminEmail(s.admin_email);
+          if (s.encryption) setEncryption(s.encryption);
+          if (s.auto_backup !== undefined) setAutoBackup(s.auto_backup);
+          if (s.backup_frequency) setBackupFrequency(s.backup_frequency);
+          if (s.backup_retention) setBackupRetention(s.backup_retention);
+          if (s.last_backup) setLastBackup(s.last_backup);
+          if (s.enable_2fa !== undefined) setEnable2FA(s.enable_2fa);
+          if (s.session_timeout !== undefined) setSessionTimeout(s.session_timeout);
+          if (s.password_expiry !== undefined) setPasswordExpiry(s.password_expiry);
+          if (s.password_expiry_days) setPasswordExpiryDays(s.password_expiry_days);
+          if (s.max_login_attempts) setMaxLoginAttempts(s.max_login_attempts);
+          if (s.permissions_matrix && Object.keys(s.permissions_matrix).length > 0) setPermissionsMatrix(s.permissions_matrix);
+          if (s.roles && s.roles.length > 0) setRoles(s.roles);
+          if (s.min_attendance) setMinAttendance(s.min_attendance);
+          if (s.working_days && s.working_days.length > 0) setWorkingDays(s.working_days);
+          if (s.attendance_window) setAttendanceWindow(s.attendance_window);
+          if (s.late_grace_period) setLateGracePeriod(s.lateGracePeriod || s.late_grace_period);
+          if (s.auto_attendance !== undefined) setAutoAttendance(s.auto_attendance);
+          if (s.attendance_lock_date) setAttendanceLockDate(s.attendance_lock_date);
+
+          // Notify parent of updated name/year
+          if (onSettingsChange) {
+            onSettingsChange({ schoolName: s.college_name, academicYear: s.academic_year, collegeLogo: s.college_logo_url || s.college_logo });
+          }
+        }
+
+        if (data && data.holidays && isMounted && data.holidays.length > 0) {
+          setHolidays(data.holidays);
+        }
+      } catch (err) {
+        console.warn("Backend settings load note:", err.message);
+        // Fallback to local storage
+        try {
+          const saved = localStorage.getItem(SETTINGS_KEY);
+          if (saved && isMounted) {
+            const s = JSON.parse(saved);
+            if (s.collegeName) setCollegeName(s.collegeName);
+            if (s.systemTitle) setSystemTitle(s.systemTitle);
+            if (s.academicYear) setAcademicYear(s.academicYear);
+          }
+        } catch (e) {}
+      } finally {
+        if (isMounted) setIsLoading(false);
       }
-    } catch (e) {
-      console.error("Failed to load settings:", e);
-    }
+    };
+
+    loadSettingsFromBackend();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Apply dark mode theme to body
@@ -158,118 +199,247 @@ function SettingsTab({ onSettingsChange, triggerBanner }) {
     setToastMessage(message);
     setTimeout(() => {
       setToastMessage("");
-    }, 3000);
+    }, 3500);
   };
 
-  const handleSaveAll = () => {
-    const allSettings = {
-      collegeName, systemTitle, academicYear, language, timezone, dateFormat, collegeLogo,
-      themeMode, primaryColor, sidebarStyle, layoutStyle,
-      enableNotifications, emailNotifications, attendanceAlerts, examNotifications, reportNotifications,
-      smtpHost, smtpPort, adminEmail, encryption,
-      autoBackup, backupFrequency, backupRetention, lastBackup,
-      enable2FA, sessionTimeout, passwordExpiry, passwordExpiryDays, maxLoginAttempts,
-      permissionsMatrix, minAttendance, workingDays, holidays,
-      attendanceWindow, lateGracePeriod, autoAttendance, attendanceLockDate
+  const handleSaveAll = async () => {
+    setIsSaving(true);
+    const payload = {
+      college_name: collegeName,
+      system_title: systemTitle,
+      academic_year: academicYear,
+      language,
+      timezone,
+      date_format: dateFormat,
+      theme_mode: themeMode,
+      primary_color: primaryColor,
+      sidebar_style: sidebarStyle,
+      layout_style: layoutStyle,
+      enable_notifications: enableNotifications,
+      email_notifications: emailNotifications,
+      attendance_alerts: attendanceAlerts,
+      exam_notifications: examNotifications,
+      report_notifications: reportNotifications,
+      smtp_host: smtpHost,
+      smtp_port: smtpPort,
+      admin_email: adminEmail,
+      smtp_password: smtpPassword,
+      encryption,
+      auto_backup: autoBackup,
+      backup_frequency: backupFrequency,
+      backup_retention: backupRetention,
+      last_backup: lastBackup,
+      enable_2fa: enable2FA,
+      session_timeout: sessionTimeout,
+      password_expiry: passwordExpiry,
+      password_expiry_days: passwordExpiryDays,
+      max_login_attempts: maxLoginAttempts,
+      roles,
+      permissions_matrix: permissionsMatrix,
+      min_attendance: minAttendance,
+      working_days: workingDays,
+      attendance_window: attendanceWindow,
+      late_grace_period: lateGracePeriod,
+      auto_attendance: autoAttendance,
+      attendance_lock_date: attendanceLockDate
     };
 
     try {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(allSettings));
+      const res = await settingsService.updateSettings(payload);
+      // Also cache to localStorage for instant reload
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...payload, collegeLogo }));
       if (onSettingsChange) {
-        onSettingsChange({ schoolName: collegeName, academicYear });
+        onSettingsChange({ schoolName: collegeName, academicYear, collegeLogo });
       }
       if (triggerBanner) {
-        triggerBanner("All settings configurations saved successfully!");
+        triggerBanner("All settings saved directly to Database successfully!");
       }
-      showToast("Settings Saved Successfully!");
+      showToast("Settings Saved to Database Successfully!");
     } catch (e) {
-      showToast("Error saving configurations.");
+      console.error("Save error:", e);
+      showToast(e.message || "Error saving configurations to server.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  const handleReset = () => {
-    if (window.confirm("Are you sure you want to reset all configurations to defaults?")) {
-      setCollegeName("Siddesh Infotech College");
-      setSystemTitle("Student Attendance Management System");
-      setAcademicYear("2024 - 2025");
-      setLanguage("English");
-      setTimezone("Asia/Kolkata");
-      setDateFormat("DD MMM YYYY");
-      setCollegeLogo("");
-      setThemeMode("light");
-      setPrimaryColor("#3b82f6");
-      setSidebarStyle("default");
-      setLayoutStyle("modern");
-      setEnableNotifications(true);
-      setEmailNotifications(true);
-      setAttendanceAlerts(true);
-      setExamNotifications(true);
-      setReportNotifications(false);
-      setSmtpHost("smtp.gmail.com");
-      setSmtpPort("587");
-      setAdminEmail("admin@siddeshinfotech.edu.in");
-      setSmtpPassword("••••••••••••");
-      setEncryption("TLS");
-      setAutoBackup(true);
-      setBackupFrequency("daily");
-      setBackupRetention("30 days");
-      setEnable2FA(false);
-      setSessionTimeout(true);
-      setPasswordExpiry(true);
-      setPasswordExpiryDays("90");
-      setMaxLoginAttempts("5");
-      setMinAttendance("75%");
-      setWorkingDays(["Mon", "Tue", "Wed", "Thu", "Fri"]);
-      setHolidays([
-        { id: 1, name: "Independence Day", date: "2026-08-15" },
-        { id: 2, name: "Christmas", date: "2026-12-25" }
-      ]);
-      setAttendanceWindow("09:00 AM");
-      setLateGracePeriod("15");
-      setAutoAttendance(false);
-      setAttendanceLockDate("2026-08-31");
-      setRoles(["Admin", "Student"]);
-      setPermissionsMatrix({
-        Admin: { read: true, write: true, edit: true, delete: true },
-        Student: { read: true, write: false, edit: false, delete: false }
-      });
-      showToast("Settings Reset to Defaults");
+  const handleReset = async () => {
+    if (window.confirm("Are you sure you want to reset all configurations to system defaults?")) {
+      const defaultState = {
+        college_name: "Siddesh Infotech College",
+        system_title: "Student Attendance Management System",
+        academic_year: "2024 - 2025",
+        language: "English",
+        timezone: "Asia/Kolkata",
+        date_format: "DD MMM YYYY",
+        theme_mode: "light",
+        primary_color: "#3b82f6",
+        sidebar_style: "default",
+        layout_style: "modern",
+        enable_notifications: true,
+        email_notifications: true,
+        attendance_alerts: true,
+        exam_notifications: true,
+        report_notifications: false,
+        smtp_host: "smtp.gmail.com",
+        smtp_port: "587",
+        admin_email: "admin@siddeshinfotech.edu.in",
+        smtp_password: "••••••••••••",
+        encryption: "TLS",
+        auto_backup: true,
+        backup_frequency: "daily",
+        backup_retention: "30 days",
+        enable_2fa: false,
+        session_timeout: true,
+        password_expiry: true,
+        password_expiry_days: "90",
+        max_login_attempts: "5",
+        min_attendance: "75%",
+        working_days: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+        attendance_window: "09:00 AM",
+        late_grace_period: "15",
+        auto_attendance: false,
+        attendance_lock_date: "2026-08-31",
+        roles: ["Admin", "Student", "Teacher"],
+        permissions_matrix: {
+          Admin: { read: true, write: true, edit: true, delete: true },
+          Teacher: { read: true, write: true, edit: true, delete: false },
+          Student: { read: true, write: false, edit: false, delete: false }
+        }
+      };
+
+      try {
+        await settingsService.updateSettings(defaultState);
+        setCollegeName(defaultState.college_name);
+        setSystemTitle(defaultState.system_title);
+        setAcademicYear(defaultState.academic_year);
+        setLanguage(defaultState.language);
+        setTimezone(defaultState.timezone);
+        setDateFormat(defaultState.date_format);
+        setCollegeLogo("");
+        setThemeMode("light");
+        setPrimaryColor("#3b82f6");
+        setSidebarStyle("default");
+        setLayoutStyle("modern");
+        setEnableNotifications(true);
+        setEmailNotifications(true);
+        setAttendanceAlerts(true);
+        setExamNotifications(true);
+        setReportNotifications(false);
+        setSmtpHost("smtp.gmail.com");
+        setSmtpPort("587");
+        setAdminEmail("admin@siddeshinfotech.edu.in");
+        setSmtpPassword("••••••••••••");
+        setEncryption("TLS");
+        setAutoBackup(true);
+        setBackupFrequency("daily");
+        setBackupRetention("30 days");
+        setEnable2FA(false);
+        setSessionTimeout(true);
+        setPasswordExpiry(true);
+        setPasswordExpiryDays("90");
+        setMaxLoginAttempts("5");
+        setMinAttendance("75%");
+        setWorkingDays(["Mon", "Tue", "Wed", "Thu", "Fri"]);
+        setAttendanceWindow("09:00 AM");
+        setLateGracePeriod("15");
+        setAutoAttendance(false);
+        setAttendanceLockDate("2026-08-31");
+        setRoles(["Admin", "Student", "Teacher"]);
+        setPermissionsMatrix(defaultState.permissions_matrix);
+        showToast("Settings Reset to Defaults and saved to Database.");
+      } catch (err) {
+        showToast(`Reset error: ${err.message}`);
+      }
     }
   };
 
-  const handleLogoUpload = (e) => {
+  const handleLogoUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCollegeLogo(reader.result);
-      };
-      reader.readAsDataURL(file);
+      try {
+        showToast("Uploading logo to server...");
+        const res = await settingsService.uploadLogo(file);
+        if (res && res.logo_url) {
+          setCollegeLogo(res.logo_url);
+          showToast("Logo saved to server successfully!");
+          if (onSettingsChange) {
+            onSettingsChange({ schoolName: collegeName, academicYear, collegeLogo: res.logo_url });
+          }
+        }
+      } catch (err) {
+        console.error("Logo upload err:", err);
+        const reader = new FileReader();
+        reader.onloadend = () => setCollegeLogo(reader.result);
+        reader.readAsDataURL(file);
+        showToast("Logo uploaded in preview mode.");
+      }
     }
   };
 
-  const triggerTestEmail = () => {
+  const triggerTestEmail = async () => {
     setIsSendingTest(true);
-    setTimeout(() => {
+    try {
+      const res = await settingsService.sendTestEmail({
+        smtp_host: smtpHost,
+        smtp_port: smtpPort,
+        admin_email: adminEmail,
+        smtp_password: smtpPassword,
+        encryption,
+      });
+      showToast(res.message || `Test email successfully sent to ${adminEmail}!`);
+    } catch (err) {
+      showToast(`SMTP Error: ${err.message}`);
+    } finally {
       setIsSendingTest(false);
-      showToast(`Test email successfully sent to ${adminEmail}!`);
-    }, 1500);
+    }
   };
 
-  const triggerCreateBackup = () => {
+  const triggerCreateBackup = async () => {
     setIsBackupLoading(true);
-    setTimeout(() => {
+    try {
+      await settingsService.downloadBackup();
+      const nowStr = new Date().toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+      });
+      setLastBackup(nowStr);
+      showToast("Database backup downloaded successfully!");
+    } catch (err) {
+      showToast(`Backup error: ${err.message}`);
+    } finally {
       setIsBackupLoading(false);
-      const now = new Date();
-      setLastBackup(now.toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: true }));
-      showToast("Database backup archive created successfully!");
-    }, 2000);
+    }
   };
 
   const triggerRestoreBackup = () => {
-    const confirm = window.confirm("Restoring from backup will overwrite current database records. Proceed?");
-    if (confirm) {
-      showToast("System restore initialized... Databases synchronized!");
+    if (window.confirm("Restoring from backup will overwrite current database records. Proceed to select a backup file?")) {
+      if (restoreFileInputRef.current) {
+        restoreFileInputRef.current.click();
+      }
+    }
+  };
+
+  const handleRestoreFileSelected = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setIsRestoring(true);
+    try {
+      showToast("Restoring database from backup file...");
+      const res = await settingsService.restoreBackup(file);
+      showToast(res.message || "Database restored successfully!");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1800);
+    } catch (err) {
+      showToast(`Restore Error: ${err.message}`);
+    } finally {
+      setIsRestoring(false);
+      e.target.value = "";
     }
   };
 
@@ -297,7 +467,7 @@ function SettingsTab({ onSettingsChange, triggerBanner }) {
       [cleanRole]: { read: true, write: false, edit: false, delete: false }
     }));
     setNewRoleName("");
-    showToast(`Role '${cleanRole}' added successfully!`);
+    showToast(`Role '${cleanRole}' added! Click 'Save All Changes' to persist.`);
   };
 
   const handleDeleteRole = (roleToDelete) => {
@@ -314,22 +484,36 @@ function SettingsTab({ onSettingsChange, triggerBanner }) {
     }
   };
 
-  const handleAddHoliday = (e) => {
+  const handleAddHoliday = async (e) => {
     e.preventDefault();
     if (!newHolidayName.trim() || !newHolidayDate) return;
-    const newHoliday = {
-      id: Date.now(),
-      name: newHolidayName.trim(),
-      date: newHolidayDate
-    };
-    setHolidays([...holidays, newHoliday]);
-    setNewHolidayName("");
-    setNewHolidayDate("");
-    showToast(`Holiday '${newHoliday.name}' added successfully!`);
+    try {
+      const res = await settingsService.addHoliday({
+        name: newHolidayName.trim(),
+        date: newHolidayDate
+      });
+      if (res && res.holiday) {
+        setHolidays([...holidays, res.holiday]);
+      } else {
+        setHolidays([...holidays, { id: Date.now(), name: newHolidayName.trim(), date: newHolidayDate }]);
+      }
+      setNewHolidayName("");
+      setNewHolidayDate("");
+      showToast(`Holiday '${newHolidayName.trim()}' saved to database!`);
+    } catch (err) {
+      showToast(`Holiday error: ${err.message}`);
+    }
   };
 
-  const handleDeleteHoliday = (id) => {
-    setHolidays(holidays.filter((h) => h.id !== id));
+  const handleDeleteHoliday = async (id) => {
+    try {
+      await settingsService.deleteHoliday(id);
+      setHolidays(holidays.filter((h) => h.id !== id));
+      showToast("Holiday removed from database.");
+    } catch (err) {
+      setHolidays(holidays.filter((h) => h.id !== id));
+      showToast("Holiday removed.");
+    }
   };
 
   const handleWorkingDayToggle = (day) => {
@@ -344,6 +528,15 @@ function SettingsTab({ onSettingsChange, triggerBanner }) {
 
   return (
     <>
+      {/* Hidden File Input for Database Restore */}
+      <input
+        type="file"
+        ref={restoreFileInputRef}
+        accept=".sqlite3,.db,.sqlite"
+        style={{ display: "none" }}
+        onChange={handleRestoreFileSelected}
+      />
+
       {/* Settings Top Bar */}
       <div className="settings-header-bar">
         <div className="settings-title-section">
@@ -351,12 +544,12 @@ function SettingsTab({ onSettingsChange, triggerBanner }) {
           <div className="settings-breadcrumb">Dashboard &gt; Settings</div>
         </div>
         <div className="settings-header-actions">
-          <button type="button" onClick={handleReset} className="btn-reset">
+          <button type="button" onClick={handleReset} className="btn-reset" disabled={isSaving}>
             Reset Defaults
           </button>
-          <button type="button" onClick={handleSaveAll} className="btn-save-all">
-            <Save size={16} />
-            <span>Save All Changes</span>
+          <button type="button" onClick={handleSaveAll} className="btn-save-all" disabled={isSaving}>
+            {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+            <span>{isSaving ? "Saving to Database..." : "Save All Changes"}</span>
           </button>
         </div>
       </div>

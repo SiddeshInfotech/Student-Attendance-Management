@@ -100,6 +100,7 @@ export default function StudentProfileTab({ currentDate, currentTime }) {
       setSuccessMsg("Profile updated successfully!");
       setIsEditing(false);
       await loadProfile();
+      window.dispatchEvent(new Event("studentProfileUpdated"));
       setTimeout(() => setSuccessMsg(""), 3000);
     } catch (err) {
       setError(err.message || "Failed to update profile.");
