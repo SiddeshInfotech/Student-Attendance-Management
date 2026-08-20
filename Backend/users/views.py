@@ -117,13 +117,18 @@ class AdminLoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
+        from django.contrib.auth.hashers import check_password
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        email = serializer.validated_data["email"]
+        email = serializer.validated_data["email"].strip().lower()
         password = serializer.validated_data["password"]
 
-        user = User.objects.filter(email=email).first()
-        if not user or user.password != password:
+        user = User.objects.filter(email__iexact=email).first()
+        if not user:
+            return Response({"detail": "Invalid email or password."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        is_valid = check_password(password, user.password) or (user.password == password)
+        if not is_valid:
             return Response({"detail": "Invalid email or password."}, status=status.HTTP_401_UNAUTHORIZED)
 
         role_name = user.role.role_name.lower() if user.role else "admin"
@@ -145,13 +150,18 @@ class StudentLoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
+        from django.contrib.auth.hashers import check_password
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        email = serializer.validated_data["email"]
+        email = serializer.validated_data["email"].strip().lower()
         password = serializer.validated_data["password"]
 
-        user = User.objects.filter(email=email).first()
-        if not user or user.password != password:
+        user = User.objects.filter(email__iexact=email).first()
+        if not user:
+            return Response({"detail": "Invalid email or password."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        is_valid = check_password(password, user.password) or (user.password == password)
+        if not is_valid:
             return Response({"detail": "Invalid email or password."}, status=status.HTTP_401_UNAUTHORIZED)
 
         role_name = user.role.role_name.lower() if user.role else "student"
@@ -190,15 +200,18 @@ class ChangePasswordView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
+        from django.contrib.auth.hashers import check_password, make_password
         serializer = ChangePasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user_id = getattr(request.user, "user_id", getattr(request.user, "id", None))
         user = User.objects.filter(user_id=user_id).first()
         if not user:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-        if user.password != serializer.validated_data["old_password"]:
+        
+        is_valid = check_password(serializer.validated_data["old_password"], user.password) or (user.password == serializer.validated_data["old_password"])
+        if not is_valid:
             return Response({"detail": "Incorrect old password."}, status=status.HTTP_400_BAD_REQUEST)
-        user.password = serializer.validated_data["new_password"]
+        user.password = make_password(serializer.validated_data["new_password"])
         user.save()
         return Response({"detail": "Password updated successfully."})
 
@@ -211,21 +224,29 @@ class ForgotPasswordView(APIView):
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data["email"].strip().lower()
         user = User.objects.filter(email__iexact=email).first()
-        if user:
-            # Delete all old tokens for this user
-            PasswordResetToken.objects.filter(user=user).delete()
-            # Create new 6-digit OTP and save to DB
-            otp = generate_otp(6)
-            PasswordResetToken.objects.create(user=user, token=otp)
-            try:
-                send_password_reset_otp_email(user.email, otp, user.full_name)
-            except Exception as e:
-                # Log error
-                import logging
-                logging.getLogger(__name__).error(f"Email OTP send failed: {e}")
+        if not user:
+            return Response(
+                {"detail": f"No registered account found with email '{email}'."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Delete all old tokens for this user
+        PasswordResetToken.objects.filter(user=user).delete()
+        # Create new 6-digit numeric OTP and save to DB
+        otp = generate_otp(6)
+        PasswordResetToken.objects.create(user=user, token=otp)
+        try:
+            send_password_reset_otp_email(user.email, otp, user.full_name)
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).error(f"Email OTP send failed: {e}")
+            return Response(
+                {"detail": "Failed to send email. Please verify internet connection or contact admin."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
         return Response({
-            "detail": "OTP has been sent to your registered email address.",
-            "email": email
+            "detail": f"A 6-digit OTP has been sent to {user.email}.",
+            "email": user.email
         })
 
 
@@ -263,8 +284,9 @@ class ResetPasswordView(APIView):
             )
 
         # Reset the password
+        from django.contrib.auth.hashers import make_password
         user = reset_token.user
-        user.password = new_password
+        user.password = make_password(new_password)
         user.save()
 
         # Mark token as used

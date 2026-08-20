@@ -50,9 +50,7 @@ function ForgotPassword({ setPage }) {
       setTimer(30); // 30s cooldown
     } catch (err) {
       console.error("Forgot password request failed:", err);
-      // Even if fallback, proceed to verify step for user convenience
-      setStep("verify");
-      setTimer(30);
+      setError(err?.response?.data?.detail || err.message || "Failed to send OTP. Please check your registered email.");
     } finally {
       setIsLoading(false);
     }
@@ -100,7 +98,7 @@ function ForgotPassword({ setPage }) {
       await forgotPassword(email.trim());
       setTimer(30);
     } catch (err) {
-      setError("Failed to resend OTP. Please try again.");
+      setError(err?.response?.data?.detail || "Failed to resend OTP. Please try again.");
     } finally {
       setIsLoading(false);
     }

@@ -50,8 +50,7 @@ function StudentForgotPassword({ setPage }) {
       setTimer(30);
     } catch (err) {
       console.error("Forgot password request failed:", err);
-      setStep("verify");
-      setTimer(30);
+      setError(err?.response?.data?.detail || err.message || "Failed to send OTP. Please check your registered email.");
     } finally {
       setIsLoading(false);
     }
@@ -99,7 +98,7 @@ function StudentForgotPassword({ setPage }) {
       await forgotPassword(email.trim());
       setTimer(30);
     } catch (err) {
-      setError("Failed to resend OTP. Please try again.");
+      setError(err?.response?.data?.detail || "Failed to resend OTP. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -168,6 +167,9 @@ function StudentForgotPassword({ setPage }) {
                 <h2>Verify OTP</h2>
                 <p className="card-subtitle">
                   Enter the 6-digit OTP sent to <strong>{email}</strong>
+                </p>
+                <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>
+                  💡 Didn't find it in Inbox? Please check your <strong>Spam / Junk</strong> folder.
                 </p>
               </>
             )}
