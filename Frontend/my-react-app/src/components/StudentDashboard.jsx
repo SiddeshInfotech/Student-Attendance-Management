@@ -14,7 +14,7 @@ import "../styles/StudentDashboard.css";
 import StudentOverviewTab from "./student-tabs/StudentOverviewTab";
 import StudentProfileTab from "./student-tabs/StudentProfileTab";
 import { getStudentProfile, logout } from "../services/authService";
-import { getUser } from "../services/apiClient";
+import { getUser, getToken } from "../services/apiClient";
 
 const getInitials = (name) => {
   if (!name) return "ST";
@@ -37,6 +37,22 @@ export default function StudentDashboard({ setPage }) {
   const [studentProfile, setStudentProfile] = useState(null);
 
   const profileRef = useRef(null);
+
+  // -------------------------------------------------------
+  // Auth Guard: Ensure only logged-in students can view this dashboard
+  // -------------------------------------------------------
+  useEffect(() => {
+    const token = getToken();
+    const user = getUser();
+    if (!token) {
+      setPage("student-login");
+      return;
+    }
+    const role = (user?.role_name || user?.role?.role_name || user?.role || "").toString().toLowerCase();
+    if (role && role !== "student") {
+      setPage("dashboard");
+    }
+  }, [setPage]);
 
   // Load student profile
   const fetchProfile = useCallback(async () => {

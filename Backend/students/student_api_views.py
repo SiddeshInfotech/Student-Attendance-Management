@@ -212,6 +212,13 @@ class StudentLoginView(APIView):
         if not is_valid:
             return Response({"detail": "Invalid email or password."}, status=status.HTTP_401_UNAUTHORIZED)
 
+        role_name = user.role.role_name.lower() if user.role else "student"
+        if role_name != "student":
+            return Response(
+                {"detail": "Access denied. Only registered students can log in through the Student Portal."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         # Get student profile if user is student
         student = Student.objects.filter(user=user).first()
         if not student:

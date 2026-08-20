@@ -14,8 +14,14 @@ export const adminSignup = async (data) => {
 export const adminLogin = async (data) => {
   const res = await apiClient.post("/api/auth/admin/login/", data);
   if (res && res.token) {
+    const rawRole = (res.user?.role_name || res.user?.role?.role_name || res.user?.role || "admin").toString().toLowerCase();
+    if (rawRole === "student") {
+      removeToken();
+      removeUser();
+      throw new Error("Access denied. Students cannot log in through the Admin Portal.");
+    }
     setToken(res.token);
-    setUser({ ...res.user, role: "admin" });
+    setUser({ ...res.user, role: rawRole });
   }
   return res;
 };
@@ -25,12 +31,14 @@ export const adminLogin = async (data) => {
 export const teacherLogin = async (data) => {
   const res = await apiClient.post("/api/auth/admin/login/", data);
   if (res && res.token) {
+    const rawRole = (res.user?.role_name || res.user?.role?.role_name || res.user?.role || "teacher").toString().toLowerCase();
+    if (rawRole === "student") {
+      removeToken();
+      removeUser();
+      throw new Error("Access denied. Students cannot log in through the Staff Portal.");
+    }
     setToken(res.token);
-    const teacherUser = {
-      ...(res.user || {}),
-      role: res.user?.role?.role_name?.toLowerCase() || "teacher"
-    };
-    setUser(teacherUser);
+    setUser({ ...res.user, role: rawRole });
   }
   return res;
 };

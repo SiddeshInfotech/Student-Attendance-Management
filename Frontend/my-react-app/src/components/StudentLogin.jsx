@@ -6,7 +6,6 @@ import {
   FaEyeSlash,
   FaSignInAlt,
 } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
 import { studentLogin } from "../services/authService.js";
 import { removeToken, removeUser } from "../services/apiClient.js";
 import "../styles/Login.css";
@@ -156,17 +155,6 @@ function StudentLogin({ setPage }) {
                 <span className="checkbox-custom"></span>
                 <span className="checkbox-label">Remember Me</span>
               </label>
-
-              <a
-                href="#"
-                className="forgot-password-link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setPage("student-forgot");
-                }}
-              >
-                Forgot Password?
-              </a>
             </div>
 
             <button type="submit" className="login-submit-btn" disabled={isLoading}>
@@ -179,18 +167,20 @@ function StudentLogin({ setPage }) {
                 </>
               )}
             </button>
+
+            <div className="forgot-password-bottom">
+              <a
+                href="#"
+                className="forgot-password-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPage("student-forgot");
+                }}
+              >
+                Forgot Password?
+              </a>
+            </div>
           </form>
-
-          <div className="auth-divider">
-            <span>OR CONTINUE WITH</span>
-          </div>
-
-          <div className="social-auth-row">
-            <button type="button" className="social-auth-btn">
-              <FcGoogle className="social-btn-icon" />
-              <span>Continue with Google</span>
-            </button>
-          </div>
         </div>
       </div>
     </div>

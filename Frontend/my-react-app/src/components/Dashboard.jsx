@@ -54,6 +54,7 @@ import ReportsTab from "./tabs/ReportsTab";
 import SettingsTab from "./tabs/SettingsTab";
 import AdminProfileTab from "./tabs/AdminProfileTab";
 import settingsService from "../services/settingsService";
+import { getUser, getToken } from "../services/apiClient";
 
 import "../styles/Dashboard.css";
 
@@ -897,6 +898,22 @@ function Dashboard({ setPage }) {
 
   const [academicYear, setAcademicYear] =
     useState("2024 - 2025");
+
+  // -------------------------------------------------------
+  // Auth Guard: Ensure only admin/teachers can view this dashboard
+  // -------------------------------------------------------
+  useEffect(() => {
+    const token = getToken();
+    const user = getUser();
+    if (!token) {
+      setPage("login");
+      return;
+    }
+    const role = (user?.role_name || user?.role?.role_name || user?.role || "").toString().toLowerCase();
+    if (role === "student") {
+      setPage("student-dashboard");
+    }
+  }, [setPage]);
 
   // Load live settings on dashboard initialization
   useEffect(() => {

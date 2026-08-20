@@ -135,7 +135,7 @@ body,
 .illustration-wrapper {
   width: 100%;
   max-width: 260px;
-  margin-top: 0px;
+  margin-top: 16px;
   margin-bottom: 8px;
 }
 
@@ -385,6 +385,18 @@ body,
 .forgot-password-link:hover {
   color: var(--brand-hover);
   text-decoration: underline;
+}
+
+.forgot-password-bottom {
+  text-align: center;
+  margin-top: 18px;
+}
+
+.forgot-password-bottom .forgot-password-link {
+  font-size: 14.5px;
+  color: var(--brand-color);
+  display: inline-block;
+  padding: 4px 8px;
 }
 
 /* सबमिट लॉगिन बटन */

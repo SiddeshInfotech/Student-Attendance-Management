@@ -133,6 +133,12 @@ class AdminLoginView(APIView):
 
         role_name = user.role.role_name.lower() if user.role else "admin"
 
+        if role_name == "student":
+            return Response(
+                {"detail": "Access denied. Students cannot log in through the Admin Portal. Please use the Student Portal."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         refresh = RefreshToken.for_user(user)
         refresh["role"] = role_name
         refresh["email"] = user.email
@@ -165,6 +171,12 @@ class StudentLoginView(APIView):
             return Response({"detail": "Invalid email or password."}, status=status.HTTP_401_UNAUTHORIZED)
 
         role_name = user.role.role_name.lower() if user.role else "student"
+
+        if role_name != "student":
+            return Response(
+                {"detail": "Access denied. Only registered students can log in through the Student Portal."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         refresh = RefreshToken.for_user(user)
         refresh["role"] = role_name
