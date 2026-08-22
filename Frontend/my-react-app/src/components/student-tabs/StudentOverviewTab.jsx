@@ -133,16 +133,22 @@ export default function StudentOverviewTab({ currentDate, currentTime }) {
     // Table Body
     doc.setFont(undefined, 'normal');
     let yPos = 100;
-    filteredRecords.forEach((record) => {
-      if (yPos > 270) {
-        doc.addPage();
-        yPos = 20;
-      }
-      doc.text(String(record.date || ""), 30, yPos);
-      doc.text(String(record.status || ""), 110, yPos);
-      doc.text(String(record.remarks || "-"), 150, yPos);
-      yPos += 10;
-    });
+    if (filteredRecords.length === 0) {
+      doc.setTextColor(100, 116, 139);
+      doc.text("No attendance records recorded (-)", 30, yPos);
+    } else {
+      filteredRecords.forEach((record) => {
+        if (yPos > 270) {
+          doc.addPage();
+          yPos = 20;
+        }
+        const st = String(record.status || "-").trim();
+        doc.text(String(record.date || ""), 30, yPos);
+        doc.text(st, 110, yPos);
+        doc.text(String(record.remarks || "-"), 150, yPos);
+        yPos += 10;
+      });
+    }
 
     const safeName = (student.name || "Student").replace(/\s+/g, "_");
     doc.save(`${safeName}_Attendance_Report.pdf`);

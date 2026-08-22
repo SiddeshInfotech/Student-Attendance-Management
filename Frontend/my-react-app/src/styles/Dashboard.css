@@ -3112,7 +3112,7 @@ body.dark-mode .search-input {
   border-bottom: 1px solid #e8edf3;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
 }
 
 /* =========================================================
@@ -3230,6 +3230,7 @@ body.dark-mode .search-input {
 .topbar-action-wrapper,
 .topbar-profile-wrapper {
   position: relative;
+  z-index: 1001;
 }
 
 /* =========================================================
@@ -3297,7 +3298,7 @@ body.dark-mode .search-input {
   box-shadow: 0 15px 40px rgba(30, 45, 70, 0.15);
   overflow: hidden;
   animation: dropdownFade 0.18s ease;
-  z-index: 1000;
+  z-index: 99999;
 }
 
 @keyframes dropdownFade {

@@ -27,39 +27,6 @@ def _generate_unique_mobile():
             return mob
 
 
-def _seed_initial_attendance(student):
-    """Seed past 30 days of attendance for newly registered students."""
-    today = date.today()
-    existing = Attendance.objects.filter(student=student).exists()
-    if existing:
-        return
-
-    records = []
-    # Seed 30 days backwards
-    for i in range(30, -1, -1):
-        record_date = today - timedelta(days=i)
-        # Skip weekends (Saturday=5, Sunday=6)
-        if record_date.weekday() in (5, 6):
-            continue
-        
-        # ~85% Present, ~15% Absent
-        is_present = random.random() < 0.85
-        status_str = "present" if is_present else "absent"
-        remarks = "On time" if is_present else "Unexcused absence"
-        
-        records.append(Attendance(
-            student=student,
-            student_class=student.student_class,
-            date=record_date,
-            status=status_str,
-            remarks=remarks,
-            marked_by="System Auto-Seed"
-        ))
-    
-    if records:
-        Attendance.objects.bulk_create(records)
-
-
 def _get_student_profile_dict(student):
     user = student.user
     total_days = Attendance.objects.filter(student=student).count()
@@ -165,9 +132,6 @@ class StudentRegisterView(APIView):
             face_encoding=None
         )
 
-        # Seed past 30 days of attendance for newly registered student
-        _seed_initial_attendance(student)
-
         # Generate JWT token
         refresh = RefreshToken.for_user(user)
         refresh["role"] = "student"
@@ -224,8 +188,6 @@ class StudentLoginView(APIView):
         if not student:
             return Response({"detail": "Student profile not found. Please contact the administrator."}, status=status.HTTP_404_NOT_FOUND)
 
-        _seed_initial_attendance(student)
-
         refresh = RefreshToken.for_user(user)
         refresh["role"] = "student"
         refresh["email"] = user.email
@@ -259,7 +221,6 @@ class StudentProfileView(APIView):
         if not student:
             return Response({"detail": "Student profile not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        _seed_initial_attendance(student)
         profile_data = _get_student_profile_dict(student)
         return Response(profile_data)
 
@@ -350,8 +311,6 @@ class StudentDashboardView(APIView):
         student = Student.objects.filter(user=user).first()
         if not student:
             return Response({"detail": "Student profile not found."}, status=status.HTTP_404_NOT_FOUND)
-
-        _seed_initial_attendance(student)
 
         attendances = Attendance.objects.filter(student=student).order_by("-date")
         total_days = attendances.count()

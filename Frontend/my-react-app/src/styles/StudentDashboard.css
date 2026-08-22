@@ -243,7 +243,7 @@
   border-bottom: 1px solid #e8edf3 !important;
   position: sticky !important;
   top: 0 !important;
-  z-index: 100 !important;
+  z-index: 1000 !important;
 }
 
 .sd-topbar-left-group {
@@ -302,6 +302,8 @@
   align-items: center !important;
   gap: 10px !important;
   margin-left: auto !important;
+  position: relative !important;
+  z-index: 1001 !important;
 }
 
 .sd-topbar-profile-btn {
@@ -399,7 +401,7 @@
   border-radius: 14px !important;
   box-shadow: 0 15px 40px rgba(30, 45, 70, 0.15) !important;
   overflow: hidden !important;
-  z-index: 1000 !important;
+  z-index: 99999 !important;
 }
 
 .profile-dropdown-header {

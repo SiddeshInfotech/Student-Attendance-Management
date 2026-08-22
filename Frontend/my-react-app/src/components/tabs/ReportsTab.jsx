@@ -156,43 +156,53 @@ const downloadIndividualPDF = (student, records, schoolName, academicYear) => {
   const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   let y = 122;
 
-  sortedRecords.forEach((record, index) => {
-    if (y > 265) {
-      doc.addPage();
-      // Re-draw table header on new page
-      doc.setFillColor(241, 245, 249);
-      doc.rect(15, 15, 180, 8, "F");
-      doc.setFontSize(9); doc.setFont("helvetica", "bold");
-      doc.setTextColor(71, 85, 105);
-      doc.text("S.No", 20, 20.5);
-      doc.text("Date", 45, 20.5);
-      doc.text("Day", 100, 20.5);
-      doc.text("Status", 155, 20.5);
-      doc.setFont("helvetica", "normal"); doc.setFontSize(9.5);
-      y = 29;
-    }
+  if (sortedRecords.length === 0) {
+    doc.setTextColor(100, 116, 139);
+    doc.setFont("helvetica", "normal");
+    doc.text("No attendance records found for this period (-)", 20, 125);
+    y = 135;
+  } else {
+    sortedRecords.forEach((record, index) => {
+      if (y > 265) {
+        doc.addPage();
+        // Re-draw table header on new page
+        doc.setFillColor(241, 245, 249);
+        doc.rect(15, 15, 180, 8, "F");
+        doc.setFontSize(9); doc.setFont("helvetica", "bold");
+        doc.setTextColor(71, 85, 105);
+        doc.text("S.No", 20, 20.5);
+        doc.text("Date", 45, 20.5);
+        doc.text("Day", 100, 20.5);
+        doc.text("Status", 155, 20.5);
+        doc.setFont("helvetica", "normal"); doc.setFontSize(9.5);
+        y = 29;
+      }
 
-    const recDate = record.date || record.attendance_date;
-    const dayName = recDate ? DAYS[new Date(recDate + "T00:00:00").getDay()] : "-";
-    const statusStr = record.status || "Absent";
+      const recDate = record.date || record.attendance_date;
+      const dayName = recDate ? DAYS[new Date(recDate + "T00:00:00").getDay()] : "-";
+      const statusStr = String(record.status || "-").trim();
 
-    doc.setTextColor(51, 65, 85);
-    doc.text(`${index + 1}`, 20, y);
-    doc.text(formatDate(recDate), 45, y);
-    doc.text(dayName, 100, y);
+      doc.setTextColor(51, 65, 85);
+      doc.text(`${index + 1}`, 20, y);
+      doc.text(formatDate(recDate), 45, y);
+      doc.text(dayName, 100, y);
 
-    if (statusStr === "Present") {
-      doc.setTextColor(16, 185, 129);
-      doc.text("Present", 155, y);
-    } else {
-      doc.setTextColor(239, 68, 68);
-      doc.text("Absent", 155, y);
-    }
+      if (statusStr.toLowerCase() === "present") {
+        doc.setTextColor(16, 185, 129);
+        doc.text("Present", 155, y);
+      } else if (statusStr.toLowerCase() === "absent") {
+        doc.setTextColor(239, 68, 68);
+        doc.text("Absent", 155, y);
+      } else {
+        doc.setTextColor(148, 163, 184);
+        doc.text("-", 155, y);
+      }
 
-    doc.setDrawColor(241, 245, 249);
-    doc.line(15, y + 2.5, 195, y + 2.5);
-    y += 8.5;
-  });
+      doc.setDrawColor(241, 245, 249);
+      doc.line(15, y + 2.5, 195, y + 2.5);
+      y += 8.5;
+    });
+  }
 
   // Footer Signature Block
   if (y > 250) { doc.addPage(); y = 40; }
